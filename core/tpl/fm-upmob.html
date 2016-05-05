@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Mobile FM Sync</title>
+		<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+		<link rel="stylesheet/less" type="text/css" href="./res/biz/fm/fm-upmob.less">
+		<script src="http://cdn.bootcss.com/less.js/2.5.1/less.min.js"></script>
+	</head>
+	<body>
+		<div id="p"></div>
+		<iframe name="shabi"></iframe>
+		<form target="shabi" action="./?fm/upmob" method="post" enctype="multipart/form-data">
+			<input id="sf" name="song" type="file">
+	    </form>
+		<script type="text/javascript">
+			$('#p').click(function(){
+			    $('#sf').click();
+			});
+			$('#sf').change(function(){
+			    if (this.value) {
+				    $('form:first').submit();
+			    }
+			});
+		</script>
+	</body>
+</html>

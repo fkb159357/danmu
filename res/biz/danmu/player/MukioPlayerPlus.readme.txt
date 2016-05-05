@@ -1,0 +1,48 @@
+原始播放地址
+（原本不支持调整弹幕字体大小，需要修改XML文件中的size域）
+http://172.16.43.212/pub/danmu/res/danmu/play/MukioPlayerPlus.swf?file=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953-1.flv&cfile=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953.xml&skin=http://127.0.0.1/danmu_server/skin/nemesis.zip&autostart=false
+拆行查看：
+http://172.16.43.212/pub/danmu/res/danmu/play/MukioPlayerPlus.swf
+?file=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953-1.flv
+&cfile=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953.xml
+&skin=http://127.0.0.1/danmu_server/skin/nemesis.zip&autostart=false
+
+
+以上是简单用法（如果不需要发送弹幕，且不需要设置弹幕字体大小）
+
+
+
+
+如果需要设置弹幕字体的大小，则需要手动将XML弹幕文件中的字体域批量修改，然后再response出XML到客户端。这里就需要conf.xml中的<load>标签
+<!-- 弹幕加载地址,变量{$id}为弹幕id -->
+    <load>http://获取弹幕的地址?id={$id}</load>
+
+如果需要发送弹幕，则需要设置<send>标签</send>
+
+    <!-- POST发送地址,如果不提供则不发送,变量可用 -->
+    <send>发送弹幕的地址?id={$id}</send>
+
+
+
+
+
+							整合到DoInject后的方案（支持字体大小调整）
+
+
+DI方案（有效）：
+[优先]
+http://127.0.0.1/pub/danmu/res/danmu/play/MukioPlayerPlus.swf?cfile=http://127.0.0.1/pub/danmu/%3Fdanmu/load/164/15&file=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953-1.flv&skin=http://172.16.43.212/pub/danmu/res/danmu/play/nemesis.zip&autostart=false
+http://127.0.0.1/pub/danmu/res/danmu/play/MukioPlayerPlus.swf?file=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953-1.flv&cfile=http://127.0.0.1/pub/danmu/%3Fdanmu/load/164/15&skin=http://172.16.43.212/pub/danmu/res/danmu/play/nemesis.zip&autostart=false
+[次要]
+http://127.0.0.1/pub/danmu/res/danmu/play/MukioPlayerPlus.swf?id=164/15&file=http://172.16.43.212:8888/danmu/%E5%93%B2%E5%AD%A6%E7%BF%BB%E5%94%B1/2784953-1.flv&skin=http://172.16.43.212/pub/danmu/res/danmu/play/nemesis.zip&autostart=false
+    <!-- 弹幕加载地址,变量{$id}为弹幕id -->
+    <load>http://127.0.0.1/pub/danmu/?danmu/load/{$id}</load>
+    <!-- POST发送地址,如果不提供则不发送,变量可用 -->
+    <send>http://127.0.0.1/pub/danmu/?danmu/send/{$id}</send>
+    
+【谨记！】conf.xml要和MukioPlayerPlus.swf要处于同一个目录,要保证load配置的SERVER地址和xml、swf是处于同一个域名下的。
+
+【谨记！】客户端要判断服务器自身可以成功请求弹幕文件，是则交给服务器处理弹幕，否则直接交给前端js生成UBB。
+1）弹幕地址属于127.0.0.1、127.0.0.×、localhost等回环地址，弹幕服务器除非也是本机运行，否则就不能提交给服务器处理弹幕。
+2）弹幕地址属于192.168.×.×、172.×.×.×等内网地址，要确保弹幕服务器也是在同一局域网，才能交给服务器处理弹幕。
+3）弹幕地址属于公网地址，弹幕服务器所处的环境只要能够连通互联网，就可以交给服务器处理弹幕。

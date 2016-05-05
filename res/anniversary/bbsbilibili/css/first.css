@@ -1,0 +1,165 @@
+#global {
+	width: 960px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	position: relative;
+	z-index: 2;
+}
+
+
+
+#head {
+	height: 200px;
+	background-color: #666;
+	background-image: url(../img/first/head2.jpg);
+	background-repeat: no-repeat;
+	background-position: center center;
+	position: relative;
+	border: 5px ridge #99F;
+}
+/*#bg_swf {
+	height: 100%;
+	width: 100%;
+	position: relative;
+	z-index: 1;
+	left: 0%;
+	top: 0%;
+}*/
+
+#head_logo {
+	position: absolute;
+	left: 20px;
+	top: 20px;
+}
+#danmu span {
+	margin-top: 5px;
+}
+
+.sub_danmu {
+	padding-top: 15px;
+	padding-right: 15px;
+	padding-bottom: 0px;
+	padding-left: 15px;
+}
+#danmu a {
+	text-decoration: none;
+}
+#danmu .danmu_title {
+	margin-top: 5px;
+}
+
+
+
+
+#head_biaoyu {
+	position: absolute;
+	left: 405px;
+	bottom: 5px;
+}
+#imgs_and_jianji {
+	background-color: #099;
+	float: left;
+	height: 670px;
+	width: 740px;
+	border-top-width: 0px;
+	border-right-width: 5px;
+	border-bottom-width: 5px;
+	border-left-width: 5px;
+	border-top-style: ridge;
+	border-right-style: ridge;
+	border-bottom-style: ridge;
+	border-left-style: ridge;
+	border-top-color: #99F;
+	border-right-color: #99F;
+	border-bottom-color: #99F;
+	border-left-color: #99F;
+}
+#personal {
+	text-align: center;
+	height: 234px;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 5px;
+	border-left-width: 0px;
+	border-top-style: ridge;
+	border-right-style: ridge;
+	border-bottom-style: ridge;
+	border-left-style: ridge;
+	border-top-color: #99F;
+	border-right-color: #99F;
+	border-bottom-color: #99F;
+	border-left-color: #99F;
+	padding-top: 5px;
+	padding-right: 4px;
+	padding-bottom: 6px;
+	padding-left: 4px;
+	background-attachment: fixed;
+	background-image: url(../img/global/login_bg.jpg);
+	background-repeat: repeat;
+	background-position: center center;
+}
+
+#danmu {
+	background-color: #3C6;
+	float: left;
+	height: 670px;
+	width: 205px;
+	position: relative;
+	background-image: url(../img/global/login_bg.jpg);
+	background-attachment: fixed;
+	background-repeat: repeat;
+	background-position: center center;
+	border-right-width: 5px;
+	border-bottom-width: 5px;
+	border-left-width: 0px;
+	border-top-style: ridge;
+	border-right-style: ridge;
+	border-bottom-style: ridge;
+	border-left-style: ridge;
+	border-top-color: #99F;
+	border-right-color: #99F;
+	border-bottom-color: #99F;
+	border-left-color: #99F;
+	border-top-width: 0px;
+}
+
+
+#imgs {
+	background-color: #000;
+	cursor: crosshair;
+	height: 420px;
+}
+#remenjianji {
+	margin: 15px;
+	float: left;
+	height: 600px;
+	width: 600px;
+	background-color: #C0C;
+	clear: both;
+}
+#duocaidanmu {
+	margin: 15px;
+	float: left;
+	height: 600px;
+	width: 300px;
+	background-color: #C93;
+}
+body {
+	background-image: url(../img/global/login_bg.jpg);
+	position: relative;
+	background-attachment: fixed;
+	background-repeat: repeat;
+	background-position: center center;
+	background-color: #000;
+}
+
+
+#demo {
+	z-index: +3;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background-image: url(../img/global/opacity.png);
+}

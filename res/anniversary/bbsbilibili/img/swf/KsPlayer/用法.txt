@@ -1,0 +1,1 @@
+http://172.16.124.43:8080/Player.swf?file=http://172.16.124.43:8080/a.mp4&skin=http://172.16.124.43:8080/nemesis.zip

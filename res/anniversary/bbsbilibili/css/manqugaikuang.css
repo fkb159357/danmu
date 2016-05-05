@@ -1,0 +1,127 @@
+@charset "utf-8";
+#container {
+	width: 960px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-left: auto;
+	background-attachment: fixed;
+	background-image: url(../img/global/login_bg.jpg);
+	background-repeat: repeat;
+	background-position: center center;
+	border: 2px groove #99F;
+}
+
+.v_left {
+	width: 170px;
+	margin-top: 15px;
+	margin-right: 7px;
+	margin-left: 15px;
+	float: left;
+	height: 250px;
+	margin-bottom: 0px;
+	border: 2px double #99F;
+}
+.v_row {
+	clear: left;
+	height: 265px;
+}
+
+.v_middle {
+	width: 170px;
+	margin-top: 15px;
+	margin-right: 7px;
+	margin-left: 8px;
+	float: left;
+	height: 250px;
+	margin-bottom: 0px;
+	border: 2px double #99F;
+}
+
+
+.v_right {
+	width: 170px;
+	margin-top: 15px;
+	margin-right: 15px;
+	margin-left: 8px;
+	float: left;
+	height: 250px;
+	border: 2px double #99F;
+}
+.blankline {
+	height: 15px;
+	clear: both;
+	float: none;
+}
+
+#head_area {
+	background-image: url(../img/manquzhuangkuang/head.jpg);
+	height: 375px;
+	position: relative;
+}
+#head_biaoyu {
+	height: 64px;
+	width: 400px;
+	position: absolute;
+	bottom: 10px;
+	left: 50px;
+}
+
+
+/*以下是外来表单部分*/
+/*
+#respond {
+	margin: 30px auto; width: 749px;
+}
+
+.post .commentFormTop {
+	padding: 10px 0px 0px 297px; height: 68px;
+}
+.post .commentFormTop div {
+	font: 14px/24px "Ltre Oriki", Minion, Times, serif; margin: 0px 1px 1px 0px; padding: 6px 12px 4px; width: 194px; height: 23px; color: rgb(78, 61, 24); clear: none; float: left; display: block; font-size-adjust: none; font-stretch: normal;
+}
+.post .commentFormTop div input {
+	background: white; border: 1px solid rgba(0, 0, 0, 0.2); width: 150px; height: 18px; float: right;
+}
+
+*/
+
+/*新表单部分*/
+#form_area {
+	height: 500px;
+	width: 749px;
+	margin-right: auto;
+	margin-left: auto;
+	background-image: url(../img/manquzhuangkuang/form_bg.jpg);
+	position: relative;
+	margin-top: 30px;
+	border: 5px ridge #9CF;
+	margin-bottom: 30px;
+}
+#face1 {
+	position: absolute;
+	left: 425px;
+	top: 18px;
+	height: 65px;
+	width: 65px;
+}
+#form_content {
+	width: 551px;
+	border: 5px groove #99F;
+	position: absolute;
+	top: 250px;
+	left: 99px;
+}
+
+#face2 {
+	height: 58px;
+	width: 58px;
+	margin-top: 90px;
+	margin-left: 90px;
+}
+#face3 {
+	height: 58px;
+	width: 58px;
+	position: absolute;
+	left: 610px;
+	top: 175px;
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>漫区概况</title>
+
+<link href="../css/manqugaikuang.css" rel="stylesheet" type="text/css" />
+<script src="../js/manquzhuangkuang.js" type="text/javascript" language="javascript" ></script>
+<script src="../js/jquery-1.8.3.min.js" ></script>
+</head>
+
+<body background="../img/global/bg.jpg">
+<div style="position:fixed"><a href="first.html"><img border="0" src="../img/global/back.png" /></a></div>
+	<div id="container">
+<!--  宫格输出示例
+    	<div id="example">
+            <div class="v_row">
+                <div class="v_left">左视频</div>
+                <div class="v_middle">中视频</div>
+                <div class="v_middle">中视频</div>
+                <div class="v_middle">中视频</div>
+                <div class="v_right">右视频</div>
+            </div>
+            <div class="v_row">
+                <div class="v_left">左视频</div>
+                <div class="v_middle">中视频</div>
+                <div class="v_middle">中视频</div>
+                <div class="v_middle">中视频</div>
+                <div class="v_right">右视频</div>
+            </div>
+            <span style="display:none;">输出一行定高的空白</span>
+            <div class="blankline"/>
+        </div>
+-->
+		<!-- 头部 -->
+    	<div id="head_area">
+			<img id="head_biaoyu" src="../img/manquzhuangkuang/head_biaoyu.png" />
+        </div>
+        <!-- 漫版常驻ID ，用宫格输出-->
+  <div id="imgs">
+        	<script type="text/javascript" >show_Users();</script>
+      </div>
+    <!-- 底部 -->
+    <div id="bottom">
+		<div id="form_area">
+        	<img id="face1" src="../img/face/8.gif" />
+            <img id="face2" src="../img/face/1.gif" />
+			<img id="face3" src="../img/face/2.gif" />
+            <br />
+            <form id="form_content" action="mailto:ltrele@gmail.com" method="post" onsubmit="return check_form()" enctype="multipart/form-data">
+            	<div id="tips">
+                	<div id="bbs_id_tip" style="color:#F00; display:none; margin-left:90px;float:left;">请输入你的论坛数字ID！</div>
+                    <div id="bbs_name_tip" style="color:#F00; display:none;margin-left:50px; float:left;">请输入你的论坛昵称！</div>
+                </div>
+            	<div style="clear:both;">
+                    <label for="bbs_id" >你的论坛ID</label>
+                    <input id="bbs_id" name="bbs_id" type="text" value="" />
+                    <label for="" >现用的昵称</label>
+                    <input id="bbs_name" name="bbs_name" type="text" value="" />
+                </div>
+                <div>
+                    <label for="theme_format">发帖常用的形式</label>
+                    <select id="attention" name="theme_format">
+                        <option value="1">纯图文</option>
+                        <option value="2">一图流</option>
+                        <option value="3">普通视频</option>
+                        <option value="4">弹幕视频</option>
+                        <option value="5">投票帖</option>
+                        <option value="6">悬赏帖</option>
+                    </select>
+                </div>
+                <div style="float:left;">
+                	<label>更关注的内容</label><br />
+                    <input checked="checked" value="1" class="attention" type="radio" name="attention"/>没得选择			
+                    <input value="2" class="attention" type="radio" name="attention"/>手工原创<br />
+                    <input value="3" class="attention" type="radio" name="attention"/>游戏实况
+                    <input value="4" class="attention" type="radio" name="attention"/>番剧连载<br />
+                    <input value="5" class="attention" type="radio" name="attention"/>漫画连载
+                    <input value="6" class="attention" type="radio" name="attention"/>内涵组图<br />
+                    <input value="7" class="attention" type="radio" name="attention"/>番剧快讯
+                    <input value="8" class="attention" type="radio" name="attention"/>番剧点评<br />
+                    <input value="9" class="attention" type="radio" name="attention"/>鬼畜片段
+                    <input value="10" class="attention" type="radio" name="attention"/>精品剪辑<br />
+                </div>
+                <span id="attention_tip" style="display:none; color:#F00;">必须选择一个有意义的内容！</span>
+				<div style="float:left; margin:15px 15px;"><label for="suggest">对漫版有什么想说的？</label><span style="display:none; color:#F00;" id="suggest_tip">多少说一句吧！</span><br /><textarea id="suggest" rows="5" cols="40" style="letter-spacing:2px; line-height:15px;" name="suggest"></textarea></div>
+                <div style="clear:left; width:200px; margin:55px auto 10px auto; text-align:center;"><input type="submit" value="加入我们" /></div>
+<!--                <input id="theme_format" type="radio"/>-->
+            </form>            
+        </div>
+    </div>
+</body>
+</html>

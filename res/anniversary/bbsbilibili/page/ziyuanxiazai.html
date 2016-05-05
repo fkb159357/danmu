@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--
+<meta http-equiv="refresh" content="3;URL=http://172.16.128.111/BBS"/>
+-->
+
+<title>资源下载</title>
+</head>
+
+<body background="../img/global/bg.jpg">
+	<div style="position:fixed;"><a href="first.html"><img border="0" src="../img/global/back.png" /></a></div>
+	<br /><br /><br /><br /><br /><br /><br /><br />
+	<center>
+    <h1><span id="time">3</span>秒后，将进入资源页面...</h1>
+        <embed height='37px' width='355px' 
+            AllowScriptAccess='always' rel='noreferrer'
+            type='application/x-shockwave-flash'
+            allowfullscreen='true' quality='high'
+            src="../img/global/progress.swf">
+        </embed>    
+    </center>
+    
+<script language="javascript"> 
+	var t = 3; 
+	var time = document.getElementById("time"); 
+	function fun(){  
+		t--;  
+		time.innerHTML = t;  
+		if(t<=0){   
+			location.href = "http://"+location.hostname+"/BBS";
+			clearInterval(inter);  
+		} 
+	} 
+	var inter = setInterval("fun()",1000);
+</script>    
+    
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+    <link rel="shortcut icon" href="res/lib/favicon.ico">
+    <!-- Loading Bootstrap -->
+	<link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 加载Material Design -->
+	<link href="//cdn.bootcss.com/bootstrap-material-design/0.2.2/css/ripples.min.css" rel="stylesheet">
+	<link href="//cdn.bootcss.com/bootstrap-material-design/0.2.2/css/material-wfont.min.css" rel="stylesheet">
+	<style>
+	/*二维码位置控制*/
+	#qrcode{text-align: center;}
+	#qrcode>canvas{display: inline;}
+	/*同步文本框位置*/
+	#syncTextArea{text-align: center;}
+	#syncText{display: inline;}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div id="qrcode"></div>
+		</div>
+		<div class="row" id="syncTextArea">
+			<textarea rows="8" id="syncText"></textarea>
+		</div>
+	</div>
+	
+	<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="//cdn.bootcss.com/bootstrap-material-design/0.2.2/js/ripples.min.js"></script>
+	<script src="//cdn.bootcss.com/bootstrap-material-design/0.2.2/js/material.min.js"></script>
+	<script src="http://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="http://cdn.bootcss.com/socket.io/1.3.5/socket.io.min.js"></script>
+    <script src="res/biz/common/common.js?v=20150513"></script>
+    
+    <script type="text/javascript" src="http://res.miku.us/res/js/jgy-2nd.js?21313"></script>
+    <script>
+    $(function(){
+        $.material.init();
+        
+        var commonWidth = document.body.clientWidth/3;
+        $('#syncText').css('width', commonWidth+'px');
+        var token = location.hash.replace('#','') || + new Date;//token也可手动用fragment生成
+        $('#qrcode').qrcode({width:commonWidth,height:commonWidth,text:location.protocol+'//'+location.host+'/?ctrl/qr#'+token});
+        var u = 'http://io.yooo.moe:3000/';
+        var socket = io.connect(u);
+        socket.emit('ctrl/regCmd', token);
+        socket.emit('ctrl/sendCmd', token, 0, '有个渣渣加入房间');
+        socket.on('ctrl/acceptCmd', function(rToken, type, value){
+            switch (type) {
+	            case 0: alert(value); break;
+	            case 1: $('#syncText').val(value); break;
+	            case 2: $('#jgy-menus>[jgycmd='+value+']').click(); break;
+	            case 3: 
+	                /* if ($(value.id).size() <= 0) {
+	                    window.testJgy = new Jinguanyu(value.id, value.startX, value.startY);
+	                } else {
+	                    window.testJgy.move(value.moveX, value.moveY);
+	                }
+	                break; */
+	            case 4: 
+	            case 5: 
+	            case 6: 
+	            case 7: 
+	            case 8: 
+	        }
+        });
+        
+        !function syncText(){
+            $('#syncText').on('input', function(){
+                socket.emit('ctrl/sendCmd', token, 1, $(this).val());
+            });
+        }();
+        
+        //金馆鱼服务菜单，以下DOM ID需要相关js配合
+        !function jgyMenus(){
+            var jm = $('#jgy-menus');
+            if (0 == jm.size()) {
+                alert('找不到JGY操作板');
+                return false;
+            }
+            jm.children('button').each(function(i, e){
+                $(this).attr('jgycmd', 'jgycmd'+i);
+            }).on('click', function(evt){
+                socket.emit('ctrl/sendCmd', token, 2, $(evt.toElement).attr('jgycmd'));
+                return false;
+            });
+        }();
+        
+        //【这里有错误，需修复】自定义同步拖动金馆鱼
+        /* !function dragJgy(){
+            var _this = this;
+            var opt = {
+                id : 'testId' + Math.random()*10000,
+				startX : 250,
+				startY : 250
+            };
+            window.testJgy = new Jinguanyu(opt.id, opt.startX, opt.startY);
+            socket.emit('ctrl/sendCmd', token, 3, opt);
+            window.testJgy.node.ondrag = function(evt){
+                undefined == window.testJgy.lastCX && (window.testJgy.lastCX = evt.clientX);
+                undefined == window.testJgy.lastCY && (window.testJgy.lastCY = evt.clientY);
+                if (evt.clientX != jgy.lastCX || evt.clientY != jgy.lastCY) {
+                    opt.moveX = evt.clientX - window.testJgy.lastCX;
+                    opt.moveY = evt.clientY - window.testJgy.lastCY;
+                    socket.emit('ctrl/sendCmd', token, 3, opt);
+                }
+                window.testJgy.lastCX = evt.clientX;
+                window.testJgy.lastCY = evt.clientY;
+            };
+        }(); */
+        
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<?php
+class TuDo extends DIDo {
+    
+    //图首页
+    function start(){
+        $tu = supertable('Tu');
+        $this->list = $tu->select('', '*, id tuId', '`id` DESC', array(1, 20, 10)) ?: array();
+        $this->stpl();
+    }
+    
+    //上传视图
+    function toup($tuId = 0){
+        //$this->stpl();
+        echo '<html><head>';
+        echo '<meta property="qc:admins" content="330620745651356537" />';
+        echo '<style type="text/css">input[type=text]{width:600px;} .inputTitle{width:80px;display:inline-block;text-align:right;}</style>';
+        echo '<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>';
+        echo '<script>function toLogin(){ var A=window.open("/oauthqq/login", "TencentLogin", "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"); }</script>';
+        echo '</head><body>';
+        echo '<div style="text-align:center;"> <a href="javascript:toLogin()"><img src="http://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_3.png"></a></div>';
+        echo '<form method="post" action="./?tu/up/'.intval($tuId).'" target="hehe" enctype="multipart/form-data"><input type="file" name="tu"><input type="submit" value="上传"></form><iframe name="hehe" width="960" height="480"></iframe>';
+        echo '<div><span class="inputTitle">UBB代码：</span><input id="ubb" type="text"><br><span class="inputTitle">HTML代码：</span><input id="html" type="text"><br><span class="inputTitle">URL：</span><input id="src" type="text"></div>';
+        echo '<div><span class="inputTitle">打标签：</span><input id="tags" type="text"><input id="setTags" type="button" value="打上"></div>';
+        $s = 'var src = (window.hehe.document.body.innerText.match(/\[url\]\s*\=\>\s*(http\:\/\/.+)\s*\[\w+\]/) || [,""])[1];';
+        $s .= 'var ubbVal = "[img]" + src + "[/img]"; if($("#ubb").val()!=ubbVal) if(!src) $("#ubb").val("获取中.."); else $("#ubb").val(ubbVal);';
+        $s .= 'var htmlVal = "<img src=\'" + src + "\'>"; if($("#html").val()!=htmlVal) if(!src) $("#html").val("获取中.."); else $("#html").val(htmlVal);';
+        $s .= 'if($("#src").val()!=src) if(!src) $("#src").val("获取中.."); else $("#src").val(src);';
+        echo "<script>$('form').submit(function(){ window.hehe.document.body.innerHTML=''; $('#ubb,#html,#src').each(function(i,e){e.value='获取中..';}); {$s} setInterval(function(){ {$s} }, 500); });</script>";
+        echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
+        echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
+        echo '</body>';
+    }
+    
+    //通过接口上传处理程序
+    function up($tuId = 0){
+        $file = $_FILES['tu'];
+        if (! $file) putjson(1, null, 'no input file');
+        $imgDirGroup = DI_DEBUG_MODE ? 'tu-miku-us-test/' : 'default/';
+        if ($tuId) {
+        	$ret = Tu::reSaveRecord($tuId, $file, $imgDirGroup);
+        } else {
+            $ret = Tu::saveRecord($file, $imgDirGroup);//测试时，请指定测试分组目录！
+        }
+        $code = $ret['code'] == 0 && $ret['id'] != 0 ? 0 : -1;
+        //putjson($code, $ret);die;
+        dump($ret);
+    }
+    
+    function setTags($tuId = 0, $tags = ''){
+        $tuId = (int) $tuId;
+        if (! $tuId) putjson(-1, null, 'param err');
+        import('libutil/xsshtml');
+        xssFilter($tags);
+        $newTags = TuTag::setTags($tuId, $tags);
+        putjson(0, compact('newTags'));
+    }
+    
+    function getList($p = 1, $limit = 10, $scope = 10){
+        $tu = supertable('Tu');
+        $this->list = $tu->select('', '*, id tuId', '`id` DESC', array($p, $limit, $scope)) ?: array();
+        $this->page = $tu->page;
+        $this->limit = $limit;
+        $this->scope = $scope;
+        $this->stpl();
+    }
+    
+    function get($id = 0, $tag = ''){
+        $tuObj = supertable('Tu');
+        $tuTagObj = supertable('TuTag');
+        if ($id) {
+        	$tu = $tuObj->find(compact('id'));
+        	@die("<img src='{$tu->url}' width='50%'>");
+        } else {
+            $sql = "SELECT t.id tuId, t.filename, t.url
+                    FROM {$tuObj->table} t, {$tuTagObj->table} tt 
+                    WHERE t.id = tt.tu_id AND `tag` IN (:taglist)";
+            $this->list = $tuObj->query($sql, array('taglist' => "{$tag}"));
+            @$this->stpl('tu-getlist');
+        }
+    }
+    
+    function del(){
+        
+    }
+    
+    
+    //@TODO 处理标签数据，将tu_tag表改为tag_id跟tu_id的对应，减少资源消耗
+    function dealTagData(){
+        
+    }
+    
+}

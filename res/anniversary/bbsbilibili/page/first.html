@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>BBS哔哩哔哩——HR漫友是一家</title>
+<link href="../css/first.css" rel="stylesheet" type="text/css" />
+<script src="../js/jquery-1.8.3.min.js" type="text/javascript" language="javascript"></script>
+<script src="../js/q-2.0.4.min.js" type="text/javasctipt"></script>
+<script src="../js/first.js" type="text/javascript" language="javascript"></script>
+</head>
+
+<body>
+<!-- 页面背景使用FLASH -->
+<!--	<div id="bg_swf"><embed src="../img/menu/rain.swf"
+        type='application/x-shockwave-flash' allowfullscreen='true' quality='high' 
+        AllowScriptAccess='always' rel='noreferrer' height='1050px' width="800px;" /></div>
+-->
+
+<!-- 加载前显示的层 -->
+<div id="demo">
+	<br /><br /><br /><br /><br /><br /><br /><br />
+	<center>
+    <h1 id="time" style="color:#0FF; font-family:微软雅黑;"><img src="../img/face/1.gif"/>□□□□□□□□□□□□□<br />□□□□□<a target="_blank" href="http://www.kusha.biz">你懂的</a>~~<img src="../img/face/3.gif" /><p>~~~</p><img onclick="demo()" src="../img/global/enter.png" /></h1>  
+    </center>
+    <script type="text/javascript">before_global();</script>
+</div>
+
+
+<!-- 主要显示层 -->
+<div id="global">
+  <!-- 页面头部区域 -->
+  <div id="head">
+  	<img id="head_logo" src="../img/first/head_logo.png" width="580px" height="110px"/>
+	<embed id="head_biaoyu" width="250px" height="57px" AllowScriptAccess="always" rel="noreferrer" src="../img/first/biaoyu_cheng_lan_with_bg.swf" type="application/x-shockwave-flash" allowfullscreen="true" quality="high" wmode="opaque" />
+  </div>
+
+  <!--左边：4*4格子图+站点简介-->
+  <div id="imgs_and_jianji">
+    <div id="personal">
+    	<div style="margin:30px 30px; text-align:left; line-height:30px; font-size:21px;"><span style="display: none; padding:20px; font-size:30px; font-weight:bold; font-family:微软雅黑;">B</span><span style="display: none;">BS哔哩哔哩是B站（bilibili.tv）的衍生站。本站与哔哩哔哩最大的同点，不外乎使用了弹幕视频加载技术。游客可以在观看视频的时候针对视频某个时刻点发送评论。这些游离在视频表面的评论，俗称为弹幕。一般地，一个视频获得的弹幕越多，就越吸引人。本站作者致力于收集和制作优秀的弹幕视频，并且，作者也十分乐意分享这些视频，希望各位能够ENJOY IT！！<font size="-1" color="red">【PS：网站尚未完工，UP主最近比较忙，各种任务压得喘不过气来哈，过后一定补上】[另外，不要使用IE8以下的浏览器！我不会做兼容！]</font></span><span>这里是个残念的地方，呵呵..<br/>N年前刚学会网页时做的，用来纪念一波又一波离校的基佬们..<br/>成员什么的，截至2014年夏吧..<br/>新淫们不要在意，进来了就等于入社了~~</span></div>
+        <span style="display:none;">正在翻译：ＢＢＳビリビリはＢワィブサィト「bilibili.tv」の派生ものでした。</span>
+    </div>  
+  	<div id="imgs">
+  	  <script language="javascript" type="text/javascript">show_imgs();</script>    
+    </div>
+  </div>
+  <!--右边：弹幕竖条-->
+  <div id="danmu">
+  	<div class="sub_danmu" style="font-size:38px; text-align:center; font-weight:bold; color:#036;">弹&nbsp;&nbsp;幕<br />排行榜<br /></div>
+	<a href="./php/currentplayer.php?video=1"><div class="sub_danmu"><img src="../img/jingpinjianji/3x3/1.jpg" width="100%" /><div class="danmu_title">周年纪念——Forever</div></div></a>
+    <a href="./php/currentplayer.php?video=5"><div class="sub_danmu"><img src="../img/jingpinjianji/3x3/5.jpg" width="100%" /><div class="danmu_title">花如樱花、倾城如君</div></div></a>
+    <a href="./php/danmuplayer.php?video=5&xml=5"><div class="sub_danmu"><img src="../img/zhoubiandanmu/3x3/5.jpg" width="100%" /><div class="danmu_title">某科学的超加速世界S</div></div></a>
+    <a href="./php/danmuplayer.php?video=1&xml=1"><div class="sub_danmu"><img src="../img/zhoubiandanmu/3x3/1.jpg" width="100%" /><div class="danmu_title">【鬼畜】海水玩具鸭</div></div></a>
+  </div>
+  
+<!--
+  <!--精品剪辑--
+  <div id="remenjianji"></div>
+  <!--周边弹幕--
+  <div id="duocaidanmu"></div>
+-->
+</div>
+
+
+
+</body>
+</html>
