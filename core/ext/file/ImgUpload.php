@@ -255,6 +255,7 @@ class ImgUploadClient extends ImgUpload {
     //客户端调用接口测试用例
     static function testClient(){
         $client = new ImgUploadClient();
+        $client->setLimit(array('maxSize' => 4194304));//4MB
         $ret = $client->up($_FILES['tu']);
         dump($ret);
     }
@@ -324,6 +325,7 @@ class ImgUploadServer extends ImgUpload {
     //服务接口编写上传测试用例
     static function testServer(){
         $server = new ImgUploadServer($_REQUEST['imgGroupDir'] ?: '');
+        $server->setLimit(array('maxSize' => 4194304));//4MB
         $ret = $server->up($_FILES['tu']);
         $ret['fileName'] = $_REQUEST['fileName'];
         echo json_encode($ret);
