@@ -50,7 +50,7 @@ class Tu extends DIEntity {
         } else {
             import('file/ImgUpload');
             $client = new ImgUploadClient($imgDirGroup);
-            $client->setLimit(array('maxSize' => 3145728));//3MB
+            $client->setLimit(array('maxSize' => 4194304));//4MB
             $upRet = $client->up($file);
             $tu = self::_save($upRet);
             $isOld = false;
