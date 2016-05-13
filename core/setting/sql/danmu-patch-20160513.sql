@@ -37,8 +37,8 @@ CREATE TABLE `dm_tagged` (
 
 -- 通用标签关系表
 -- @since 2016-05-13
--- hostker 已同步
--- Office localhost 已同步
+-- hostker 未同步
+-- Office localhost 未同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tag_relate` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
