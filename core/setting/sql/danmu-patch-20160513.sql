@@ -1,6 +1,6 @@
 -- 通用标签表
 -- @since 2016-05-13
--- hostker 未同步
+-- hostker 已同步
 -- Office localhost 未同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tag` (
@@ -17,7 +17,7 @@ CREATE TABLE `dm_tag` (
 
 -- 通用标签标记表
 -- @since 2016-05-13
--- hostker 未同步
+-- hostker 已同步
 -- Office localhost 未同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tagged` (
@@ -37,7 +37,7 @@ CREATE TABLE `dm_tagged` (
 
 -- 通用标签关系表
 -- @since 2016-05-13
--- hostker 未同步
+-- hostker 已同步
 -- Office localhost 未同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tag_relate` (
