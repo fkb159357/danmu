@@ -1,7 +1,7 @@
 -- 通用标签表
 -- @since 2016-05-13
--- conoha 未同步
--- Office localhost 未同步
+-- hostker 已同步
+-- Office localhost 已同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tag` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -15,8 +15,8 @@ CREATE TABLE `dm_tag` (
 
 -- 通用标签标记表
 -- @since 2016-05-13
--- conoha 未同步
--- Office localhost 未同步
+-- hostker 已同步
+-- Office localhost 已同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tagged` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -33,8 +33,8 @@ CREATE TABLE `dm_tagged` (
 
 -- 通用标签关系表
 -- @since 2016-05-13
--- conoha 未同步
--- Office localhost 未同步
+-- hostker 已同步
+-- Office localhost 已同步
 -- HP localhost 已同步
 CREATE TABLE `dm_tag_relate` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
