@@ -38,7 +38,7 @@ class Tagged extends DIEntity {
     
     
     /**
-     * 根据标签挖掘的相关标签获取目标数据
+     * 仅根据标签表的tag与pure_tag关系，尽可能多地挖掘相关标签，以获取目标数据
      * @param array $tags 输入用于挖掘的标签集合
      * @param string $mode 对挖掘到的相关标签，选择并集或交集的条件查询模式
      * @return array 返回目标数据的ID集合
