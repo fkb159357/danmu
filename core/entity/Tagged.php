@@ -52,7 +52,7 @@ class Tagged extends DIEntity {
         $tagIds = Tag::digRelateTagIds($tags);
         //根据tag_relate表数据，更深挖掘其他tagId集合
         if ($useRelate) {
-            $moreTagIds = TagRelate::digRelateTagIds($tagIds, $relation);
+            $moreTagIds = TagRelate::digDeepRelateTagIds($tagIds, $relation);
             $tagIds = array_unique(array_merge($tagIds, $moreTagIds));
         }
         //拼接条件

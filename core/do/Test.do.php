@@ -441,11 +441,11 @@ class TestDo extends DIDo{
 	    dump($list);
 	    die;
 	    //通过dm_tag_ralte表获取更多关联的tag_id
-	    $r = TagRelate::digRelateTagIds(array(2, 5), 'all');
+	    $r = TagRelate::digDeepRelateTagIds(array(2, 5), 'all');
 	    dump($r);
-	    $r = TagRelate::digRelateTagIds(array(2, 5), 1);
+	    $r = TagRelate::digDeepRelateTagIds(array(2, 5), 1);
 	    dump($r);
-	    $r = TagRelate::digRelateTagIds(array(2, 5), 0);
+	    $r = TagRelate::digDeepRelateTagIds(array(2, 5), 0);
 	    dump($r);
 	    die;
 	    //通过tag与pure_tag关系，顺藤摸瓜挖掘相关标签

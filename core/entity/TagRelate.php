@@ -14,7 +14,10 @@ class TagRelate extends DIEntity {
      *      当relation为数组时，将拼接IN查询
      * @return array
      */
-    static function digRelateTagIds(array $tagIds, $relation = 'all') {
+    static function digDeepRelateTagIds(array $tagIds, $relation = 'all') {
+        if (empty($tagIds)) {
+            return array();
+        }
         $sqlConds = array();
         //拼接relation条件
         $relationSql = " AND 1=1 ";
