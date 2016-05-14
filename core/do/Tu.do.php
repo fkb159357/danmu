@@ -51,7 +51,8 @@ class TuDo extends DIDo {
         if (! $tuId) putjson(-1, null, 'param err');
         import('libutil/xsshtml');
         xssFilter($tags);
-        $newTags = TuTag::setTags($tuId, $tags);
+        //$newTags = TuTag::setTags($tuId, $tags);
+        $newTags = Tagged::setTags('tu', $tuId, $tags);
         putjson(0, compact('newTags'));
     }
     
@@ -71,10 +72,16 @@ class TuDo extends DIDo {
         	$tu = $tuObj->find(compact('id'));
         	@die("<img src='{$tu->url}' width='50%'>");
         } else {
-            $sql = "SELECT t.id tuId, t.filename, t.url
+            $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tag), 'union', true, 'all');
+            $list = array();
+            foreach ($tuIds as $id) {
+                $list[] = supertable('Tu')->find(compact('id'), 'id tuId, filename, url');
+            }
+            $this->list = $list;
+            /* $sql = "SELECT t.id tuId, t.filename, t.url
                     FROM {$tuObj->table} t, {$tuTagObj->table} tt 
                     WHERE t.id = tt.tu_id AND `tag` IN (:taglist)";
-            $this->list = $tuObj->query($sql, array('taglist' => "{$tag}"));
+            $this->list = $tuObj->query($sql, array('taglist' => "{$tag}")); */
             @$this->stpl('tu-getlist');
         }
     }
@@ -85,7 +92,7 @@ class TuDo extends DIDo {
     
     
     
-    //@TODO 处理标签数据，转移到dm_tag, dm_tagged
+    //@TODO 处理标签数据，从dm_tu_tag转移到dm_tag, dm_tagged
     function dealTagData(){
         //插入tag表(tag+raw_tag字段要唯一)
         $list = supertable('TuTag')->query('select distinct `tag` from dm_tu_tag');
