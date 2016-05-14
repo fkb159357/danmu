@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `dm_tag_relate` (
   `tag_id` bigint(20) NOT NULL COMMENT '标签ID',
   `reltag_id` varchar(32) NOT NULL COMMENT '关联标签ID',
   `relation` tinyint(4) NOT NULL DEFAULT '0' COMMENT '关联关系：0-相似关系；1-父到子关系',
-  `settime` int(11) NOT NULL,
+  `settime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `setuid` bigint(20) NOT NULL DEFAULT '0' COMMENT '设置者：0为系统自动关联',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniqrel` (`tag_id`,`reltag_id`) USING BTREE,
