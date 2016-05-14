@@ -1,6 +1,9 @@
 <?php
 class TuTag extends DIEntity {
     
+    /*
+     * 即将作废
+    */
     static protected function _saveNew($tuId, $tag){
         $tt = array(
         	'tu_id' => $tuId,
@@ -17,6 +20,9 @@ class TuTag extends DIEntity {
     }
     
     //返回新设置的标签
+    /*
+     * 即将作废
+    */
     static function setTags($tuId, $tags){
         $results = array();
         $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
