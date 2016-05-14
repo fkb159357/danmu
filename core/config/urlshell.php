@@ -103,6 +103,7 @@ class DIUrlShell {
             'alia' => 'test/alias',
             'fm' => 'fm/start',
             'tu' => 'tu/start',
+            'toup' => 'tu/toup',
             '<X>/list' => '<X>/getlist',
         );
     }
