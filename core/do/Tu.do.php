@@ -124,10 +124,10 @@ class TuDo extends DIDo {
                         'tab_id' => $v->tu_id,
                         'tab_name' => 'tu',
                     );
+                    try {
+                        supertable('Tagged')->insert($data);
+                    } catch (Exception $e) {}
                 }
-                try {
-                    supertable('Tagged')->insert($data);
-                } catch (Exception $e) {}
             }
         }
         //打标签时，改为保存到tagged的方式
