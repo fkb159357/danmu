@@ -38,15 +38,23 @@ class Tagged extends DIEntity {
     
     
     /**
-     * 仅根据标签表的tag与pure_tag关系，尽可能多地挖掘相关标签，以获取目标数据
+     * 仅根据标签表的tag与pure_tag对应性，尽可能多地挖掘相关标签，以获取目标数据
+     * @param string $tab_name 被关联的表名（一般不记前缀），如图片表dm_tu用“tu”
      * @param array $tags 输入用于挖掘的标签集合
      * @param string $mode 对挖掘到的相关标签，选择并集或交集的条件查询模式
+     * @param bool $useRelate 是否使用标签关系表的数据来挖掘
+     * @param int|string|array<int> $relation 关系类型，当$useRelate=true时，该参数有效。详见：TagRalate::digRelateTagIds()
      * @return array 返回目标数据的ID集合
      */
-    static function digTabIdsByTags($tab_name, array $tags, $mode = 'union'){
+    static function digTabIdsByTags($tab_name, array $tags, $mode = 'union', $useRelate = true, $relation = 'all'){
         $taggedObj = supertable('Tagged');
-        //根据tag字符串，尽可能多得找到有关的tagId集合
+        //根据tag字符串，找到有关的tagId集合
         $tagIds = Tag::digRelateTagIds($tags);
+        //根据tag_relate表数据，更深挖掘其他tagId集合
+        if ($useRelate) {
+            $moreTagIds = TagRelate::digRelateTagIds($tagIds, $relation);
+            $tagIds = array_unique(array_merge($tagIds, $moreTagIds));
+        }
         //拼接条件
         $tagIdsLen = count($tagIds);
         if (0 == $tagIdsLen) return array();
@@ -68,10 +76,9 @@ class Tagged extends DIEntity {
                 GROUP BY tgd.tab_id $havingSql";
         $list = $taggedObj->query($sql, $idsConds);
         //组合结果
-        $tuIds = array();
-        foreach ($list as $v) $tuIds[] = $v->tab_id;
-        return $tuIds;
+        $tabIds = array();
+        foreach ($list as $v) $tabIds[] = $v->tab_id;
+        return $tabIds;
     }
-    
     
 }
