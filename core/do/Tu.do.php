@@ -84,9 +84,47 @@ class TuDo extends DIDo {
     }
     
     
-    //@TODO 处理标签数据，将tu_tag表改为tag_id跟tu_id的对应，减少资源消耗
+    
+    //@TODO 处理标签数据，转移到dm_tag, dm_tagged
     function dealTagData(){
-        
+        //插入tag表(tag+raw_tag字段要唯一)
+        $list = supertable('TuTag')->query('select distinct `tag` from dm_tu_tag');
+        foreach ($list as $v) {
+            $data = array(
+            	'tag' => $v->tag,
+                'pure_tag' => Tag::getPureTag($v->tag),
+            );
+            try {
+                supertable('Tag')->insert($data);
+            } catch (Exception $e) {}
+        }
+        //作tag表MAP，tag=>[id1,id2]
+        $tagMap = array();
+        $pureTagMap = array();
+        $list = supertable('Tag')->select();
+        foreach ($list as $v) {
+            $tagMap[$v->tag][] = $v->id;
+            $pureTagMap[$v->pure_tag][] = $v->id;
+        }
+        //插入tagged表
+        $list = supertable('TuTag')->select();
+        foreach ($list as $v) {
+            foreach (array('tagMap', 'pureTagMap') as $mapName) {
+                $tagIdList = ${$mapName}[$v->tag];
+                foreach (${$mapName}[$v->tag] as $vTagId) {
+                    $data = array(
+                        'tag_id' => $vTagId,
+                        'tab_id' => $v->tu_id,
+                        'tab_name' => 'tu',
+                    );
+                }
+                try {
+                    supertable('Tagged')->insert($data);
+                } catch (Exception $e) {}
+            }
+        }
+        //打标签时，改为保存到tagged的方式
+        //通过表情获取图时，改为tagged获取的方式
     }
     
 }
