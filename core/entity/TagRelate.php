@@ -1,4 +1,7 @@
 <?php
+/**
+ * 标签多样化关系
+ */
 class TagRelate extends DIEntity {
     
     /**
