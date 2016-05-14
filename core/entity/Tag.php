@@ -34,7 +34,7 @@ class Tag extends DIEntity {
     
     
     /**
-     * 根据tag集合，尽可能多得找到有关的tagId集合
+     * 根据tag集合，尽可能多得找到本表内有关的tagId集合
      */
     static function digRelateTagIds(array $tags){
         static $collect = array();//最终返回的集合值
