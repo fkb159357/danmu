@@ -429,4 +429,12 @@ class TestDo extends DIDo{
 	    ApiMergeTest::test7();//1 ~ 7
 	}
 	
+	function hehe(){
+	    //INSERT INTO `dm_tag` VALUES (1, 'b', 'b'); INSERT INTO `dm_tag` VALUES (2, 'c', 'c'); INSERT INTO `dm_tag` VALUES (3, 'd', 'd'); INSERT INTO `dm_tag` VALUES (4, 'e', 'e'); INSERT INTO `dm_tag` VALUES (5, 'f', 'f'); INSERT INTO `dm_tag` VALUES (6, 'g', 'g'); INSERT INTO `dm_tag` VALUES (7, 'shabi', 'shabi'); INSERT INTO `dm_tag` VALUES (8, 'shabi1', 'shabi1'); INSERT INTO `dm_tag` VALUES (304, '卧槽1', '卧槽1'); INSERT INTO `dm_tag` VALUES (319, '卧槽1', '尼、玛'); INSERT INTO `dm_tag` VALUES (313, '卧槽111', '卧槽111'); INSERT INTO `dm_tag` VALUES (314, '卧槽1111', '卧槽1111'); INSERT INTO `dm_tag` VALUES (306, '卧槽2', '卧槽2'); INSERT INTO `dm_tag` VALUES (308, '卧槽3', '卧槽3'); INSERT INTO `dm_tag` VALUES (311, '卧槽4', '卧槽4'); INSERT INTO `dm_tag` VALUES (312, '卧槽5', '卧槽5'); INSERT INTO `dm_tag` VALUES (307, '卧槽6', '卧槽6'); INSERT INTO `dm_tag` VALUES (324, '垃圾', '垃圾食品'); INSERT INTO `dm_tag` VALUES (322, '垃圾食品', '麦当劳'); INSERT INTO `dm_tag` VALUES (315, '尼、玛', '尼玛'); INSERT INTO `dm_tag` VALUES (318, '尼玛', 'shabi'); INSERT INTO `dm_tag` VALUES (9, '打小学生', '打小学生'); INSERT INTO `dm_tag` VALUES (317, '王八蛋尼玛', '王尼玛'); INSERT INTO `dm_tag` VALUES (316, '王尼玛', '尼玛'); INSERT INTO `dm_tag` VALUES (323, '肯德基', '垃圾'); INSERT INTO `dm_tag` VALUES (320, '肯德基', '肯打鸡'); INSERT INTO `dm_tag` VALUES (10, '肯打鸡', '肯打鸡'); INSERT INTO `dm_tag` VALUES (321, '麦当劳', '肯德基'); 
+	    $r = Tag::digRelateTagIds(array('shabi'));
+	    dump($r);
+	    $r = Tag::digRelateTagIds(array('垃圾'));
+	    dump($r);
+	}
+	
 }
