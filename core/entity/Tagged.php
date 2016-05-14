@@ -1,4 +1,7 @@
 <?php
+/**
+ * 适用业务：通用标签标记与查找
+ */
 class Tagged extends DIEntity {
     
     static protected function _saveNew($tabName, $tabId, $tag){
