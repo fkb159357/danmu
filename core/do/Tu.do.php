@@ -10,6 +10,7 @@ class TuDo extends DIDo {
     
     //上传视图
     function toup($tuId = 0){
+        die('系统升级中。。');
         //$this->stpl();
         echo '<html><head>';
         echo '<meta property="qc:admins" content="330620745651356537" />';
@@ -124,9 +125,12 @@ class TuDo extends DIDo {
                         'tab_id' => $v->tu_id,
                         'tab_name' => 'tu',
                     );
+                    //dump($data);
                     try {
                         supertable('Tagged')->insert($data);
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                    	var_dump($e);echo"<br>";
+                    }
                 }
             }
         }
