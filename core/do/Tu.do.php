@@ -92,8 +92,59 @@ class TuDo extends DIDo {
     }
     
     
+    //迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
+    function importTuTag2tag(){
+        //插入tag表(tag+raw_tag字段要唯一)
+        $list = supertable('TuTag')->query('select distinct `tag` from dm_tu_tag');
+        foreach ($list as $v) {
+            $data = array(
+                'tag' => $v->tag,
+                'pure_tag' => Tag::getPureTag($v->tag),
+            );
+            try {
+                supertable('Tag')->insert($data);
+            } catch (Exception $e) {}
+        }
+    }
     
-    //@TODO 处理标签数据，从dm_tu_tag转移到dm_tag, dm_tagged
+    
+    //迁移处理2：从tutag导入数据到tagged【此步骤可能会报too many connection错误】
+    function importTuTag2tagged(){
+        //作tag表MAP，tag=>[id1,id2]
+        $tagMap = array();
+        $pureTagMap = array();
+        $list = supertable('Tag')->select();
+        foreach ($list as $v) {
+            $tagMap[$v->tag][] = $v->id;
+            $pureTagMap[$v->pure_tag][] = $v->id;
+        }
+        //分段取TuTag源
+        $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
+        $list = supertable('TuTag')->select(array(), '', null, array($page, 10, 10));
+        $pager = supertable('TuTag')->pager($page, 50, 10, supertable('TuTag')->count(array()));
+        $page = ($page >= $pager['total_page']) ? 1 : ($page + 1); 
+        session(__CLASS__.__FUNCTION__.'page', $page);
+        //插入tagged表
+        foreach ($list as $v) {
+            foreach (array('tagMap', 'pureTagMap') as $mapName) {
+                $tagIdList = ${$mapName}[$v->tag];
+                foreach (${$mapName}[$v->tag] as $vTagId) {
+                    $data = array(
+                        'tag_id' => $vTagId,
+                        'tab_id' => $v->tu_id,
+                        'tab_name' => 'tu',
+                    );
+                    $find = supertable('Tagged')->find($data);
+                    if (! empty($find)) {
+                        supertable('Tagged')->insert($data);
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    //【即将作废】处理标签数据，从dm_tu_tag转移到dm_tag, dm_tagged
     function dealTagData(){
         //插入tag表(tag+raw_tag字段要唯一)
         $list = supertable('TuTag')->query('select distinct `tag` from dm_tu_tag');
@@ -116,6 +167,7 @@ class TuDo extends DIDo {
         }
         //插入tagged表
         $list = supertable('TuTag')->select();
+die;//至此处没问题，后面代码会造成连接数过多的问题
         foreach ($list as $v) {
             foreach (array('tagMap', 'pureTagMap') as $mapName) {
                 $tagIdList = ${$mapName}[$v->tag];
@@ -125,7 +177,7 @@ class TuDo extends DIDo {
                         'tab_id' => $v->tu_id,
                         'tab_name' => 'tu',
                     );
-                    //dump($data);
+                    dump($data);
                     try {
                         supertable('Tagged')->insert($data);
                     } catch (Exception $e) {
