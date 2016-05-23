@@ -101,9 +101,10 @@ class TuDo extends DIDo {
                 'tag' => $v->tag,
                 'pure_tag' => Tag::getPureTag($v->tag),
             );
-            try {
+            $find = supertable('Tag')->find($data);
+            if (empty($find)) {
                 supertable('Tag')->insert($data);
-            } catch (Exception $e) {}
+            }
         }
     }
     
@@ -121,7 +122,7 @@ class TuDo extends DIDo {
         //分段取TuTag源
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
         $list = supertable('TuTag')->select(array(), '', null, array($page, 10, 10));
-        $pager = supertable('TuTag')->pager($page, 50, 10, supertable('TuTag')->count(array()));
+        $pager = supertable('TuTag')->pager($page, 10, 10, supertable('TuTag')->count(array()));
         $page = ($page >= $pager['total_page']) ? 1 : ($page + 1); 
         session(__CLASS__.__FUNCTION__.'page', $page);
         //插入tagged表
@@ -135,7 +136,7 @@ class TuDo extends DIDo {
                         'tab_name' => 'tu',
                     );
                     $find = supertable('Tagged')->find($data);
-                    if (! empty($find)) {
+                    if (empty($find)) {
                         supertable('Tagged')->insert($data);
                     }
                 }
