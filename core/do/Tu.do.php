@@ -123,9 +123,9 @@ class TuDo extends DIDo {
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
         $list = supertable('TuTag')->select(array(), '', null, array($page, 10, 10));
         $pager = supertable('TuTag')->pager($page, 10, 10, supertable('TuTag')->count(array()));
+        echo "当前进度页码：{$page} / {$pager['total_page']} <br>";
         $page = ($page >= $pager['total_page']) ? 1 : ($page + 1); 
         session(__CLASS__.__FUNCTION__.'page', $page);
-        echo "当前进度页码：{$page} / {$pager['total_page']} <br>";
         //插入tagged表
         foreach ($list as $v) {
             foreach (array('tagMap', 'pureTagMap') as $mapName) {
