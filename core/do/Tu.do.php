@@ -95,7 +95,7 @@ class TuDo extends DIDo {
     //迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
     function importTuTag2tag(){
         //插入tag表(tag+raw_tag字段要唯一)
-        $list = supertable('TuTag')->query('select distinct `tag` from dm_tu_tag');
+        $list = supertable('TuTag')->query('SELECT `tag` FROM dm_tu_tag GROUP BY `tag`');
         foreach ($list as $v) {
             $data = array(
                 'tag' => $v->tag,
