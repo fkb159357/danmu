@@ -10,7 +10,6 @@ class TuDo extends DIDo {
     
     //上传视图
     function toup($tuId = 0){
-        die('系统升级中。。');
         //$this->stpl();
         echo '<html><head>';
         echo '<meta property="qc:admins" content="330620745651356537" />';
