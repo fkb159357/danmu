@@ -92,7 +92,6 @@ class TuDo extends DIDo {
     
     
     //迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
-    //MYSQL下执行：Set Global max_connections=5000，防止报too many connection
     function importTuTag2tag(){
         //插入tag表(tag+raw_tag字段要唯一)
         $list = supertable('TuTag')->query('SELECT `tag` FROM dm_tu_tag GROUP BY `tag`');
@@ -110,7 +109,6 @@ class TuDo extends DIDo {
     
     
     //迁移处理2：从tutag导入数据到tagged【此步骤需要分多次请求】
-    //MYSQL下执行：Set Global max_connections=5000，防止报too many connection
     function importTuTag2tagged(){
         //作tag表MAP，tag=>[id1,id2]
         $tagMap = array();
@@ -121,7 +119,7 @@ class TuDo extends DIDo {
             $pureTagMap[$v->pure_tag][] = $v->id;
         }
         //分段取TuTag源
-        $limit = 20;
+        $limit = 500;
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
         $list = supertable('TuTag')->select(array(), '', null, array($page, $limit, 10));
         $pager = supertable('TuTag')->pager($page, $limit, 10, supertable('TuTag')->count(array()));
@@ -131,6 +129,7 @@ class TuDo extends DIDo {
         //插入tagged表
         foreach ($list as $v) {
             foreach (array('tagMap', 'pureTagMap') as $mapName) {
+                if (! isset(${$mapName}[$v->tag])) continue;
                 $tagIdList = ${$mapName}[$v->tag];
                 foreach (${$mapName}[$v->tag] as $vTagId) {
                     $data = array(
