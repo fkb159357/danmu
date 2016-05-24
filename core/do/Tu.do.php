@@ -121,9 +121,10 @@ class TuDo extends DIDo {
             $pureTagMap[$v->pure_tag][] = $v->id;
         }
         //分段取TuTag源
+        $limit = 20;
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
-        $list = supertable('TuTag')->select(array(), '', null, array($page, 10, 10));
-        $pager = supertable('TuTag')->pager($page, 10, 10, supertable('TuTag')->count(array()));
+        $list = supertable('TuTag')->select(array(), '', null, array($page, $limit, 10));
+        $pager = supertable('TuTag')->pager($page, $limit, 10, supertable('TuTag')->count(array()));
         echo "当前进度页码：{$page} / {$pager['total_page']} <br>";
         $page = ($page >= $pager['total_page']) ? 1 : ($page + 1); 
         session(__CLASS__.__FUNCTION__.'page', $page);
