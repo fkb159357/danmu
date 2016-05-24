@@ -109,7 +109,7 @@ class TuDo extends DIDo {
     }
     
     
-    //迁移处理2：从tutag导入数据到tagged【此步骤可能会报too many connection错误】
+    //迁移处理2：从tutag导入数据到tagged【此步骤需要分多次请求】
     function importTuTag2tagged(){
         //作tag表MAP，tag=>[id1,id2]
         $tagMap = array();
