@@ -93,8 +93,13 @@ class TuDo extends DIDo {
     
     //迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
     function importTuTag2tag(){
+        $start = session(__CLASS__.__FUNCTION__.'start') ?: 1;
+        $limit = 50;
+        $list = supertable('TuTag')->query("SELECT `tag` FROM dm_tu_tag GROUP BY `tag` LIMIT {$start}, {$limit}") ?: array();
+        $start = empty($list) ? 1 : ($start + $limit);
+        echo "当前进度：{$start}<br>";
+        session(__CLASS__.__FUNCTION__.'start', $start);
         //插入tag表(tag+raw_tag字段要唯一)
-        $list = supertable('TuTag')->query('SELECT `tag` FROM dm_tu_tag GROUP BY `tag`');
         foreach ($list as $v) {
             $data = array(
                 'tag' => $v->tag,
@@ -119,7 +124,7 @@ class TuDo extends DIDo {
             $pureTagMap[$v->pure_tag][] = $v->id;
         }
         //分段取TuTag源
-        $limit = 500;
+        $limit = 150;
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
         $list = supertable('TuTag')->select(array(), '', null, array($page, $limit, 10));
         $pager = supertable('TuTag')->pager($page, $limit, 10, supertable('TuTag')->count(array()));
