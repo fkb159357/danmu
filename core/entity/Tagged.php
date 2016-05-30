@@ -38,7 +38,7 @@ class Tagged extends DIEntity {
     
     
     /**
-     * 仅根据标签表的tag与pure_tag对应性，尽可能多地挖掘相关标签，以获取目标数据
+     * 根据tag和tag_relate表，尽可能多地挖掘相关标签，以获取目标数据
      * @param string $tab_name 被关联的表名（一般不记前缀），如图片表dm_tu用“tu”
      * @param array $tags 输入用于挖掘的标签集合
      * @param string $mode 对挖掘到的相关标签，选择并集或交集的条件查询模式
