@@ -188,7 +188,7 @@ class ImgUploadClient extends ImgUpload {
     
     function __construct($imgGroupDir = '', $uploadHost = ''){
         @$this->_imgGroupDir = $imgGroupDir ?: $GLOBALS['imgUploadSetup']['imgGroupDir'] ?: 'default/';
-        @$this->_uploadHost = $uploadHost ?: $GLOBALS['api']['imgUploadHost'] ?: 'http://res.miku.us/cbupl/upimg.php';
+        @$this->_uploadHost = $uploadHost ?: $GLOBALS['api']['imgUploadHost'] ?: 'http://up.res.miku.us/cbupl/upimg.php';//使用A记录对应up子域名，同res.miku.us共享WEB目录
     }
     
     protected function _postFile($url, $post = array(), $timeout = 59){
