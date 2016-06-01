@@ -13,7 +13,7 @@ class TuDo extends DIDo {
         //$this->stpl();
         echo '<html><head>';
         echo '<meta property="qc:admins" content="330620745651356537" />';
-        echo '<style type="text/css">input[type=text]{width:600px;} .inputTitle{width:80px;display:inline-block;text-align:right;}</style>';
+        echo '<style type="text/css">input[type=text]{width:600px;} #allTags{width:600px;display:inline-block;} .inputTitle{width:80px;display:inline-block;text-align:right;}</style>';
         echo '<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>';
         echo '<script>function toLogin(){ var A=window.open("/oauthqq/login", "TencentLogin", "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"); }</script>';
         echo '</head><body>';
@@ -21,6 +21,7 @@ class TuDo extends DIDo {
         echo '<form method="post" action="./?tu/up/'.intval($tuId).'" target="hehe" enctype="multipart/form-data"><input type="file" name="tu"><input type="submit" value="上传"></form><iframe name="hehe" width="960" height="480"></iframe>';
         echo '<div><span class="inputTitle">UBB代码：</span><input id="ubb" type="text"><br><span class="inputTitle">HTML代码：</span><input id="html" type="text"><br><span class="inputTitle">URL：</span><input id="src" type="text"></div>';
         echo '<div><span class="inputTitle">打标签：</span><input id="tags" type="text"><input id="setTags" type="button" value="打上"></div>';
+        echo '<div><span class="inputTitle"></span><div id="allTags"></div></div>';
         $s = 'var src = (window.hehe.document.body.innerText.match(/\[url\]\s*\=\>\s*(http\:\/\/.+)\s*\[\w+\]/) || [,""])[1];';
         $s .= 'var ubbVal = "[img]" + src + "[/img]"; if($("#ubb").val()!=ubbVal) if(!src) $("#ubb").val("获取中.."); else $("#ubb").val(ubbVal);';
         $s .= 'var htmlVal = "<img src=\'" + src + "\'>"; if($("#html").val()!=htmlVal) if(!src) $("#html").val("获取中.."); else $("#html").val(htmlVal);';
@@ -28,6 +29,8 @@ class TuDo extends DIDo {
         echo "<script>$('form').submit(function(){ window.hehe.document.body.innerHTML=''; $('#ubb,#html,#src').each(function(i,e){e.value='获取中..';}); {$s} setInterval(function(){ {$s} }, 500); });</script>";
         echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
         echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
+        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data, function(i, tag){ $("#allTags").append("<button class=\'allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
+        echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
         echo '</body>';
     }
     
@@ -54,6 +57,18 @@ class TuDo extends DIDo {
         //$newTags = TuTag::setTags($tuId, $tags);
         $newTags = Tagged::setTags('tu', $tuId, $tags);
         putjson(0, compact('newTags'));
+    }
+    
+    //获取所有标签
+    function getAllTags($page = 1, $limit = 0){
+        $limitArr = (0 === $limit) ? null : array(max($page,1), $limit, 10);
+        $list = supertable('Tag')->select(array(), 'tag, pure_tag', null, $limitArr);
+        $tags = array();
+        foreach ($list as $v) {
+            if (! in_array($v->tag, $tags)) $tags[] = $v->tag;
+            if (! in_array($v->pure_tag, $tags)) $tags[] = $v->pure_tag;
+        }
+        putjson(0, $tags);
     }
     
     function getList($p = 1, $limit = 10, $scope = 10){
