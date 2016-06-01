@@ -191,12 +191,12 @@ class ImgUploadClient extends ImgUpload {
         @$this->_uploadHost = $uploadHost ?: $GLOBALS['api']['imgUploadHost'] ?: 'http://res.miku.us/cbupl/upimg.php';
     }
     
-    protected function _postFile($url, $post = array()){
+    protected function _postFile($url, $post = array(), $timeout = 59){
         $c = curl_init();
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($c, CURLOPT_URL, $url);
         curl_setopt($c, CURLOPT_POST, true);
-        curl_setopt($c, CURLOPT_TIMEOUT, 20);
+        curl_setopt($c, CURLOPT_TIMEOUT, $timeout);
         //暂时解决5.0到5.6的上传兼容问题，详见http://www.tuicool.com/articles/Fvq6Nj
         foreach ($post as $k => $v) {
             if (preg_match('/^\@(.+);type\=([^;]+)/', $v, $matches) && class_exists('\CURLFile', false)) {
