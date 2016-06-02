@@ -5,7 +5,7 @@
 class TagRelate extends DIEntity {
     
     /**
-     * 通过dm_tag_ralte表获取更多关联的tag_id
+     * 通过dm_tag_ralte表获取更多具有特定关联的tag_id
      * @param array $tagIds 输入用于挖掘关联标签的标签ID集合
      * @param int|string|array<int> $relation 关系类型
      *      当relation='all'时，不限制关系类型；
