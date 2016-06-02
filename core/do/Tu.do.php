@@ -106,7 +106,7 @@ class TuDo extends DIDo {
     }
     
     
-    //迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
+    //【数据处理】迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
     function importTuTag2tag(){
         $start = session(__CLASS__.__FUNCTION__.'start') ?: 1;
         $limit = 50;
@@ -128,7 +128,7 @@ class TuDo extends DIDo {
     }
     
     
-    //迁移处理2：从tutag导入数据到tagged【此步骤需要分多次请求】
+    //【数据处理】迁移处理2：从tutag导入数据到tagged【此步骤需要分多次请求】
     function importTuTag2tagged(){
         //作tag表MAP，tag=>[id1,id2]
         $tagMap = array();
@@ -164,6 +164,21 @@ class TuDo extends DIDo {
                 }
             }
         }
+    }
+    
+    
+    //【需求待定，可能没必要做，改为通过输入标签，获取关联的标签】【数据处理】根据现有tagged数据，对标签关系表数据进行录入
+    function importTaggedDataToTagRelate(){
+        /* $limit = 150;
+        $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
+        $list = supertable('Tagged')->select(array(), '', null, array($page, $limit, 10));
+        $pages = supertable('Tagged')->page;
+        echo "当前进度页码：{$page} / {$pages['total_page']} <br>";
+        $page = ($page >= $pages['total_page']) ? 1 : ($page + 1);
+        session(__CLASS__.__FUNCTION__.'page', $page);
+        foreach ($list as $v) {
+            
+        } */
     }
     
 }
