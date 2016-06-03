@@ -13,7 +13,11 @@ class TuDo extends DIDo {
         //$this->stpl();
         echo '<html><head>';
         echo '<meta property="qc:admins" content="330620745651356537" />';
-        echo '<style type="text/css">input[type=text]{width:600px;} #allTags{width:600px;display:inline-block;} .inputTitle{width:80px;display:inline-block;text-align:right;}</style>';
+        echo '<style type="text/css">';
+        echo 'input[type=text]{width:883px;} .inputTitle{width:80px;display:inline-block;text-align:right;}';
+        echo '#allTags{width:883px;display:inline-block;}';
+        echo '.btn { display: inline-block; padding: 6px 12px; margin-top: 5px; font-size: 14px; font-weight: 400; line-height: 1.42857143; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; border-radius: 4px; }';
+        echo '</style>';
         echo '<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>';
         echo '<script>function toLogin(){ var A=window.open("/oauthqq/login", "TencentLogin", "width=450,height=320,menubar=0,scrollbars=1,resizable=1,status=1,titlebar=0,toolbar=0,location=1"); }</script>';
         echo '</head><body>';
@@ -29,7 +33,7 @@ class TuDo extends DIDo {
         echo "<script>$('form').submit(function(){ window.hehe.document.body.innerHTML=''; $('#ubb,#html,#src').each(function(i,e){e.value='获取中..';}); {$s} setInterval(function(){ {$s} }, 500); });</script>";
         echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
         echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
-        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data, function(i, tag){ $("#allTags").append("<button class=\'allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
+        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
         echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
         echo '</body>';
     }
@@ -73,25 +77,41 @@ class TuDo extends DIDo {
     
     function getList($p = 1, $limit = 10, $scope = 10){
         $tu = supertable('Tu');
-        $this->list = $tu->select('', '*, id tuId', '`id` DESC', array($p, $limit, $scope)) ?: array();
-        $this->page = $tu->page;
-        $this->limit = $limit;
-        $this->scope = $scope;
+        $p = max(1, (int)$p);
+        $this->limit = $limit = min((int)$limit, 20);
+        $this->scope = $scope = (int)$scope == 0 ? 10 : (int)$scope;
+        $tags = arg('tags');
+        if (empty($tags)) {
+            $this->elseParams = array();
+            $this->list = $tu->select('', '*, id tuId', '`id` DESC', array($p, $limit, $scope)) ?: array();
+            $this->page = $tu->page;
+        } else { //进入标签搜索模式
+            $useTagged = (bool)(arg('useTagged', false));//是否使用tagged表进行超深挖掘
+            $taggedLayer = intval(arg('taggedLayer', 0));//超深挖掘层数，当useTagged=true时有效
+            $this->elseParams = compact('tags', 'useTagged', 'taggedLayer');
+            $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all', $useTagged, $taggedLayer);
+            //分页
+            $this->page = supermodel()->pager($p, $limit, $scope, count($tuIds));
+            $tuIds = array_slice($tuIds, ($p-1)*$limit, $limit);
+            //具体数据
+            $list = array();
+            foreach ($tuIds as $id) $list[] = $tu->find(compact('id'), 'id tuId, filename, url');
+            $this->list = $list;
+        }
         $this->stpl();
     }
     
-    function get($id = 0, $tag = ''){
+    function get($id = 0, $tags = ''){
         $tuObj = supertable('Tu');
         $tuTagObj = supertable('TuTag');
         if ($id) {
         	$tu = $tuObj->find(compact('id'));
         	@die("<img src='{$tu->url}' width='50%'>");
-        } else {
-            $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tag), 'union', true, 'all');
+        } else { //支持简单、非深度挖掘
+            $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all');
+            //具体数据
             $list = array();
-            foreach ($tuIds as $id) {
-                $list[] = supertable('Tu')->find(compact('id'), 'id tuId, filename, url');
-            }
+            foreach ($tuIds as $id) $list[] = supertable('Tu')->find(compact('id'), 'id tuId, filename, url');
             $this->list = $list;
             /* $sql = "SELECT t.id tuId, t.filename, t.url
                     FROM {$tuObj->table} t, {$tuTagObj->table} tt 
@@ -100,6 +120,7 @@ class TuDo extends DIDo {
             @$this->stpl('tu-getlist');
         }
     }
+    
     
     function del(){
         

@@ -36,7 +36,7 @@ class Tag extends DIEntity {
     /**
      * 根据tag集合，尽可能多得找到本表内有关的tagId集合
      */
-    static function digRelateTagIds(array $tags){
+    static function digTagIdsInSitu(array $tags){
         static $collect = array();//最终返回的集合值
         static $tagsArgHistory = array();//已用的tag参数，防止递归时重复传入
         $trace = debug_backtrace();
@@ -61,7 +61,7 @@ class Tag extends DIEntity {
         }
         if (! empty($nextTagsArg)) {
             //试图顺藤摸瓜
-            self::digRelateTagIds(array_unique($nextTagsArg));
+            self::digTagIdsInSitu(array_unique($nextTagsArg));
         }
         return $collect;
     }

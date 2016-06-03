@@ -38,31 +38,78 @@ class Tagged extends DIEntity {
     
     
     /**
+     * 根据tagged的标签与数据对应关系，挖掘潜在的tag_id
+     * @param string $tabName 表名
+     * @param array $tagIds 用于输入搜索的tag_id集合
+     * @param int $maxLayerNum 最大挖掘层数，设置为0则挖掘全部
+     */
+    static function digTaggedTagIds($tabName, array $tagIds, $maxLayerNum = 0){
+        static $layer = 1;//挖掘层数
+        static $collect = array();//最终返回的集合值
+        static $tagIdsArgHistory = array();//已用的tag_id参数，防止递归时重复传入
+        $trace = debug_backtrace();
+        if (0 != strcasecmp(__FUNCTION__, @$trace[1]['function'])) {
+            $collect = $tagIdsArgHistory = array();//非递归模式，清空静态存储
+        }
+        $tagIdsArgHistory = array_merge($tagIdsArgHistory, $tagIds);
+        $nextTagIdsArg = array();//递归调用的tagIds参数
+        $taggedObj = supertable('Tagged');
+        foreach ($tagIds as $tagId) {
+            $dataIdlist = $taggedObj->select(array('tag_id' => $tagId, 'tab_name' => $tabName), 'tab_id');
+            foreach ($dataIdlist as $vData) {
+                $tagIdList = $taggedObj->select(array('tab_id' => $vData->tab_id, 'tab_name' => $tabName), 'tag_id');
+                foreach ($tagIdList as $vTag) {
+                    $currTagId = (int) $vTag->tag_id;
+                    if (! in_array($currTagId, $collect)) {
+                        $collect[] = $currTagId;
+                        if (! in_array($currTagId, $tagIdsArgHistory)) {
+                            $nextTagIdsArg[] = $currTagId;
+                        }
+                    }
+                }
+            }
+        }
+        if (! empty($nextTagIdsArg) && (0 == $maxLayerNum || $layer < $maxLayerNum)) {
+            $layer ++;
+            self::digTaggedTagIds($tabName, array_unique($nextTagIdsArg), $maxLayerNum);
+        }
+        sort($collect);
+        return $collect;
+    }
+    
+    
+    /**
      * 根据tag和tag_relate表，尽可能多地挖掘相关标签，以获取目标数据
-     * @param string $tab_name 被关联的表名（一般不记前缀），如图片表dm_tu用“tu”
+     * @param string $tabName 被关联的表名（一般不记前缀），如图片表dm_tu用“tu”
      * @param array $tags 输入用于挖掘的标签集合
      * @param string $mode 对挖掘到的相关标签，选择并集或交集的条件查询模式
      * @param bool $useRelate 是否使用标签关系表的数据来挖掘
-     * @param int|string|array<int> $relation 关系类型，当$useRelate=true时，该参数有效。详见：TagRalate::digRelateTagIds()
+     * @param int|string|array<int> $relation 关系类型，当$useRelate=true时，该参数有效。详见：TagRalate::digDeepRelateTagIds()
+     * @param bool $useTaggedData 是否使用tagged表的数据来挖掘超深关联的标签（一般不启用，容易获取到无关的数据）
+     * @param int $maxLayerNum 最大挖掘层数，设置为0则挖掘全部（仅在$useTaggedData=true时有效）
      * @return array 返回目标数据的ID集合
      */
-    static function digTabIdsByTags($tab_name, array $tags, $mode = 'union', $useRelate = true, $relation = 'all'){
+    static function digTabIdsByTags($tabName, array $tags, $mode = 'union', $useRelate = true, $relation = 'all', $useTaggedData = false, $maxLayerNum = 0){
         $taggedObj = supertable('Tagged');
         //根据tag字符串，找到有关的tagId集合
-        $tagIds = Tag::digRelateTagIds($tags);
-        //根据tag_relate表数据，更深挖掘其他tagId集合
+        $tagIds = Tag::digTagIdsInSitu($tags);
+        //根据tagged + tag_relate表数据，更深挖掘其他tagId集合
         if ($useRelate) {
             $moreTagIds = TagRelate::digDeepRelateTagIds($tagIds, $relation);
+            $tagIds = array_unique(array_merge($tagIds, $moreTagIds));
+        }
+        if ($useTaggedData) {
+            $moreTagIds = self::digTaggedTagIds($tabName, $tagIds, $maxLayerNum);
             $tagIds = array_unique(array_merge($tagIds, $moreTagIds));
         }
         //拼接条件
         $tagIdsLen = count($tagIds);
         if (0 == $tagIdsLen) return array();
         $sqlIdsIn = "";
-        $idsConds = array();
+        $conds = array('tabName' => $tabName);
         foreach ($tagIds as $k => $vId) {
             $sqlIdsIn .= ":tagid{$k},";
-            $idsConds["tagid{$k}"] = $vId;
+            $conds["tagid{$k}"] = $vId;
         }
         $sqlIdsIn = rtrim($sqlIdsIn, ',');
         //选择查询模式：并集 | 交集
@@ -72,9 +119,9 @@ class Tagged extends DIEntity {
         	default: $havingSql = '';
         }
         $sql = "SELECT tgd.tab_id FROM {$taggedObj->table} tgd
-                WHERE tgd.tab_name = 'tu' AND tgd.tag_id IN ({$sqlIdsIn})
+                WHERE tgd.tab_name = :tabName AND tgd.tag_id IN ({$sqlIdsIn})
                 GROUP BY tgd.tab_id $havingSql";
-        $list = $taggedObj->query($sql, $idsConds);
+        $list = $taggedObj->query($sql, $conds);
         //组合结果
         $tabIds = array();
         foreach ($list as $v) $tabIds[] = $v->tab_id;
