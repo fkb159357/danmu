@@ -33,7 +33,7 @@ class TuDo extends DIDo {
         echo "<script>$('form').submit(function(){ window.hehe.document.body.innerHTML=''; $('#ubb,#html,#src').each(function(i,e){e.value='获取中..';}); {$s} setInterval(function(){ {$s} }, 500); });</script>";
         echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
         echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
-        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
+        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data.tags, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
         echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
         echo '</body>';
     }
@@ -72,7 +72,7 @@ class TuDo extends DIDo {
             if (! in_array($v->tag, $tags)) $tags[] = $v->tag;
             if (! in_array($v->pure_tag, $tags)) $tags[] = $v->pure_tag;
         }
-        putjson(0, $tags);
+        putjson(0, compact('tags'));
     }
     
     function getList($p = 1, $limit = 10, $scope = 10){
@@ -119,6 +119,18 @@ class TuDo extends DIDo {
             $this->list = $tuObj->query($sql, array('taglist' => "{$tag}")); */
             @$this->stpl('tu-getlist');
         }
+    }
+    
+    
+    //根据数据ID，获取对应的标签集合
+    function getTagsByTabId($tabId = 0){
+        $tabId = (int) $tabId;
+        if (empty($tabId)) {
+            $tags = array();
+        } else {
+            $tags = Tagged::getTagsByTabId('tu', $tabId);
+        }
+        putjson(0, compact('tags'));
     }
     
     
