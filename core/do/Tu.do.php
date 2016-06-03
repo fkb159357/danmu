@@ -1,4 +1,14 @@
 <?php
+/**
+ * 看标签对应的图列表（含分页）
+ *      http://tu.miku.us/tu/getlist/页码/每页条数/页码长度?tags=标签
+ * 获取单张图
+ *      http://tu.miku.us/tu/get/图ID
+ * 看标签对应的图列表（不分页）
+ *      http://tu.miku.us/tu/get//标签
+ * 查图对应的标签（接口）
+ *      http://tu.miku.us/tu/getTagsByTabId/图ID
+ */
 class TuDo extends DIDo {
     
     //图首页
