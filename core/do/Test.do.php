@@ -430,6 +430,9 @@ class TestDo extends DIDo{
 	}
 	
 	function hehe(){
+	    $list = Tagged::getTagsByTabId('tu', 375);
+	    dump($list);
+	    die;
 	    //根据给定tags并集条件，获取图列表(通过tagged更深挖掘)
 	    $list = Tagged::digTabIdsByTags('tu', array('shabi'), 'union', true, 'all', true);
 	    dump($list);
