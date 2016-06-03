@@ -38,6 +38,25 @@ class Tagged extends DIEntity {
     
     
     /**
+     * 根据数据ID，获取其对应的标签
+     */
+    static function getTagsByTabId($tabName, $tabId){
+        $tagObj = supertable('Tag');
+        $taggedObj = supertable('Tagged');
+        $tagDataList = $taggedObj->select(array('tab_id' => $tabId), 'tag_id');
+        $sql = "SELECT t.tag, t.pure_tag FROM {$taggedObj->table} tgd, {$tagObj->table} t 
+                WHERE tgd.tag_id = t.id AND tgd.tab_id = :tabId AND tgd.tab_name = :tabName";
+        $tagDataList = $taggedObj->query($sql, array('tabId' => $tabId, 'tabName' => $tabName));
+        $result = array();
+        foreach ($tagDataList as $v) {
+            if (! in_array($v->tag, $result)) $result[] = $v->tag;
+            if (! in_array($v->pure_tag, $result)) $result[] = $v->pure_tag;
+        }
+        return $result;
+    }
+    
+    
+    /**
      * 根据tagged的标签与数据对应关系，挖掘潜在的tag_id
      * @param string $tabName 表名
      * @param array $tagIds 用于输入搜索的tag_id集合
