@@ -88,10 +88,10 @@
 		        $.getJSON('/?tu/getTagsByTabId/'+tuId, function(j){
 		            j.data.tags.forEach(function(tag){
 		                $(that).append('<button class="btn btn-raised" style="margin-top:5px;">' + tag + '</button>&nbsp;');
-		                $(that).children('button').click(function(){ //单击获取相关图
-		                    window.open('/?tu/getlist/1/10/10' + '&tags=' + this.innerText, '_blank');
-		                });
 		            });
+	                $(that).children('button').click(function(){ //单击获取相关图
+	                    window.open('/?tu/getlist/1/10/10' + '&tags=' + this.innerText, '_blank');
+	                });
 		        });
 		    });
 		    //点击全选URL的三种input框
