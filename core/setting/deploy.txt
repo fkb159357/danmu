@@ -1,15 +1,12 @@
 git push -u origin master
 
-需要定期更新hosts
-180.97.163.93 git.oschina.net
-
 # clone方式更新
-# 前置命令：cd /home/wwwroot; git clone https://git.oschina.net/Ltre/danmu.git; mv /home/wwwroot/www.miku.us /home/wwwroot/www.miku.us.tmp; mv /home/wwwroot/danmu /home/wwwroot/www.miku.us; mkdir /home/wwwroot/www.miku.us/core/data; mkdir /home/wwwroot/www.miku.us/core/data/cache; mkdir /home/wwwroot/www.miku.us/core/data/log
+# 前置命令：cd /home/wwwroot; git clone https://github.com/fkb159357/danmu.git; mv /home/wwwroot/www.miku.us /home/wwwroot/www.miku.us.tmp; mv /home/wwwroot/danmu /home/wwwroot/www.miku.us; mkdir /home/wwwroot/www.miku.us/core/data; mkdir /home/wwwroot/www.miku.us/core/data/cache; mkdir /home/wwwroot/www.miku.us/core/data/log
 
 mkdir /home/wwwbackup/
 cd /home/wwwroot/
 tar -cf /home/wwwbackup/www.miku.us.tar  www.miku.us/
-git clone https://git.oschina.net/Ltre/danmu.git
+git clone https://github.com/fkb159357/danmu.git
 rm -f -r danmu/core/data/
 mv www.miku.us/core/data/  danmu/core/data/
 mv www.miku.us/  www.miku.us.trash/
@@ -23,7 +20,7 @@ rm -f -r www.miku.us.trash/
 
 
 # pull方式更新
-#（前置命令：mkdir /home/wwwbackup; mkdir /home/wwwsrc; cd /home/wwwsrc; git clone https://git.oschina.net/Ltre/danmu.git ）
+#（前置命令：mkdir /home/wwwbackup; mkdir /home/wwwsrc; cd /home/wwwsrc; git clone https://github.com/fkb159357/danmu.git ）
 
 
 cd /home/wwwsrc/danmu

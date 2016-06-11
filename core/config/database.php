@@ -80,7 +80,7 @@ if (in_array($hostname, array(
     'www.yooo.moe',
 ))) {
     
-    class DIDBConfig {
+    /* class DIDBConfig {
         static $driver = 'DIMySQL';//驱动类
         static $host = 'localhost';
         static $port = 3306;
@@ -93,8 +93,8 @@ if (in_array($hostname, array(
         static $domain = 'danmu';
         static $host = 'khaki.hostker.net';
         static $port = '31511';
-    }
-    /* class DIDBConfig {
+    } */
+    class DIDBConfig {
         static $driver = 'DIMySQL';//驱动类
         static $host = '127.0.0.1';
         static $port = 3306;
@@ -107,7 +107,7 @@ if (in_array($hostname, array(
         static $domain = 'danmu';
         static $host = '127.0.0.1';
         static $port = '11211';
-    } */
+    }
 
 } else {
     
