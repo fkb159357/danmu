@@ -57,6 +57,31 @@ class Tagged extends DIEntity {
     
     
     /**
+     * 根据输入的标签，获取常见的打标签组合，方便选择
+     */
+    static function getUsuallyTagGroupsByTag($tabName, $tag = ''){
+        if (empty($tag) && !is_numeric($tag)) return array();
+        $tagObj = supertable('Tag');
+        $taggedObj = supertable('Tagged');
+        $getTabIdsql =
+            "SELECT tgd.tab_id FROM {$taggedObj->table} tgd, {$tagObj->table} t
+            WHERE tgd.tag_id = t.id AND tgd.tab_name = :tabName
+            AND (t.tag LIKE :tag OR t.pure_tag LIKE :tag)
+            GROUP BY tab_id";
+        $sql =
+            "SELECT tgd.tag_id, tgd.tab_id FROM
+            {$taggedObj->table} AS tgd, ( {$getTabIdsql} ) AS tmp_table
+            WHERE tgd.tab_id = tmp_table.tab_id AND tgd.tab_name = :tabName";
+        $tgdList = supermodel()->query($sql, array('tabName' => $tabName, 'tag' => $tag));
+        dump($tgdList);die;
+        foreach ($tgdList as $v) {
+            
+        }
+        //@todo RETURN
+    }
+    
+    
+    /**
      * 根据tagged的标签与数据对应关系，挖掘潜在的tag_id
      * @param string $tabName 表名
      * @param array $tagIds 用于输入搜索的tag_id集合

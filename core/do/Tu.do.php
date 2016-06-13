@@ -63,6 +63,7 @@ class TuDo extends DIDo {
         dump($ret);
     }
     
+    //对图打标签
     function setTags($tuId = 0, $tags = ''){
         $tuId = (int) $tuId;
         if (! $tuId) putjson(-1, null, 'param err');
@@ -85,6 +86,7 @@ class TuDo extends DIDo {
         putjson(0, compact('tags'));
     }
     
+    //通用列表
     function getList($p = 1, $limit = 10, $scope = 10){
         $tu = supertable('Tu');
         $p = max(1, (int)$p);
@@ -111,6 +113,7 @@ class TuDo extends DIDo {
         $this->stpl();
     }
     
+    //简易获取图
     function get($id = 0, $tags = ''){
         $tuObj = supertable('Tu');
         $tuTagObj = supertable('TuTag');
@@ -141,6 +144,14 @@ class TuDo extends DIDo {
             $tags = Tagged::getTagsByTabId('tu', $tabId);
         }
         putjson(0, compact('tags'));
+    }
+    
+    
+    //根据输入的标签，获取常见的打标签组合，方便选择
+    function getUsuallyTagGroupsByTag($tag = ''){
+        if ('' === $tag) putjson(-1, array(), '请指定输入标签');
+        $tags = Tagged::getUsuallyTagGroupsByTag('tu', $tag);
+        //@TODO  输出与js配合
     }
     
     
@@ -210,7 +221,7 @@ class TuDo extends DIDo {
     }
     
     
-    //【需求待定，可能没必要做，改为通过输入标签，获取关联的标签】【数据处理】根据现有tagged数据，对标签关系表数据进行录入
+    //【已确认，完全没必要做，也不能这么做，否则会造成把意义上毫无关联的数据也关联在一起】【需求待定，可能没必要做，改为通过输入标签，获取关联的标签】【数据处理】根据现有tagged数据，对标签关系表数据进行录入
     function importTaggedDataToTagRelate(){
         /* $limit = 150;
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
