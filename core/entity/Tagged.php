@@ -57,9 +57,9 @@ class Tagged extends DIEntity {
     
     
     /**
-     * 根据输入的标签，获取常见的打标签组合，方便选择
+     * 根据输入的标签，获取历史的打标签组合，及频率从高到低排序的相关标签。方便选择
      */
-    static function getUsuallyTagGroupsByTag($tabName, $tag = ''){
+    static function getGroupsAndTopTagsByTag($tabName, $tag = ''){
         if (empty($tag) && !is_numeric($tag)) return array();
         $tagObj = supertable('Tag');
         $taggedObj = supertable('Tagged');
@@ -68,16 +68,26 @@ class Tagged extends DIEntity {
             WHERE tgd.tag_id = t.id AND tgd.tab_name = :tabName
             AND (t.tag LIKE :tag OR t.pure_tag LIKE :tag)
             GROUP BY tab_id";
-        $sql =
-            "SELECT tgd.tag_id, tgd.tab_id FROM
-            {$taggedObj->table} AS tgd, ( {$getTabIdsql} ) AS tmp_table
-            WHERE tgd.tab_id = tmp_table.tab_id AND tgd.tab_name = :tabName";
-        $tgdList = supermodel()->query($sql, array('tabName' => $tabName, 'tag' => $tag));
-        dump($tgdList);die;
+        //拿TOPS
+        $topTagsSql =
+            "SELECT COUNT(tgd.tab_id) `cnt`, t.pure_tag FROM
+            {$taggedObj->table} AS tgd, ( {$getTabIdsql} ) AS tmp_table, {$tagObj->table} AS t
+            WHERE tgd.tab_id = tmp_table.tab_id AND tgd.tag_id = t.id AND tgd.tab_name = :tabName
+            GROUP BY t.pure_tag ORDER BY `cnt` DESC";
+        $topTags = supermodel()->query($topTagsSql, array('tabName' => $tabName, 'tag' => $tag)) ?: array();
+        //拿历史组合
+        $groupSql =
+            "SELECT tgd.tag_id, tgd.tab_id, t.tag, t.pure_tag FROM
+            {$taggedObj->table} AS tgd, ( {$getTabIdsql} ) AS tmp_table, {$tagObj->table} AS t
+            WHERE tgd.tab_id = tmp_table.tab_id AND tgd.tag_id = t.id AND tgd.tab_name = :tabName";
+        $tgdList = supermodel()->query($groupSql, array('tabName' => $tabName, 'tag' => $tag)) ?: array();
+        $groups = array();
         foreach ($tgdList as $v) {
-            
+            if (! isset($groups[$v->tab_id])) $groups[$v->tab_id] = array();
+            if (! in_array($v->tag, $groups[$v->tab_id])) $groups[$v->tab_id][] = $v->tag;
+            if (! in_array($v->pure_tag, $groups[$v->tab_id])) $groups[$v->tab_id][] = $v->pure_tag;
         }
-        //@todo RETURN
+        return compact('topTags', 'groups');
     }
     
     

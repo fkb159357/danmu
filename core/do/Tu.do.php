@@ -147,11 +147,11 @@ class TuDo extends DIDo {
     }
     
     
-    //根据输入的标签，获取常见的打标签组合，方便选择
-    function getUsuallyTagGroupsByTag($tag = ''){
+    //根据输入的标签，获取历史的打标签组合，及频率从高到低排序的相关标签。方便选择
+    function getGroupsAndTopTagsByTag($tag = ''){
         if ('' === $tag) putjson(-1, array(), '请指定输入标签');
-        $tags = Tagged::getUsuallyTagGroupsByTag('tu', $tag);
-        //@TODO  输出与js配合
+        $ret = Tagged::getGroupsAndTopTagsByTag('tu', $tag);
+        putjson(0, $ret);
     }
     
     
