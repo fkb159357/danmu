@@ -25,7 +25,7 @@ class TuDo extends DIDo {
         echo '<meta property="qc:admins" content="330620745651356537" />';
         echo '<style type="text/css">';
         echo 'input[type=text]{width:883px;} .inputTitle{width:80px;display:inline-block;text-align:right;}';
-        echo '#allTags{width:883px;display:inline-block;}';
+        echo '#allTags,#topTagsByLastFill,#topTagsByAllFill{width:883px;display:inline-block;}';
         echo '.btn { display: inline-block; padding: 6px 12px; margin-top: 5px; font-size: 14px; font-weight: 400; line-height: 1.42857143; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; border-radius: 4px; }';
         echo '</style>';
         echo '<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>';
@@ -35,7 +35,12 @@ class TuDo extends DIDo {
         echo '<form method="post" action="./?tu/up/'.intval($tuId).'" target="hehe" enctype="multipart/form-data"><input type="file" name="tu"><input type="submit" value="上传"></form><iframe name="hehe" width="960" height="480"></iframe>';
         echo '<div><span class="inputTitle">UBB代码：</span><input id="ubb" type="text"><br><span class="inputTitle">HTML代码：</span><input id="html" type="text"><br><span class="inputTitle">URL：</span><input id="src" type="text"></div>';
         echo '<div><span class="inputTitle">打标签：</span><input id="tags" type="text"><input id="setTags" type="button" value="打上"></div>';
-        echo '<div><span class="inputTitle"></span><div id="allTags"></div></div>';
+        echo '<hr/>';
+        echo '<div><span class="inputTitle">极近候选：</span><div id="topTagsByLastFill"></div></div>';//根据当前填入的最尾部标签，给出的候选标签
+        echo '<hr/>';
+        echo '<div><span class="inputTitle">近似候选：</span><div id="topTagsByAllFill"></div></div>';//根据当前填入的所有标签，给出的候选标签
+        echo '<hr/>';
+        echo '<div><span class="inputTitle">全部候选：</span><div id="allTags"></div></div>';//所有标签
         $s = 'var src = (window.hehe.document.body.innerText.match(/\[url\]\s*\=\>\s*(http\:\/\/.+)\s*\[\w+\]/) || [,""])[1];';
         $s .= 'var ubbVal = "[img]" + src + "[/img]"; if($("#ubb").val()!=ubbVal) if(!src) $("#ubb").val("获取中.."); else $("#ubb").val(ubbVal);';
         $s .= 'var htmlVal = "<img src=\'" + src + "\'>"; if($("#html").val()!=htmlVal) if(!src) $("#html").val("获取中.."); else $("#html").val(htmlVal);';
@@ -43,6 +48,11 @@ class TuDo extends DIDo {
         echo "<script>$('form').submit(function(){ window.hehe.document.body.innerHTML=''; $('#ubb,#html,#src').each(function(i,e){e.value='获取中..';}); {$s} setInterval(function(){ {$s} }, 500); });</script>";
         echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
         echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
+        echo '<script>$("#tags").keyup(function(){ ';
+            echo ' $("#topTagsByLastFill").html(""); var last=this.value.split(",").pop(); $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(last), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByLastFill").append("<button class=\'btn allTagsOne\'>"+e.tag+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的最后一个，获取候选
+            echo ' $("#topTagsByAllFill").html(""); var all=this.value; $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(all), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByAllFill").append("<button class=\'btn allTagsOne\'>"+e.tag+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的所有，获取候选
+        echo '});</script>';
+        echo '</script>';
         echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data.tags, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
         echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
         echo '</body>';
@@ -101,7 +111,8 @@ class TuDo extends DIDo {
             $useTagged = (bool)(arg('useTagged', false));//是否使用tagged表进行超深挖掘
             $taggedLayer = intval(arg('taggedLayer', 0));//超深挖掘层数，当useTagged=true时有效
             $this->elseParams = compact('tags', 'useTagged', 'taggedLayer');
-            $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all', $useTagged, $taggedLayer);
+            $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+            $tuIds = Tagged::digTabIdsByTags('tu', $tags, 'union', true, 'all', $useTagged, $taggedLayer);
             //分页
             $this->page = supermodel()->pager($p, $limit, $scope, count($tuIds));
             $tuIds = array_slice($tuIds, ($p-1)*$limit, $limit);
@@ -148,9 +159,9 @@ class TuDo extends DIDo {
     
     
     //根据输入的标签，获取历史的打标签组合，及频率从高到低排序的相关标签。方便选择
-    function getGroupsAndTopTagsByTag($tag = ''){
-        if ('' === $tag) putjson(-1, array(), '请指定输入标签');
-        $ret = Tagged::getGroupsAndTopTagsByTag('tu', $tag);
+    function getGroupsAndTopTagsByTag($tags = ''){
+        $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+        $ret = Tagged::getGroupsAndTopTagsByTag('tu', $tags);
         putjson(0, $ret);
     }
     

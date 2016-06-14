@@ -59,28 +59,33 @@ class Tagged extends DIEntity {
     /**
      * 根据输入的标签，获取历史的打标签组合，及频率从高到低排序的相关标签。方便选择
      */
-    static function getGroupsAndTopTagsByTag($tabName, $tag = ''){
-        if (empty($tag) && !is_numeric($tag)) return array();
+    static function getGroupsAndTopTagsByTag($tabName, array $tags){
+        if (empty($tags)) return array('topTags' => array(), 'groups' => array());
         $tagObj = supertable('Tag');
         $taggedObj = supertable('Tagged');
+        $tagCondSql = "1 = 0";
+        $conds = array('tabName' => $tabName);
+        foreach ($tags as $i => $tag) {
+            $tagCondSql .= " OR t.tag LIKE :tag{$i} OR t.pure_tag LIKE :tag{$i}";
+            $conds["tag{$i}"] = "{$tag}%";
+        }
         $getTabIdsql =
             "SELECT tgd.tab_id FROM {$taggedObj->table} tgd, {$tagObj->table} t
             WHERE tgd.tag_id = t.id AND tgd.tab_name = :tabName
-            AND (t.tag LIKE :tag OR t.pure_tag LIKE :tag)
-            GROUP BY tab_id";
+            AND ( {$tagCondSql} ) GROUP BY tab_id";
         //拿TOPS
         $topTagsSql =
-            "SELECT COUNT(tgd.tab_id) `cnt`, t.pure_tag FROM
+            "SELECT COUNT(tgd.tab_id) `cnt`, t.pure_tag `tag` FROM
             {$taggedObj->table} AS tgd, ( {$getTabIdsql} ) AS tmp_table, {$tagObj->table} AS t
             WHERE tgd.tab_id = tmp_table.tab_id AND tgd.tag_id = t.id AND tgd.tab_name = :tabName
             GROUP BY t.pure_tag ORDER BY `cnt` DESC";
-        $topTags = supermodel()->query($topTagsSql, array('tabName' => $tabName, 'tag' => $tag)) ?: array();
+        $topTags = supermodel()->query($topTagsSql, $conds) ?: array();
         //拿历史组合
         $groupSql =
             "SELECT tgd.tag_id, tgd.tab_id, t.tag, t.pure_tag FROM
             {$taggedObj->table} AS tgd, ( {$getTabIdsql} ) AS tmp_table, {$tagObj->table} AS t
             WHERE tgd.tab_id = tmp_table.tab_id AND tgd.tag_id = t.id AND tgd.tab_name = :tabName";
-        $tgdList = supermodel()->query($groupSql, array('tabName' => $tabName, 'tag' => $tag)) ?: array();
+        $tgdList = supermodel()->query($groupSql, $conds) ?: array();
         $groups = array();
         foreach ($tgdList as $v) {
             if (! isset($groups[$v->tab_id])) $groups[$v->tab_id] = array();
