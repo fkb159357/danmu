@@ -84,7 +84,6 @@ class Tagged extends DIEntity {
         $groups = array();
         foreach ($tgdList as $v) {
             if (! isset($groups[$v->tab_id])) $groups[$v->tab_id] = array();
-            if (! in_array($v->tag, $groups[$v->tab_id])) $groups[$v->tab_id][] = $v->tag;
             if (! in_array($v->pure_tag, $groups[$v->tab_id])) $groups[$v->tab_id][] = $v->pure_tag;
         }
         return compact('topTags', 'groups');
