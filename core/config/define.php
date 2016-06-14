@@ -63,6 +63,6 @@ define('DI_PAGE_503', DI_TPL_PATH . '503-jinguanyu.php');
  */
 $GLOBALS = array_merge($GLOBALS, array(
     'api' => array(
-        'imgUploadHost' => 'http://res.miku.us/cbupl/upimg.php',
+        'imgUploadHost' => 'http://up.res.miku.us/cbupl/upimg.php',
     ),
 ));
