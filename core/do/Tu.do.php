@@ -36,7 +36,7 @@ class TuDo extends DIDo {
         echo '<div><span class="inputTitle">UBB代码：</span><input id="ubb" type="text"><br><span class="inputTitle">HTML代码：</span><input id="html" type="text"><br><span class="inputTitle">URL：</span><input id="src" type="text"></div>';
         echo '<div><span class="inputTitle">打标签：</span><input id="tags" type="text"><input id="setTags" type="button" value="打上"></div>';
         echo '<hr/>';
-        echo '<div><span class="inputTitle">极近候选：</span><div id="topTagsByLastFill"></div></div>';//根据当前填入的最尾部标签，给出的候选标签
+        echo '<div><span class="inputTitle">焦点候选：</span><div id="topTagsByLastFill"></div></div>';//根据当前填入的最尾部标签，给出的候选标签
         echo '<hr/>';
         echo '<div><span class="inputTitle">近似候选：</span><div id="topTagsByAllFill"></div></div>';//根据当前填入的所有标签，给出的候选标签
         echo '<hr/>';
@@ -49,12 +49,12 @@ class TuDo extends DIDo {
         echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
         echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
         echo '<script>$("#tags").keyup(function(){ ';
-        echo ' $("#topTagsByLastFill").html(""); var last=this.value.split(",").pop(); $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(last), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByLastFill").append("<button class=\'btn allTagsOne\'>"+e.tag+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的最后一个，获取候选
-        echo ' $("#topTagsByAllFill").html(""); var all=this.value; $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(all), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByAllFill").append("<button class=\'btn allTagsOne\'>"+e.tag+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的所有，获取候选
+        echo ' $("#topTagsByLastFill").html(""); var last=this.value.split(",").pop(); $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(last), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByLastFill").append("<button class=\'btn allTagsOne\'>"+"<span>"+e.tag+"</span>"+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的最后一个，获取候选
+        echo ' $("#topTagsByAllFill").html(""); var all=this.value; $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(all), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByAllFill").append("<button class=\'btn allTagsOne\'>"+"<span>"+e.tag+"</span>"+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的所有，获取候选
         echo '});</script>';
         echo '</script>';
-        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data.tags, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+tag+"</button>&nbsp;"); }); });</script>';
-        echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
+        echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data.tags, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+"<span>"+tag+"</span>"+"</button>&nbsp;"); }); });</script>';
+        echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).children("span:first").text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
         echo '</body>';
     }
     
