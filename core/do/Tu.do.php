@@ -54,7 +54,7 @@ class TuDo extends DIDo {
         echo '});</script>';
         echo '</script>';
         echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data.tags, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+"<span>"+tag+"</span>"+"</button>&nbsp;"); }); });</script>';
-        echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).children("span:first").text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
+        echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).children("span:first").text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")).focus(); });</script>';
         echo '</body>';
     }
     
