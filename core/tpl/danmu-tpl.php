@@ -77,8 +77,6 @@
     });
     $('.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus').css('background-color', '#53606C');
     </script>
-    <!-- jinguanyu -->
-    <script src="./res/lib/anime.js"></script>
 
     <div style="position: fixed; bottom: 0; right: 0;background-color: rgba(0,0,0,0.3);"><a href="http://www.miitbeian.gov.cn/">粤ICP备15066774-2号</a></div>
     
