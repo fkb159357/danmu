@@ -34,7 +34,7 @@ class TuDo extends DIDo {
         echo '<div style="text-align:center;"> <a href="javascript:toLogin()"><img src="http://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_3.png"></a></div>';
         echo '<form method="post" action="./?tu/up/'.intval($tuId).'" target="hehe" enctype="multipart/form-data"><input type="file" name="tu"><input type="submit" value="上传"></form><iframe name="hehe" width="960" height="480"></iframe>';
         echo '<div><span class="inputTitle">UBB代码：</span><input id="ubb" type="text"><br><span class="inputTitle">HTML代码：</span><input id="html" type="text"><br><span class="inputTitle">URL：</span><input id="src" type="text"></div>';
-        echo '<div><span class="inputTitle">打标签：</span><input id="tags" type="text"><input id="setTags" type="button" value="打上"></div>';
+        echo '<div><span class="inputTitle">打标签：</span><input id="tags" type="text"><input id="setTags" type="button" value="打上">(按下回车出候选提示)</div>';
         echo '<hr/>';
         echo '<div><span class="inputTitle">焦点候选：</span><div id="topTagsByLastFill"></div></div>';//根据当前填入的最尾部标签，给出的候选标签
         echo '<hr/>';
