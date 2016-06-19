@@ -79,3 +79,6 @@
     </div>
     
 </div>
+
+<!-- jinguanyu -->
+<script src="./res/lib/anime.js"></script>
