@@ -48,10 +48,10 @@ class TuDo extends DIDo {
         echo "<script>$('form').submit(function(){ window.hehe.document.body.innerHTML=''; $('#ubb,#html,#src').each(function(i,e){e.value='获取中..';}); {$s} setInterval(function(){ {$s} }, 500); });</script>";
         echo '<script>$("#ubb,#html,#src").click(function(){$(this).select();});</script>';
         echo '<script>$("#setTags").click(function(evt){ var tuId = (window.hehe.document.body.innerText.match(/\[id\]\s*\=\>\s*(\d+)\s*\[\w+\]/) || [,""])[1]; var v = $("#tags").val()||""; $.post("?tu/setTags/"+tuId+"/"+v, function(j){console.log(j)}, "json"); });</script>';
-        echo '<script>$("#tags").keyup(function(){ ';
+        echo '<script>$("#tags").keyup(function(evt){ if(evt.keyCode==13){ ';
         echo ' $("#topTagsByLastFill").html(""); var last=this.value.split(",").pop(); last!=="" && $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(last), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByLastFill").append("<button class=\'btn allTagsOne\'>"+"<span>"+e.tag+"</span>"+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的最后一个，获取候选
         echo ' $("#topTagsByAllFill").html(""); var all=this.value; all!=="" && $.post("/?tu/getGroupsAndTopTagsByTag/"+encodeURIComponent(all), function(j){ $.each(j.data.topTags, function(i, e){ $("#topTagsByAllFill").append("<button class=\'btn allTagsOne\'>"+"<span>"+e.tag+"</span>"+"<font color=red>&nbsp;("+e.cnt+")</font>"+"</button>&nbsp;"); }); }, "json"); '; //取打标签框里的所有，获取候选
-        echo '});</script>';
+        echo '} });</script>';
         echo '</script>';
         echo '<script>$.getJSON("/?tu/getAllTags", function(j){ $.each(j.data.tags, function(i, tag){ $("#allTags").append("<button class=\'btn allTagsOne\'>"+"<span>"+tag+"</span>"+"</button>&nbsp;"); }); });</script>';
         echo '<script>$("body").on("click", ".allTagsOne", function(){ var rawArr=$("#tags").val().split(","); rawArr.push($(this).children("span:first").text()); $("#tags").val(rawArr.join(",").replace(/^\,/, "")); });</script>';
