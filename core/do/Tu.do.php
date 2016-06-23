@@ -98,7 +98,7 @@ class TuDo extends DIDo {
     }
     
     //通用列表
-    function getList($p = 1, $limit = 10, $scope = 10){
+    function getList($p = 1, $limit = 5, $scope = 10){
         $tu = supertable('Tu');
         $p = max(1, (int)$p);
         $this->limit = $limit = min((int)$limit, 20);
