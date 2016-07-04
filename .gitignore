@@ -4,3 +4,7 @@
 .idea
 .project
 .settings
+core/data/cache/*.html.php
+core/data/log/getlog_*.txt
+core/data/log/postlog_*.txt
+core/data/log/exception_*.txt
