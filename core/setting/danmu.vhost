@@ -1,4 +1,19 @@
-Apache HP PC:
+Apache HP PC in wamp 3:
+
+<VirtualHost *:80>
+	ServerName danmu.me
+    ServerAlias *.danmu.me
+	DocumentRoot e:/installedapp/zend/apache2/htdocs/danmu
+	<Directory  "e:/installedapp/zend/apache2/htdocs/danmu/">
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Require local
+	</Directory>
+</VirtualHost>
+
+--------------------------------------------------------------
+
+Apache HP PC in wamp 2.2:
 
 NameVirtualHost danmu.me:80
 <VirtualHost *:80>
@@ -8,7 +23,7 @@ NameVirtualHost danmu.me:80
 
 --------------------------------------------------------------
 
-Apache Company PC:
+Apache Company PC in wamp 2.2:
 
 已部署，待填写
 
