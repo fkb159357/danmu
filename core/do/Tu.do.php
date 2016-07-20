@@ -131,7 +131,7 @@ class TuDo extends DIDo {
         $tuTagObj = supertable('TuTag');
         if ($id) {
         	$tu = $tuObj->find(compact('id'));
-        	@die("<img src='{$tu->url}' width='50%'>");
+        	@die("<img src='{$tu->url}'>");
         } else { //支持简单、非深度挖掘
             $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all');
             //具体数据
