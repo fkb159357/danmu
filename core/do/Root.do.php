@@ -43,7 +43,7 @@ class RootDo extends TemplateDo {
     }
     
     //动态加载ROOTER公共模板内容
-    protected function tpl(){
+    protected function tpl($tpl_name=null, $return=false){
         //存储IP到模板
         import('net/ip');
         $this->client_ip = Api_ip::get_client_ip();
