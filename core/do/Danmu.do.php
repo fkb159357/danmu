@@ -354,7 +354,7 @@ class DanmuDo extends TemplateDo {
     }
     
     //动态加载公共模板内容
-    protected function tpl(){
+    protected function tpl($tpl_name=null, $return=false){
         //设置导航栏活动状态(保存到DIBase的_lambda数组)
         $d = debug_backtrace();
         $f = $d[1]['function'];
