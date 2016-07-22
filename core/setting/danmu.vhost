@@ -13,6 +13,23 @@ Apache HP PC in wamp 3:
 
 --------------------------------------------------------------
 
+Apache Company PC in wamp 3:
+
+<VirtualHost *:80>
+	ServerName danmu.me
+    ServerAlias *.danmu.me
+    ErrorLog "logs/danmu.me-error.log"
+    CustomLog "logs/danmu.me-access.log" common
+	DocumentRoot d:/SERV_WORKSPACE/pub/danmu
+	<Directory  "d:/SERV_WORKSPACE/pub/danmu/">
+		Options Indexes FollowSymLinks MultiViews
+		AllowOverride All
+		Require local
+	</Directory>
+</VirtualHost>
+
+--------------------------------------------------------------
+
 Apache HP PC in wamp 2.2:
 
 NameVirtualHost danmu.me:80
