@@ -45,17 +45,19 @@ Danmu.search = function() {
 
 
 (Danmu.delbutton = function(obj, flag){
+    //选择初始化过程
     if (undefined == obj || undefined == flag) {
         $('.danmu-line')
             .mouseover(function(){Danmu.delbutton(this, 1);})
             .mouseout(function(){Danmu.delbutton(this, 0);});
         return;
     }
-    
+    //选择绑定过程
     var span = $(obj).find('.danmu-del-button').first();
     flag ? span.removeClass('hide') : span.addClass('hide');
     if ('0' == span.attr('bindclick')) {
         $(span).closest('div').click(function(e){
+            if (！confirm('确定删除?')) return false;
             var url = null;
             e.stopPropagation();
             url = './?danmu/del/'+span.attr('data-id')
