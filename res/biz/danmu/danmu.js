@@ -57,7 +57,7 @@ Danmu.search = function() {
     flag ? span.removeClass('hide') : span.addClass('hide');
     if ('0' == span.attr('bindclick')) {
         $(span).closest('div').click(function(e){
-            if (！confirm('确定删除?')) return false;
+            if (! confirm('确定删除?')) return false;
             var url = null;
             e.stopPropagation();
             url = './?danmu/del/'+span.attr('data-id')
