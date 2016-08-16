@@ -131,7 +131,7 @@ class TuDo extends DIDo {
         $tuTagObj = supertable('TuTag');
         if ($id) {
         	$tu = $tuObj->find(compact('id'));
-        	@die("<img src='{$tu->url}'>");
+        	$this->list = array($tu);
         } else { //支持简单、非深度挖掘
             $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all');
             //具体数据
@@ -142,8 +142,8 @@ class TuDo extends DIDo {
                     FROM {$tuObj->table} t, {$tuTagObj->table} tt 
                     WHERE t.id = tt.tu_id AND `tag` IN (:taglist)";
             $this->list = $tuObj->query($sql, array('taglist' => "{$tag}")); */
-            @$this->stpl('tu-getlist');
         }
+        @$this->stpl('tu-getlist');
     }
     
     
