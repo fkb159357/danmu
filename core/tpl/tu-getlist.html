@@ -44,9 +44,9 @@
 			</div>
 			<div style="margin: 5px; auto;"></div>
 			<div class="row-fluid"><div class="col-xs-9 col-xs-offset-3 diy-tu-tags" data-tuid="{`$v->tuId`}">标签： </div></div>
-			<div class="row-fluid"><div class="col-xs-12">URL： <input class="diy-url" style="width:720px; margin:25px 0 0 0;" value="{`$v->url`}"></div></div>
-			<div class="row-fluid"><div class="col-xs-12">UBB： <input class="diy-url" style="width:720px; margin:0px 0;" value="[img]{`$v->url`}[/img]"></div></div>
-			<div class="row-fluid"><div class="col-xs-12">TPL： <input class="diy-url" style="width:720px; margin:0 0 25px 0;" value="<img src='{`$v->url`}'>"></div></div>
+			<div class="row-fluid"><div class="col-xs-9 col-xs-offset-3">URL： <input class="diy-url" style="width:720px; margin:25px 0 0 0;" value="{`$v->url`}"></div></div>
+			<div class="row-fluid"><div class="col-xs-9 col-xs-offset-3">UBB： <input class="diy-url" style="width:720px; margin:0px 0;" value="[img]{`$v->url`}[/img]"></div></div>
+			<div class="row-fluid"><div class="col-xs-9 col-xs-offset-3">TPL： <input class="diy-url" style="width:720px; margin:0 0 25px 0;" value="<img src='{`$v->url`}'>"></div></div>
 		{`/foreach`}
 		<div class="row-fluid">
 			<div class="pull-right">{`spte3 s="tu/getlist/{p}/$limit/$scope" p=$page e=$elseParams`}</div>
@@ -91,7 +91,7 @@
 		                $(that).append('<button class="btn btn-raised" style="margin-top:5px;">' + tag + '</button>&nbsp;');
 		            });
 	                $(that).children('button').click(function(){ //单击获取相关图
-	                    window.open('/?tu/getlist/1/10/10' + '&tags=' + this.innerText, '_blank');
+	                    window.open('/?tu/getlist/1/<{$limit}>/<{$scope}>' + '&tags=' + this.innerText, '_blank');
 	                });
 		        });
 		    });
