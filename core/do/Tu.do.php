@@ -130,7 +130,7 @@ class TuDo extends DIDo {
         $tuObj = supertable('Tu');
         $tuTagObj = supertable('TuTag');
         if ($id) {
-        	$tu = $tuObj->find(compact('id'));
+        	$tu = $tuObj->find(compact('id'), 'id tuId, filename, url');
         	$this->list = array($tu);
         } else { //支持简单、非深度挖掘
             $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all');
