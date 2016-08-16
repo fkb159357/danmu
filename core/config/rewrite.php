@@ -11,8 +11,10 @@ class DIRouteRewrite {
         '://fm.danmu.me' => 'fm/start', //二级域名要优先于顶级域名
         '://fm.danmu.me/<X>' => 'fm/<X>',
         '://tu.danmu.me' => 'tu/start',
+        '://tu.danmu.me/get/<nums>' => 'tu/get/<nums>',
         '://tu.danmu.me/<X>' => 'tu/<X>',
         '://tu.miku.us' => 'tu/start',
+        '://tu.miku.us/get/<nums>' => 'tu/get/<nums>',
         '://tu.miku.us/<X>' => 'tu/<X>',
         '://fm.miku.us' => 'fm/start',
         '://fm.miku.us/<X>' => 'fm/<X>',
