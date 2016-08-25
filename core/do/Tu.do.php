@@ -61,6 +61,7 @@ class TuDo extends DIDo {
     
     //通过接口上传处理程序
     function up($tuId = 0){
+        if (session('touplock') != 'hehe') die('tu ku wei hu zhong ...');
         $file = $_FILES['tu'];
         if (! $file) putjson(1, null, 'no input file');
         $imgDirGroup = DI_DEBUG_MODE ? 'tu-miku-us-test/' : 'default/';
