@@ -46,12 +46,30 @@ class ImgUpload {
         return true;
     }
     
-    //待完善
+    //【待完善】捕获其它错误
     protected function _checkError($file){
         if (UPLOAD_ERR_OK == $file['error']) return true;
-        
-        $this->_ret['msg'] = "上传出错，错误码{$file['error']}"; // ...各种不成功的情况
-        
+        $this->_ret['msg'] = "上传出错，错误码{$file['error']}。"; // ...各种不成功的情况
+        switch ($file['error']) {
+        	case UPLOAD_ERR_INI_SIZE:
+        	    $this->_ret['msg'] .= 'The uploaded file exceeds the value of the upload_max_filesize option in the php.ini !';
+        	    break;
+        	case UPLOAD_ERR_FORM_SIZE:
+        	    $this->_ret['msg'] .= 'The uploaded file size exceeds the value specified by the MAX_FILE_SIZE option in the HTML form !';
+        	    break;
+        	case UPLOAD_ERR_PARTIAL:
+        	    $this->_ret['msg'] .= 'Only part of the file is uploaded !';
+        	    break;
+        	case UPLOAD_ERR_NO_FILE:
+        	    $this->_ret['msg'] .= 'No files have been uploaded';
+        	    break;
+        	case UPLOAD_ERR_NO_TMP_DIR:
+        	    $this->_ret['msg'] .= 'Tmp dir is not found !';
+        	    break;
+        	case UPLOAD_ERR_CANT_WRITE:
+        	$this->_ret['msg'] .= 'Error in writting file !';
+        	break;
+        }
         return false;
     }
     
@@ -139,19 +157,19 @@ class ImgUpload {
     }
     
     protected function _check($file){
-        if (! $this->_checkType($file)) {
+        if (! $this->_checkError($file)) {
             $this->_ret['code'] = -1;
             return false;
         }
-        if (! $this->_checkError($file)) {
+        if (! $this->_checkTmpName($file)) {
             $this->_ret['code'] = -2;
             return false;
         }
-        if (! $this->_checkName($file)) {
+        if (! $this->_checkType($file)) {
             $this->_ret['code'] = -3;
             return false;
         }
-        if (! $this->_checkTmpName($file)) {
+        if (! $this->_checkName($file)) {
             $this->_ret['code'] = -4;
             return false;
         }

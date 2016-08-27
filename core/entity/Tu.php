@@ -3,6 +3,7 @@ class Tu extends DIEntity {
     
     //获取重复的老图
     static protected function _getOld($file){
+        if (! file_exists($file['tmp_name'])) return array();
         $sha1 = @sha1_file($file['tmp_name']);
         $tu = supertable('Tu')->find(compact('sha1'));
         return $tu;
