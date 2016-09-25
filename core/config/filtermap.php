@@ -25,6 +25,12 @@ class DIFilterMap {
 	
 		return array(
 			//过滤器名(免Filter后缀) => array(作用域)
+			'Login' => array(
+                'Tu/toup',
+                'Tu/up',
+                'Tu/setTags',
+                'Tu/del',
+			),
 			/* 'Xxx'	=> array(
 				'Test/test', //Do方法
 				'Test/lets', //Do方法
@@ -94,6 +100,7 @@ class DIFilterMap {
 	 */
 	static function getGlobalFilters(){
 	    return array(
+            'GlobalLoginInfo' => array(),
 	        'Install' => array(), //全局检测弹幕是否完全安装
 	        'Xhprof' => array(), //性能分析
 	        'GetLog' => array(), //记录GET请求

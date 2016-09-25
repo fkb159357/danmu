@@ -5,7 +5,7 @@ class TuInject extends DIInject {
     function beforeUp(){
         //上传锁
         if (! session(DM_SESSION_TOUP_UNLOCK)) {
-            die('[INJECT MSG] tu ku wei hu zhong!');
+            //die('[INJECT MSG] tu ku wei hu zhong!');
         }
         //默认最大0.5MB
         $size = (int) (((float)session(DM_SESSION_TOUP_SIZE) ?: 0.5) * 1024 * 1024);
