@@ -177,8 +177,9 @@ class TuDo extends DIDo {
     }
     
     
-    //【数据处理】迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
+    //【临时数据处理】迁移处理1：从原tutag导入数据到tag【已验证此步骤没有问题】
     function importTuTag2tag(){
+        die;
         $start = session(__CLASS__.__FUNCTION__.'start') ?: 1;
         $limit = 50;
         $list = supertable('TuTag')->query("SELECT `tag` FROM dm_tu_tag GROUP BY `tag` LIMIT {$start}, {$limit}") ?: array();
@@ -199,8 +200,9 @@ class TuDo extends DIDo {
     }
     
     
-    //【数据处理】迁移处理2：从tutag导入数据到tagged【此步骤需要分多次请求】
+    //【临时数据处理】迁移处理2：从tutag导入数据到tagged【此步骤需要分多次请求】
     function importTuTag2tagged(){
+        die;
         //作tag表MAP，tag=>[id1,id2]
         $tagMap = array();
         $pureTagMap = array();

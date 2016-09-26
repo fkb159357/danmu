@@ -100,7 +100,6 @@ class DIFilterMap {
 	 */
 	static function getGlobalFilters(){
 	    return array(
-            'GlobalLoginInfo' => array(),
 	        'Install' => array(), //全局检测弹幕是否完全安装
 	        'Xhprof' => array(), //性能分析
 	        'GetLog' => array(), //记录GET请求

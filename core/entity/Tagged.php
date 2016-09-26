@@ -24,7 +24,7 @@ class Tagged extends DIEntity {
         return $newTaggedIdList;
     }
     
-    //返回新设置的标签
+    //设置标签，并返回新设置的标签
     static function setTags($tabName, $tabId, $tags){
         $results = array();
         $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
