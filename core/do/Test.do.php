@@ -468,7 +468,7 @@ class TestDo extends DIDo{
 	function jsonpCookie(){
 	    header("Access-Control-Allow-Credentials: true");
 	    header("Access-Control-Allow-Origin: *");
-	    putjsonp(array('code' => 1));
+	    putjsonp(array('code' => 1, 'cookie' => $_COOKIE));
 	}
 	
 }
