@@ -465,4 +465,10 @@ class TestDo extends DIDo{
 	    die;
 	}
 	
+	function jsonpCookie(){
+	    header("Access-Control-Allow-Credentials: true");
+	    header("Access-Control-Allow-Origin: *");
+	    putjsonp(array('code' => 1));
+	}
+	
 }
