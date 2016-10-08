@@ -5,7 +5,11 @@
 class ToolDo extends DIDo {
     
     function start(){
-        echo 'this is tool.start';
+        echo 'this is tool/start';
+    }
+    
+    function test(){
+        echo 'this is tool/test';
     }
     
     private function _beforeCd4js($fun){
