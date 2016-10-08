@@ -4,6 +4,10 @@
  */
 class ToolDo extends DIDo {
     
+    function start(){
+        echo 'this is tool.start';
+    }
+    
     private function _beforeCd4js($fun){
         if (! preg_match('/^https?:\/\/([\w.]*acggeek\.com|[\w.]*miku\.us|[\w.]*larele\.com|[\w.]*yooo\.moe)\//', @$_SERVER['HTTP_REFERER']?:'')) {
             putjsonp(-1);//非法请求 -1
