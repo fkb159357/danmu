@@ -13,6 +13,7 @@ if (in_array($hostname, array(
     'danmu.me',//绑定了danmu目录，和127.0.0.1
     'fm.danmu.me',//绑定了danmu目录，和127.0.0.1,线上使用iio.ooo, yooo.moe
     'tu.danmu.me',//绑定了danmu目录，和127.0.0.1
+    'tool.danmu.me',//绑定了danmu目录，和127.0.0.1
 ))){
 	
     class DIDBConfig {
@@ -74,6 +75,7 @@ if (in_array($hostname, array(
     'www.miku.us',
     'tu.miku.us',
     'fm.miku.us',
+    'tool.miku.us',
     'iio.ooo', //2015-3-10在Hostker注册,运行于Hostker(danmu)
     'www.iio.ooo',
     'yooo.moe',
