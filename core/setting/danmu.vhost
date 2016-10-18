@@ -40,17 +40,11 @@ NameVirtualHost danmu.me:80
 
 --------------------------------------------------------------
 
-Apache Company PC in wamp 2.2:
-
-已部署，待填写
-
---------------------------------------------------------------
-
 Nginx Conoha Tokyo:
 
 server {
 listen 80;
-server_name www.miku.us miku.us tu.miku.us fm.miku.us iio.ooo www.iio.ooo yooo.moe www.yooo.moe danmu.me fm.danmu.me tu.danmu.me ;
+server_name www.miku.us miku.us tu.miku.us fm.miku.us tool.miku.us iio.ooo www.iio.ooo yooo.moe www.yooo.moe danmu.me fm.danmu.me tu.danmu.me ;
 access_log /home/wwwlogs/www.miku.us_nginx.log combined;
 index index.html index.htm index.jsp index.php;
 include other.conf;
