@@ -77,6 +77,7 @@ class OauthQqDo extends DIDo {
         $http = new dwHttp();
         $ret = $http->get($url);
         session('qqUserInfo', $ret);
+        echo $ret;
     }
     
 }
