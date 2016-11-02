@@ -51,6 +51,7 @@ switch ($hostname) {
 }
 
 define('DI_SMARTY_DEFAULT', false);//暂时所有环境不默认采用smarty
+define('DI_PDO_FETCH_TYPE', PDO::FETCH_OBJ);//使用PDO获取查询结果时，本项目选择返回的数据格式
 define('DI_SMARTY_LEFT_DELIMITER', '{`');
 define('DI_SMARTY_RIGHT_DELIMITER', '`}');
 define('DI_SESSION_PREFIX', 'dm_');
