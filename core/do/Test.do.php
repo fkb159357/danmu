@@ -483,5 +483,102 @@ class TestDo extends DIDo{
 	    header("Access-Control-Allow-Origin: *");
 	    putjsonp(array('code' => 1, 'cookie' => $_COOKIE));
 	}
+
+    
+    function sql(){
+        $mixed = new MixedModel;
+        $hdl = __CLASS__.__FUNCTION__;
+        $username = 'tmp_user';
+        $canModify = @$_COOKIE['modifysql'] === 'updatedeleteset';//是否可执行修改操作
+        $sql = arg('sql', '');
+        if ($sql) $sql = urldecode(strrev($sql));
+        if (! $sql) $sql = $mixed->get($hdl.'sql'.$username); else $mixed->set($hdl.'sql'.$username, $sql, "后台查询缓存->语句(执行人：{$username}，请勿删除)");
+
+        $output =  '<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><div style="margin:50px auto; width: 600px;">';
+        $form = '<form method="post" action="/test/sql" style="position:fixed;left:25px;"><h1>查询</h1><textarea id="sqltxt" cols="50" name="sql" style="height:720px;">' . @$sql . '</textarea><input id="exec" type="button" value="exec"></form>';
+        $output .= $form.'<br><br>';
+        if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
+            $output .= "<div id='result' style='margin-top:145px;'>";
+            if (preg_match('/\s*(update|delete|set)\s+/i', $sql) && ! $canModify) {
+                $output .= "HEHE";
+            } else {
+                $output .= '<pre>'.print_r((array)supermodel()->query($sql), true).'</pre>';
+            }
+            $output .= "</div>";
+        }
+        $output .= "</div>";
+        $output .= '<div style="position: fixed; bottom: 0; right: 0;background-color: rgba(0,0,0,0.3);">当前用户：'.$username.'</div>';
+        $output .= '<div id="zzc" style="display: none; background-color: rgba(5,5,5,0.6); z-index: 999; position: absolute;"></div>';
+        $output .= '<div style="position: fixed; top: 0; left: 0;background-color: rgba(0,0,0,0.3);">按ESC键快速选择历史</div>';
+        $output .= '<script src="/res/lib/jquery-1.8.3.min.js"></script>';
+        $output .= "<script>
+            var sqlarea = document.getElementsByTagName('textarea')[0];
+            function refreshSqlHist(){
+                //分析历史分类
+                var collect = {}; 
+                sqlarea.value.split('\\n').forEach(function(e, i){ 
+                    var t = (e.match(/\s+(from|update|join|table)\s+(\w+)/i)||[,,])[2]; 
+                    e = e.replace(/^\-\-\s*/, ''); 
+                    t && (t in collect ? collect[t].push(e) : collect[t] = [e]);
+                });
+                //渲染遮罩层，用于显示历史分类
+                var w = $('body').width();
+                var h = $('body').height();
+                $('#zzc').width(w / 2);
+                $('#zzc').css({left: (w-w/2)/2+'px', top: h/15+'px'});
+                $('#zzc').html('<h2 align=center>选择历史语句，将会在输入区域头部自动插入！</h2>'); //每次重置遮罩层
+                $.each(collect, function(i, e){
+                    var h = '<h3>' + i + '</h3><ul>';
+                    e.forEach(function(ee, ii){
+                        h += '<li style=\"padding:5px;\"><button class=\"sql-hist\">' + ee + '</button></li>';
+                    });
+                    $('#zzc').append(h);
+                });
+                //选择历史语句
+                $('button.sql-hist').click(function(){
+                    var txt = this.innerText;
+                    var lines = [];
+                    sqlarea.value.split('\\n').forEach(function(e, i){
+                        if (e.replace(/^\-\-\s*/, '') != txt && ! /^\s*$/.test(e)) {
+                            e = e.replace(/^(\-\-\s*)?/, '-- ');//把前面没有注释符的语句，补上注释
+                            lines.push(e);//收集其它非空行
+                        }
+                    });
+                    lines.unshift(txt);
+                    sqlarea.value = lines.join('\\n\\n');
+                });
+            }
+            refreshSqlHist();
+
+            //触发遮罩层，显示历史
+            $('body').keyup(function(e){
+                if (e.keyCode == 27) {
+                    if ($('#zzc').data('isshow')) {
+                        $('#zzc').hide();
+                        $('#zzc').data('isshow', 0);
+                    } else {
+                        refreshSqlHist();
+                        $('#zzc').show();
+                        $('#zzc').data('isshow', 1);
+                    }
+                }
+            });
+
+            //开始查询
+            $('#exec').click(function(){ 
+                var sql = encodeURIComponent($('#sqltxt').val()).split('').reverse().join('');
+                $.post('/test/sql', {sql: sql}, function(html){
+                    var doc = document.open('text/html', 'replace');
+                    doc.write(html);
+                    doc.close();
+                }, 'html'); 
+                return false;
+            });
+        </script>";
+        $output .= "</body></html>";
+        header("Content-Type: text/html; charset=utf-8");
+        exit($output);
+    }
+    
 	
 }
