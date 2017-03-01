@@ -519,7 +519,7 @@ class TestDo extends DIDo{
                 //分析历史分类
                 var collect = {}; 
                 sqlarea.value.split('\\n').forEach(function(e, i){ 
-                    var t = (e.match(/\s+(from|update|join|table)\s+(\w+)/i)||[,,])[2]; 
+                    var t = (e.match(/(^\s*|\s+)(from|update|join|table)\s+(\w+)/i)||[,,])[3]; 
                     e = e.replace(/^\-\-\s*/, ''); 
                     t && (t in collect ? collect[t].push(e) : collect[t] = [e]);
                 });
@@ -565,7 +565,7 @@ class TestDo extends DIDo{
                     }
                 }
             });
-
+            
             //开始查询
             $('#exec').click(function(){ 
                 var sql = encodeURIComponent($('#sqltxt').val()).split('').reverse().join('');
