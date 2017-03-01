@@ -51,7 +51,7 @@ class MixedModel extends DIModel {
         $cache = dw_cache()->get(__CLASS__.sha1($name));
         if ($cache) return $cache;
         
-        $item = ($this->find(array('name' => $name, 'valid' => 1));
+        $item = $this->find(array('name' => $name, 'valid' => 1));
         
         if (empty($item)) return null;
         $item = (array) $item;
