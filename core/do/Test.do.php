@@ -485,8 +485,10 @@ class TestDo extends DIDo{
 	}
 
     
-    function sql(){
-        $mixed = new MixedModel;
+    function lqs(){
+        if ((@$my = User::isLogin()) && $my->passport == 'abc') die('WTF');
+        
+        $mixed = new MixedModel();
         $hdl = __CLASS__.__FUNCTION__;
         $username = 'tmp_user';
         $canModify = @$_COOKIE['modifysql'] === 'updatedeleteset';//是否可执行修改操作
