@@ -490,7 +490,7 @@ class TestDo extends DIDo{
         
         $mixed = new MixedModel();
         $hdl = __CLASS__.__FUNCTION__.'1';
-        $username = 'tmp_user';
+        $username = $my->passport;
         $canModify = @$_COOKIE['modifysql'] === 'updatedeleteset';//是否可执行修改操作
         $sql = arg('sql', '');
         if ($sql) $sql = urldecode(strrev($sql));
