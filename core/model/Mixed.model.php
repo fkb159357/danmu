@@ -7,7 +7,7 @@ import('store/dwCache');
 class MixedModel extends DIModel {
    
     public function set($name, $content, $note = '', $valid = 1){
-        $item = (array) $this->find(array('name' => $name));
+        $item = $this->find(array('name' => $name));
         $data = array(
             'name' => $name,
             'content' => json_encode($content),
@@ -51,9 +51,10 @@ class MixedModel extends DIModel {
         $cache = dw_cache()->get(__CLASS__.sha1($name));
         if ($cache) return $cache;
         
-        $item = (array) $this->find(array('name' => $name, 'valid' => 1));
+        $item = ($this->find(array('name' => $name, 'valid' => 1));
         
         if (empty($item)) return null;
+        $item = (array) $item;
         $item['content'] = json_decode($item['content'], 1);
         
         dw_cache()->set(__CLASS__.sha1($name), $item);

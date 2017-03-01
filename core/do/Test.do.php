@@ -569,7 +569,7 @@ class TestDo extends DIDo{
             //开始查询
             $('#exec').click(function(){ 
                 var sql = encodeURIComponent($('#sqltxt').val()).split('').reverse().join('');
-                $.post('/test/sql', {sql: sql}, function(html){
+                $.post('/test/lqs', {sql: sql}, function(html){
                     var doc = document.open('text/html', 'replace');
                     doc.write(html);
                     doc.close();
