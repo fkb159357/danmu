@@ -486,7 +486,7 @@ class TestDo extends DIDo{
 
     
     function lqs(){
-        if ((@$my = User::isLogin()) && $my->passport != 'abc') die('WTF');
+        if (! (@$my = User::isLogin()) || $my->passport != 'abc') die('WTF');
         
         $mixed = new MixedModel();
         $hdl = __CLASS__.__FUNCTION__.'1';
