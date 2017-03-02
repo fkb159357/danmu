@@ -562,6 +562,7 @@ class TestDo extends DIDo{
                         refreshSqlHist();
                         $('#zzc').show();
                         $('#zzc').data('isshow', 1);
+                        $('#zzc')[0].scrollIntoViewIfNeeded();
                     }
                 }
             });
