@@ -551,7 +551,6 @@ class TestDo extends DIDo{
                     sqlarea.value = lines.join('\\n\\n');
                 });
             }
-            refreshSqlHist();
 
             //触发遮罩层，显示历史
             $('body').keyup(function(e){
