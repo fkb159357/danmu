@@ -531,6 +531,7 @@ class TestDo extends DIDo{
                 $('#zzc').html('<h2 align=center>选择历史语句，将会在输入区域头部自动插入！</h2>'); //每次重置遮罩层
                 $.each(collect, function(i, e){
                     var h = '<h3>' + i + '</h3><ul>';
+                    e = e.sort();
                     e.forEach(function(ee, ii){
                         h += '<li style=\"padding:5px;\"><button class=\"sql-hist\">' + ee + '</button></li>';
                     });
