@@ -1,6 +1,6 @@
 -- 杂项配置表
 -- @since 2017-03-01
--- HP localhost 未同步
+-- HP localhost 已同步
 -- Office localhost 已同步
 -- CONOHA 已同步
 CREATE TABLE `dm_mixed` (
