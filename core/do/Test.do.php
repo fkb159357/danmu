@@ -527,7 +527,7 @@ class TestDo extends DIDo{
                 var w = $('body').width();
                 var h = $('body').height();
                 $('#zzc').width(w / 2);
-                $('#zzc').css({left: (w-w/2)/2+'px', top: h/15+'px'});
+                $('#zzc').css({left: (w-w/2)/2+'px', top: '135px'});
                 $('#zzc').html('<h2 align=center>选择历史语句，将会在输入区域头部自动插入！</h2>'); //每次重置遮罩层
                 $.each(collect, function(i, e){
                     var h = '<h3>' + i + '</h3><ul>';
