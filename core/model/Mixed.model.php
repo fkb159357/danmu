@@ -4,7 +4,7 @@ import('store/dwCache');
 /**
  * 杂项配置
  */
-class MixedModel extends DIModel {
+class MixedModel extends SeniorModel {
    
     public function set($name, $content, $note = '', $valid = 1){
         $item = $this->find(array('name' => $name));
