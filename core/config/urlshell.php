@@ -104,6 +104,7 @@ class DIUrlShell {
             'fm' => 'fm/start',
             'tool' => 'tool/start',
             'tu' => 'tu/start',
+            'mtoup' => 'tu/mtoup',
             'toup' => 'tu/toup',
             '<X>/list' => '<X>/getlist',
         );

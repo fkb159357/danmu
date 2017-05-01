@@ -7,7 +7,7 @@ switch ($hostname) {
     //以下使用本地
 	case '127.0.0.1':
     case '192.168.3.5':
-    case '172.16.42.222':
+    case '172.16.12.111':
 	case 'localhost':
 	case 'danmu.me'://绑定了danmu目录，和127.0.0.1
 	case 'fm.danmu.me'://绑定了danmu目录，和127.0.0.1
@@ -29,7 +29,6 @@ switch ($hostname) {
 	    }
 
 	//以下使用可写空间(正式环境)
-	case 'doinject.duapp.com'://BAE 2G空间
 	case 'larele.com'://Hostker - fkb159357.host.smartgslb.com
 	case 'www.larele.com'://Hostker - fkb159357.host.smartgslb.com
 	case 'www.miku.us'://Hostker - fkb159357.host.smartgslb.com

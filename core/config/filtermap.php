@@ -26,7 +26,8 @@ class DIFilterMap {
 		return array(
 			//过滤器名(免Filter后缀) => array(作用域)
 			'Login' => array(
-                'Tu/toup',
+                'Tu/mtoup',
+				'Tu/toup',
                 'Tu/up',
                 'Tu/setTags',
                 'Tu/del',

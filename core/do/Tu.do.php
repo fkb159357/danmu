@@ -58,6 +58,11 @@ class TuDo extends DIDo {
         echo '<script>$("body").on("keyup", function(evt){ if(evt.keyCode==27) $("#tags").focus(); });</script>';
         echo '</body>';
     }
+
+    //多图上传
+    function mtoup(){
+        $this->stpl();
+    }
     
     /**
      * 通过远程接口上传
