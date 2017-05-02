@@ -1,1 +1,78 @@
-多图上传
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+        <style type="text/css">
+            #drop-area{
+                width: 500px;
+                height: 300px;
+                text-align: center;
+                line-height: 300px;
+                font-size: 36px;
+                font-weight: bolder;
+                background-color: #dddddd;
+                border: dotted 3px #999;
+            }
+            #files-area>li>span{
+                display: inline-block;
+                margin-right: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="drop-area">拖放图片到此处</div>
+        <ul id="files-area"></ul>
+
+        <script>
+            var dropArea = document.getElementById('drop-area');
+            var filesArea = document.getElementById('files-area');
+
+            function initDrop(callback){
+                dropArea.addEventListener('dragenter', function(evt){
+                    filesArea.innerHTML = '';
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                }, false);
+                dropArea.addEventListener('dragover', function(evt){
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                }, false);
+                dropArea.addEventListener('drop', function(evt){
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    callback.call(this, evt);
+                }, false);
+            }
+
+            initDrop(function(evt){
+                var files = evt.dataTransfer.files;
+                for (var i = 0; i < files.length; i ++) {
+                    var file = files[i];
+                    if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
+                        renderFilesBeforeUp(file, filesArea);
+                    }
+                }
+            });
+
+            function renderFilesBeforeUp(file, filesArea){
+                var li = document.createElement('li');
+                var span = document.createElement('span');
+                span.innerText = file.name + ' [' + file.size + 'Bytes]';
+                var progress = document.createElement('span');
+                progress.innerText = '0%';
+                progress.className = 'up-progress';
+                li.appendChild(span);
+                li.appendChild(progress);
+                filesArea.appendChild(li);
+            }
+
+
+        </script>
+
+        <div>
+            <span class="inputTitle">打标签：</span>
+            <input id="tags" type="text">
+            <input id="setTags" type="button" value="打上">(按下回车出候选提示)
+        </div>
+    </body>
+</html>
