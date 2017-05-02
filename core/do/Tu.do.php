@@ -80,7 +80,9 @@ class TuDo extends DIDo {
             $ret = Tu::saveRecord($file, $imgDirGroup);//测试时，请指定测试分组目录！
         }
         $code = $ret['code'] == 0 && $ret['id'] != 0 ? 0 : -1;
-        //putjson($code, $ret);die;
+        if (arg('tmp') == 1) {
+            putjson($code, $ret);die;//等toup页面也改造为json接收，则可以将此接口完全改为json输出
+        }
         dump($ret);
     }
     

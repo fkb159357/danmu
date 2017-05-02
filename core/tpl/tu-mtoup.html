@@ -49,24 +49,61 @@
                 for (var i = 0; i < files.length; i ++) {
                     var file = files[i];
                     if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
-                        renderFilesBeforeUp(file, filesArea);
+                        var fileLi = renderFileBeforeUp(file, filesArea);
+                        upFile(file, {
+                            progressbar: fileLi.getElementsByClassName('up-progress')[0],
+                            srcBar: fileLi.getElementsByClassName('img-src')[0]
+                        });
                     }
                 }
             });
 
-            function renderFilesBeforeUp(file, filesArea){
+            function renderFileBeforeUp(file, filesArea){
                 var li = document.createElement('li');
                 var span = document.createElement('span');
                 span.innerText = file.name + ' [' + file.size + 'Bytes]';
                 var progress = document.createElement('span');
                 progress.innerText = '0%';
                 progress.className = 'up-progress';
+                var src = document.createElement('div');
+                src.className = 'img-src';
+                src.style.color = 'blue';
                 li.appendChild(span);
                 li.appendChild(progress);
+                li.appendChild(src);
                 filesArea.appendChild(li);
+                return li;
             }
 
-
+            function upFile(file, options){
+                var xhr = new XMLHttpRequest();
+                xhr.addEventListener('progress', function(evt){
+                    if (evt.lengthComputable) {
+                        var perc = Math.round(evt.loaded * 100) / evt.total;
+                        if (perc < 100) {
+                            options.progressbar.innerText = perc + '%';
+                        }
+                    }
+                }, false);
+                xhr.addEventListener('load', function(evt){
+                    var jsonText = xhr.responseText;
+                    var j = JSON.parse(jsonText);
+                    if (j.code != 0) {
+                        options.srcBar.innerText = j.msg;
+                    } else {
+                        options.progressbar.innerText = '100%';
+                        options.srcBar.innerText = j.data.url;
+                    }
+                }, false);
+                xhr.addEventListener('error', function(error){
+                    alert('error: ' + error);
+                }, false);
+                xhr.open('POST', '/?tu/up', true);
+                var fd = new FormData();
+                fd.append('tu', file);
+                fd.append('tmp', 1);
+                xhr.send(fd);
+            }
         </script>
 
         <div>
