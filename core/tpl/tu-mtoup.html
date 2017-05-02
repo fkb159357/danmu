@@ -52,7 +52,8 @@
                         var fileLi = renderFileBeforeUp(file, filesArea);
                         upFile(file, {
                             progressbar: fileLi.getElementsByClassName('up-progress')[0],
-                            srcBar: fileLi.getElementsByClassName('img-src')[0]
+                            srcBar: fileLi.getElementsByClassName('img-src')[0],
+                            img: fileLi.getElementsByClassName('file-img')[0]
                         });
                     }
                 }
@@ -68,9 +69,14 @@
                 var src = document.createElement('div');
                 src.className = 'img-src';
                 src.style.color = 'blue';
+                var img = new Image();
+                img.className = 'file-img';
+                img.style.display = 'none';
+                img.height = 80;
                 li.appendChild(span);
                 li.appendChild(progress);
                 li.appendChild(src);
+                li.appendChild(img);
                 filesArea.appendChild(li);
                 return li;
             }
@@ -93,6 +99,8 @@
                     } else {
                         options.progressbar.innerText = '100%';
                         options.srcBar.innerText = j.data.url;
+                        options.img.src = j.data.url;
+                        options.img.style.display = '';
                     }
                 }, false);
                 xhr.addEventListener('error', function(error){
