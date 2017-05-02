@@ -12,6 +12,7 @@ class DIRouteRewrite {
         '://fm.danmu.me/<X>' => 'fm/<X>',
         '://tu.danmu.me' => 'tu/start',
         '://tu.danmu.me/get/<nums>' => 'tu/get/<nums>',
+        '://tu.danmu.me/last' => 'tu/getlist/1/1/1',
         '://tu.danmu.me/<X>' => 'tu/<X>',
         '://tool.danmu.me' => 'tool/start',
         '://tool.danmu.me/<X>' => 'tool/<X>',
@@ -19,13 +20,12 @@ class DIRouteRewrite {
         '://fm.miku.us/<X>' => 'fm/<X>',
         '://tu.miku.us' => 'tu/start',
         '://tu.miku.us/get/<nums>' => 'tu/get/<nums>',
+        '://tu.miku.us/last' => 'tu/getlist/1/1/1',
         '://tu.miku.us/<X>' => 'tu/<X>',
         '://tool.miku.us' => 'tool/start',
         '://tool.miku.us/<X>' => 'tool/<X>',
         '://danmu.me' => 'danmu/start',//注意：这几行对域名的配置会将DIUrlShell::$_default_shell覆盖
         '://larele.com' => 'shell.shell',
-        '://www.iio.ooo' => 'fm/start',
-        '://iio.ooo' => 'fm/start',
         '://www.yooo.moe' => 'fm/start',
         '://yooo.moe' => 'fm/start',
         
