@@ -161,7 +161,6 @@
                 loading.height = 20;
                 var src = document.createElement('input');
                 src.className = 'img-src';
-                src.readOnly = true;
                 src.style.display = 'none';
                 var preview = new Image();
                 preview.className = 'img-preview';
