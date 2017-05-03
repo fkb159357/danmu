@@ -202,7 +202,7 @@
                 }, false);
                 xhr.open('POST', 'http://video.duowan.com/?r=test/upImg', true);
                 var fd = new FormData();
-                fd.append('tu', file);
+                fd.append('img', file);
                 xhr.send(fd);
             }
         </script>
