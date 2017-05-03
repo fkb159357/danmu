@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
         <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
         <style type="text/css">
             #drop-area{
@@ -124,6 +125,10 @@
             }();
 
             function loopFiles(files, filesArea){
+                if (files.length > 15) {
+                    alert('选择图片过多');
+                    return false;
+                }
                 for (var i = 0; i < files.length; i ++) {
                     var file = files[i];
                     if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
