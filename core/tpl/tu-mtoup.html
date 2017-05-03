@@ -8,24 +8,63 @@
                 height: 300px;
                 text-align: center;
                 line-height: 300px;
-                font-size: 36px;
+                font-size: 30px;
                 font-weight: bolder;
                 background-color: #dddddd;
                 border: dotted 3px #999;
+                cursor: pointer;
+                position: relative;
             }
             #files-area>li>span{
                 display: inline-block;
                 margin-right: 20px;
             }
+            #files-area>li>input.img-src{
+                width: 500px;
+                color: blue;
+                display: block;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                cursor: pointer;
+            }
+            #paste-area{
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 100px;
+                height: 30px;
+                line-height: 30px;
+                font-size: 10px;
+                text-align: center;
+                background-color: #eee;
+                border-left: dotted 3px #bbb;
+                border-top: dotted 3px #bbb;
+                cursor: copy;
+                z-index: 2;
+            }
+            #paste-area.paste-mode{
+                width: inherit;
+                height: inherit;
+                line-height: inherit;
+                font-size: inherit;
+            }
         </style>
     </head>
     <body>
-        <div id="drop-area">拖放图片到此处</div>
+        <!-- 隐藏的file input -->
+        <input id="file-input" type="file" style="display:none" accept="image/jpeg,image/png,image/gif" multiple="multiple"><!-- accept="image/*" OR accept="image/jpeg,image/png,image/gif" OR accept=".jpg,.png,.gif" 兼容性详见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input -->
+        <!-- 用于拖放上传，也可用于间接点击file input -->
+        <div id="drop-area">
+            点击此处或拖放图片上传
+            <div id="paste-area">切换粘贴模式</div>
+        </div>
         <ul id="files-area"></ul>
 
         <script>
             var dropArea = document.getElementById('drop-area');
             var filesArea = document.getElementById('files-area');
+            var fileInput = document.getElementById('file-input');
+            var pasteArea = document.getElementById('paste-area');
 
             function initDrop(callback){
                 dropArea.addEventListener('dragenter', function(evt){
@@ -46,6 +85,45 @@
 
             initDrop(function(evt){
                 var files = evt.dataTransfer.files;
+                loopFiles(files, filesArea);
+            });
+
+            ~ function initPaste(){
+                pasteArea.addEventListener('click', function(evt){
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    if (this.className == 'paste-mode') {
+                        this.innerText = '切换粘贴模式';
+                        this.className = '';
+                    } else {
+                        this.innerText = '粘贴图片二进制数据到此处';
+                        this.className = 'paste-mode';
+                    }
+                }, false);
+                pasteArea.addEventListener('paste', function(evt){
+                    filesArea.innerHTML = '';
+                    var items = evt.clipboardData.items;
+                    var files = [];
+                    if (items.length >= 1) {
+                        var file = evt.clipboardData.items[0].getAsFile();
+                        files.push(file);
+                    }
+                    loopFiles(files, filesArea);
+                }, false);
+            }();
+
+            ~ function initFileInput(){
+                fileInput.addEventListener('change', function(evt){
+                    filesArea.innerHTML = '';
+                    var files = this.files;
+                    loopFiles(files, filesArea);
+                }, false);
+                dropArea.addEventListener('click', function(evt){
+                    fileInput.click();
+                }, false);
+            }();
+
+            function loopFiles(files, filesArea){
                 for (var i = 0; i < files.length; i ++) {
                     var file = files[i];
                     if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
@@ -54,11 +132,11 @@
                             progressbar: fileLi.getElementsByClassName('up-progress')[0],
                             loading: fileLi.getElementsByClassName('up-loading')[0], 
                             srcBar: fileLi.getElementsByClassName('img-src')[0],
-                            preview: fileLi.getElementsByClassName('img-preview')[0],
+                            preview: fileLi.getElementsByClassName('img-preview')[0]
                         });
                     }
                 }
-            });
+            }
 
             function renderFileBeforeUp(file, filesArea){
                 var li = document.createElement('li');
@@ -72,9 +150,10 @@
                 loading.className = 'up-loading';
                 loading.width = 20;
                 loading.height = 20;
-                var src = document.createElement('div');
+                var src = document.createElement('input');
                 src.className = 'img-src';
-                src.style.color = 'blue';
+                src.readOnly = true;
+                src.style.display = 'none';
                 var preview = new Image();
                 preview.className = 'img-preview';
                 preview.style.display = 'none';
@@ -106,7 +185,10 @@
                         options.srcBar.innerText = j.msg;
                     } else {
                         options.progressbar.innerText = '100%';
-                        options.srcBar.innerText = j.data.url;
+                        // options.srcBar.innerText = j.data.url;
+                        options.srcBar.value = j.data.url
+                        options.srcBar.style.display = 'block';
+                        options.srcBar.onclick = function(){this.select();};
                         options.preview.src = j.data.url;
                         options.preview.style.display = '';
                     }
