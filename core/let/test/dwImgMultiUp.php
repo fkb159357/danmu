@@ -206,11 +206,5 @@
                 xhr.send(fd);
             }
         </script>
-
-        <div>
-            <span class="inputTitle">打标签：</span>
-            <input id="tags" type="text">
-            <input id="setTags" type="button" value="打上">(按下回车出候选提示)
-        </div>
     </body>
 </html>
