@@ -92,5 +92,23 @@ class Tu extends DIEntity {
     static function delSource(){
         
     }
+
+    static function getByNoTagged(){
+        $taggedObj = supertable('Tagged');
+        $tuObj = supertable('Tu');
+        $sql = "SELECT *, id tuId FROM {$tuObj->table} tu WHERE id NOT IN ( SELECT tab_id FROM {$taggedObj->table} tgd WHERE tgd.tab_name = 'tu' GROUP BY tab_id )";
+        $list = $tuObj->query($sql) ?: array();
+        return $list;
+        /*$taggedObj = supertable('Tagged');
+        $tuObj = supertable('Tu');
+        $sql = "SELECT distinct(tab_id) FROM {$taggedObj->table} tgd WHERE tgd.tab_name = 'tu' ORDER BY tab_id DESC";
+        $list = $taggedObj->query($sql);
+        $tgdTuIds = array();
+        foreach ($list as $v) {
+            $tgdTuIds[] = $v['tab_id'];
+        }
+        $sql = "SELECT id FROM {$tuObj->table} tu WHERE id ORDER BY id DESC";
+        */
+    }
     
 }
