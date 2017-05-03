@@ -2,7 +2,7 @@
 <div id="area" style="width:600px; height:600px; background-color:#cccccc" contenteditable>
     <img id="preview" width="600">
 </div>
-<img id="load" src="http://ad.duowan.com/static/img/loading.gif" style="display:none;">
+<img id="load" src="http://s1.dwstatic.com/duowanvideo/20170503/09/5103534.gif" style="display:none;">
 
 <script>
 //粘贴图片文件
