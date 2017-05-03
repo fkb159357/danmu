@@ -157,6 +157,12 @@ class TuDo extends DIDo {
         }
         @$this->stpl('tu-getlist');
     }
+
+
+    //获取未打标签的图
+    function getByNoTagged(){
+        putjson(0, Tu::getByNoTagged());
+    }
     
     
     //根据数据ID，获取对应的标签集合
