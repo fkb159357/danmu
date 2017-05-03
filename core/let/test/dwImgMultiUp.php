@@ -107,7 +107,7 @@
                     var files = [];
                     if (items.length >= 1) {
                         var file = evt.clipboardData.items[0].getAsFile();
-                        files.push(file);
+                        file && files.push(file);
                     }
                     loopFiles(files, filesArea);
                 }, false);
@@ -125,6 +125,10 @@
             }();
 
             function loopFiles(files, filesArea){
+                if (files.length == 0) {
+                    alert('找不到图片资源');
+                    return false;
+                }
                 if (files.length > 15) {
                     alert('选择图片过多');
                     return false;
