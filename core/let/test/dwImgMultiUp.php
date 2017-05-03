@@ -69,7 +69,6 @@
 
             function initDrop(callback){
                 dropArea.addEventListener('dragenter', function(evt){
-                    filesArea.innerHTML = '';
                     evt.stopPropagation();
                     evt.preventDefault();
                 }, false);
@@ -78,6 +77,7 @@
                     evt.preventDefault();
                 }, false);
                 dropArea.addEventListener('drop', function(evt){
+                    filesArea.innerHTML = '';
                     evt.stopPropagation();
                     evt.preventDefault();
                     callback.call(this, evt);
@@ -120,6 +120,12 @@
                     loopFiles(files, filesArea);
                 }, false);
                 dropArea.addEventListener('click', function(evt){
+                    if(!! document.all) {
+                        fileInput.select();
+                        document.execCommand("delete");
+                    } else {
+                        fileInput.value = '';
+                    }
                     fileInput.click();
                 }, false);
             }();
@@ -207,6 +213,25 @@
                 var fd = new FormData();
                 fd.append('img', file);
                 xhr.send(fd);
+            }
+        </script>
+
+        <!-- 兼容性检测 -->
+        <script>
+            var agMatch = navigator.userAgent.match(/chrome\/(\d+)\.|msie\s*(\d+)\.|firefox\/(\d+)\./i) || ['', 0, 0, 0];
+            var checkBrowser = false;
+            if (/chrome/i.test(agMatch[0]) && parseInt(agMatch[1]) >= 35) {
+                checkBrowser = true;
+                console.log(1);
+            } else if (/msie/i.test(agMatch[0]) && parseInt(agMatch[2]) >= 10) {
+                checkBrowser = true;
+                console.log(2);
+            } else if (/firefox/i.test(agMatch[0]) && parseInt(agMatch[3]) >= 40) {
+                checkBrowser = true;
+                console.log(3);
+            }
+            if (! checkBrowser) {
+                document.write('Only support for Chrome 35+, MSIE 10+, Firefox 40+ !');
             }
         </script>
     </body>
