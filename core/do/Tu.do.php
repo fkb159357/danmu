@@ -160,8 +160,9 @@ class TuDo extends DIDo {
 
 
     //获取未打标签的图
-    function getByNoTagged(){
-        putjson(0, Tu::getByNoTagged());
+    function getByNoTagged($limit = 20){
+        $limit = min(50, max(1, (int)$limit));
+        putjson(0, Tu::getByNoTagged($limit));
     }
     
     

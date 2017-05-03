@@ -93,10 +93,10 @@ class Tu extends DIEntity {
         
     }
 
-    static function getByNoTagged(){
+    static function getByNoTagged($limit = 20){
         $taggedObj = supertable('Tagged');
         $tuObj = supertable('Tu');
-        $sql = "SELECT *, id tuId FROM {$tuObj->table} tu WHERE id NOT IN ( SELECT tab_id FROM {$taggedObj->table} tgd WHERE tgd.tab_name = 'tu' GROUP BY tab_id )";
+        $sql = "SELECT *, id tuId FROM {$tuObj->table} tu WHERE id NOT IN ( SELECT tab_id FROM {$taggedObj->table} tgd WHERE tgd.tab_name = 'tu' GROUP BY tab_id ) LIMIT {$limit}";
         $list = $tuObj->query($sql) ?: array();
         return $list;
         /*$taggedObj = supertable('Tagged');
