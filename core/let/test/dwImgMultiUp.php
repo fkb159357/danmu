@@ -222,13 +222,10 @@
             var checkBrowser = false;
             if (/chrome/i.test(agMatch[0]) && parseInt(agMatch[1]) >= 35) {
                 checkBrowser = true;
-                console.log(1);
             } else if (/msie/i.test(agMatch[0]) && parseInt(agMatch[2]) >= 10) {
                 checkBrowser = true;
-                console.log(2);
             } else if (/firefox/i.test(agMatch[0]) && parseInt(agMatch[3]) >= 40) {
                 checkBrowser = true;
-                console.log(3);
             }
             if (! checkBrowser) {
                 document.write('Only support for Chrome 35+, MSIE 10+, Firefox 40+ !');
