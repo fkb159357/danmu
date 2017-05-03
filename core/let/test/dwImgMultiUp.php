@@ -185,20 +185,19 @@
                         options.srcBar.innerText = j.msg;
                     } else {
                         options.progressbar.innerText = '100%';
-                        options.srcBar.value = j.data.url
+                        options.srcBar.value = j.url
                         options.srcBar.style.display = 'block';
                         options.srcBar.onclick = function(){this.select();};
-                        options.preview.src = j.data.url;
+                        options.preview.src = j.url;
                         options.preview.style.display = '';
                     }
                 }, false);
                 xhr.addEventListener('error', function(error){
                     alert('error: ' + error);
                 }, false);
-                xhr.open('POST', '/?tu/up', true);
+                xhr.open('POST', 'http://video.duowan.com/?r=test/upImg', true);
                 var fd = new FormData();
                 fd.append('tu', file);
-                fd.append('tmp', 1);
                 xhr.send(fd);
             }
         </script>
