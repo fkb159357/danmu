@@ -93,6 +93,13 @@ class Tu extends DIEntity {
         
     }
 
+    //通用信息获取
+    static function getInfoById($tuId){
+        $tuObj = supertable('Tu');
+        $tu = $tuObj->find(array('id' => $tuId), 'id tuId, filename, fileext, mimetype, filesize, width, height, savefile, url');
+        return $tu;
+    }
+
     //获取未打标签的图
     static function getByNoTagged($limit = 20){
         $taggedObj = supertable('Tagged');

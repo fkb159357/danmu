@@ -110,6 +110,32 @@ class TuDo extends DIDo {
         putjson(0, compact('tags'));
     }
     
+
+    //获取通用列表数据
+    function getListData(){
+        $tuObj = supertable('Tu');
+        $p = max(1, (int)arg('p', 1));
+        $limit = min((int)arg('limit', 5), 20);
+        $tags = arg('tags');
+        if (empty($tags)) {
+            $retList = $tuObj->select('', 'id', 'id DESC', array($p, $limit, 10)) ?: array();
+            $tuIds = array();
+            foreach ($retList as $v) $tuIds[] = $v->id;
+        } else { //进入标签搜索模式
+            $useTagged = (bool)(arg('useTagged', false));//是否使用tagged表进行超深挖掘
+            $taggedLayer = intval(arg('taggedLayer', 0));//超深挖掘层数，当useTagged=true时有效
+            $this->elseParams = compact('tags', 'useTagged', 'taggedLayer');
+            $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+            $tuIds = Tagged::digTabIdsByTags('tu', $tags, 'union', true, 'all', $useTagged, $taggedLayer);
+            //分页
+            $tuIds = array_slice($tuIds, ($p-1)*$limit, $limit);
+        }
+        $list = array();
+        foreach ($tuIds as $id) $list[] = Tu::getInfoById($id);
+        putjson(0, $list);
+    }
+
+
     //通用列表
     function getList($p = 1, $limit = 5, $scope = 10){
         $tu = supertable('Tu');
@@ -168,7 +194,7 @@ class TuDo extends DIDo {
 
 
     //管理未打标签的图
-    function manageByNoTagged(){
+    function manageByNoTagged(){//改名：manageToTagged
         $this->stpl('tu-manage-by-no-tagged');
     }
     
