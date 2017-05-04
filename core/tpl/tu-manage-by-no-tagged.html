@@ -108,7 +108,7 @@
                 var CURR_LIST_SOURCE_P = 1;
                 var CURR_LIST_SOURCE_LIMIT = 16;
 
-                function bindChangeList(){ //@TODO: 切换已支持，但尚未支持切换参数，这部分功能转移到具体列表的附加控件来实现
+                function bindChangeList(){
                     $('#diy-channge-list>li').click(function(evt){
                         debugger;
                         var listMode = $(this).data('list');
@@ -179,24 +179,6 @@
                         initBox(lastBox, list[i]);
                     }
                     renderPage();
-                    /*var pageTpl = 
-                        '<center><nav aria-label="Page navigation">\
-                            <ul class="pagination">\
-                                <li>\
-                                    <a href="@@prevUrl@@" aria-label="Previous">\
-                                        <span aria-hidden="true">上一页</span>\
-                                    </a>\
-                                </li>\
-                                <li>\
-                                <a href="@@nextUrl@@" aria-label="Next">\
-                                    <span aria-hidden="true">下一页</span>\
-                                </a>\
-                                </li>\
-                            </ul>\
-                        </nav></center>';
-                    var prevUrl = url + '?' + $.param({p: Math.max(1, (parseInt(reqArgs.p)||1) - 1), limit: reqArgs.limit});
-                    var nextUrl = url + '?' + $.param({p: (parseInt(reqArgs.p)||1) + 1, limit: reqArgs.limit});
-                    tusArea.append(tplRender(pageTpl, {prevUrl: prevUrl, nextUrl: nextUrl}));*/
                 }
 
 
