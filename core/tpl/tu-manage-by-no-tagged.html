@@ -163,6 +163,21 @@
                             <p>尺寸：@@width@@ x @@height@@</p>\
                             <div class="diy-tagged-icon diy-tagged-icon-hide"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>\
                         </div>';
+                    var pageTpl = 
+                        '<center><nav aria-label="Page navigation">\
+                            <ul class="pagination">\
+                                <li>\
+                                    <a href="#" aria-label="Previous">\
+                                        <span aria-hidden="true">上一页</span>\
+                                    </a>\
+                                </li>\
+                                <li>\
+                                <a href="#" aria-label="Next">\
+                                    <span aria-hidden="true">下一页</span>\
+                                </a>\
+                                </li>\
+                            </ul>\
+                        </nav></center>';
                     var tusArea = $('#diy-tus-area');
                     tusArea.html('');
                     for (var i = 0; i < list.length; i ++) {
@@ -173,6 +188,7 @@
                         lastImg.css({width: lastBox.width(), height: lastBox.height()*0.66});
                         initBox(lastBox, list[i]);
                     }
+                    tusArea.append(pageTpl);
                 }
 
                 function renderError(msg){
