@@ -195,8 +195,8 @@ class TuDo extends DIDo {
 
 
     //管理未打标签的图
-    function manageByNoTagged(){//改名：manageToTagged
-        $this->stpl('tu-manage-by-no-tagged');
+    function manageList(){//改名：manageToTagged
+        $this->stpl('tu-manage-list');
     }
     
     

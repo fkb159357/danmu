@@ -132,11 +132,11 @@
                                 CURR_LIST_SOURCE_LIMIT = 16;
                                 break;
                         }
-                        listMode && getByNoTagged(renderList, renderError);
+                        listMode && getTuList(renderList, renderError);
                     });
                 }
 
-                function getByNoTagged(cb, errCb){
+                function getTuList(cb, errCb){
                     cb = cb || renderList;
                     errCb = errCb || renderError;
                     var url = CURR_LIST_SOURCE_URL;
@@ -203,11 +203,11 @@
                     tusArea.append(pageTpl);
                     $('#diy-prev-page').click(function(){
                         CURR_LIST_SOURCE_P = Math.max(1, (parseInt(CURR_LIST_SOURCE_P) || 1) - 1);
-                        getByNoTagged();
+                        getTuList();
                     });
                     $('#diy-next-page').click(function(){
                         CURR_LIST_SOURCE_P = (parseInt(CURR_LIST_SOURCE_P)||1) + 1;
-                        getByNoTagged();
+                        getTuList();
                     });
                 }
 
@@ -341,7 +341,7 @@
                     });
                 }
 
-                getByNoTagged();
+                getTuList();
                 bindChangeList();
                 bindTagInput();
                 bindTagSubmit();
