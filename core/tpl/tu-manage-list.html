@@ -306,11 +306,17 @@
                 }
 
                 function sendTagged(tuId, tags){
-                    var url = '/tu/setTags/' + tuId;
-                    var args = {tags: tags.join(',')};
                     var logArea = $('#diy-op-log-area');
                     var logId = + new Date;
-                    logArea.append('<div data-logid=' + logId + '><span style="color:green">图[ID:' + tuId + ']将打入标签：' + tags.join(', ') + '<span class="diy-log-loading">，操作中.. <img src="http://s1.dwstatic.com/duowanvideo/20170503/09/5103534.gif" width="14" height="14"></span></span></div>');
+                    var initLogBlockTpl = '<div data-logid=' + logId + '><span style="color:green">图[ID:' + tuId + ']将打入标签：' + tags.join(', ') + '<span class="diy-log-loading">，操作中.. <img src="http://s1.dwstatic.com/duowanvideo/20170503/09/5103534.gif" width="14" height="14"></span></span></div>';
+                    var firstLogBlock = logArea.find('div[data-logid]:first');
+                    if (firstLogBlock.size() > 0) {
+                        firstLogBlock.before(initLogBlockTpl);
+                    } else {
+                        logArea.append(initLogBlockTpl);
+                    }
+                    var url = '/tu/setTags/' + tuId;
+                    var args = {tags: tags.join(',')};
                     $.post(url, args, function(j){
                         var log = ['操作结果：'];
                         if (j.code == 0) {
@@ -325,9 +331,9 @@
                             log.push('图[ID:' + tuId + ']打标签出错：' + j.msg);
                         }
                         log = log.join('<br/>');
-                        var oneLogArea = logArea.find('div[data-logid=' + logId + ']');
-                        oneLogArea.append('<p>' + log + '</p>');
-                        oneLogArea.find('span.diy-log-loading').remove();
+                        var oneLogBlock = logArea.find('div[data-logid=' + logId + ']');
+                        oneLogBlock.append('<p>' + log + '</p>');
+                        oneLogBlock.find('span.diy-log-loading').remove();
                     }, 'json');
                 }
 
