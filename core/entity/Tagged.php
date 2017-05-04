@@ -178,7 +178,8 @@ class Tagged extends DIEntity {
         }
         $sql = "SELECT tgd.tab_id FROM {$taggedObj->table} tgd
                 WHERE tgd.tab_name = :tabName AND tgd.tag_id IN ({$sqlIdsIn})
-                GROUP BY tgd.tab_id $havingSql";
+                GROUP BY tgd.tab_id $havingSql
+                ORDER BY tgd.tab_id DESC"; //于20170504加入此DESC语句，如有错误，则删除之
         $list = $taggedObj->query($sql, $conds);
         //组合结果
         $tabIds = array();
