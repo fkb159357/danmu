@@ -45,6 +45,9 @@
             #diy-inputed-tags>.diy-tag-example{
                 display: none;
             }
+            #diy-tag-clear-tagnodes{
+                display: none;
+            }
         </style>
     </head>
     <body>
@@ -68,6 +71,9 @@
                     <div id="diy-inputed-tags" class="row-fluid">
                         <a class="diy-tag diy-tag-example btn btn-info">示例标签</a>
                     </div>
+                    <button id="diy-tag-clear-tagnodes" class="btn btn-primary">清空已选标签</button>
+                    <p class="row-fluid">注意：输入框及回车选定的标签，将合并提交</p>
+                    
                     <!-- 操作日志 -->
                     <div id="diy-op-log-area" class="row-fluid well"></div>
                     <!-- 其它操作 -->
@@ -178,7 +184,7 @@
                 }
 
                 function bindTagInput(){
-                    $('#diy-inputed-tags-str').keyup(function(evt){
+                    $('#diy-inputed-tags-str').keyup(function(evt){ //回车后，在下方生成已选定的标签，以便当前页面管理
                         if (evt.keyCode == 13) {
                             var tagsByStr = getInputedTagsByStr();
                             var tagsByNode = getInputedTagsByNode();
@@ -194,6 +200,21 @@
                             this.value = '';//之后清空自身
                         }
                     });
+                    $('body').on('click', '#diy-inputed-tags>.diy-tag:not(.diy-tag-example)', function(evt){ //点击已选定好的标签之一，即可从页面删除
+                        this.outerHTML = '';
+                    });
+                    $('#diy-tag-clear-tagnodes').click(function(evt){ //清空已选标签
+                        $('#diy-inputed-tags>.diy-tag:not(.diy-tag-example)').remove();
+                    });
+                    setInterval(function(){ //维护清空标签按钮的状态
+                        var tagsByNode = getInputedTagsByNode();
+                        var clear = $('#diy-tag-clear-tagnodes');
+                        if (tagsByNode.length > 0) {
+                            clear.show();
+                        } else {
+                            clear.hide();
+                        }
+                    }, 500);
                 }
 
                 function sendTagged(tuId, tags){
