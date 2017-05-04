@@ -31,6 +31,7 @@ class DIFilterMap {
                 'Tu/up',
                 'Tu/setTags',
                 'Tu/del',
+                'Tu/manageByNoTagged',
 			),
 			/* 'Xxx'	=> array(
 				'Test/test', //Do方法

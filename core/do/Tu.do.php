@@ -89,6 +89,7 @@ class TuDo extends DIDo {
     //对图打标签
     function setTags($tuId = 0, $tags = ''){
         $tuId = (int) $tuId;
+        empty($tags) AND $tags = arg('tags');//也可通过arg方法获取参数tags逗号串
         if (! $tuId) putjson(-1, null, 'param err');
         import('libutil/xsshtml');
         xssFilter($tags);
@@ -163,6 +164,12 @@ class TuDo extends DIDo {
     function getByNoTagged($limit = 20){
         $limit = min(50, max(1, (int)$limit));
         putjson(0, Tu::getByNoTagged($limit));
+    }
+
+
+    //管理未打标签的图
+    function manageByNoTagged(){
+        $this->stpl('tu-manage-by-no-tagged');
     }
     
     

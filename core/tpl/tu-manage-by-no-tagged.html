@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <script src="//cdn.bootcss.com/underscore.js/1.8.3/underscore-min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            /* 图信息单元 */
+            .diy-box{
+                font-size: 15px;
+                position: relative;
+                text-align: center;
+                height: 300px;
+            }
+            .diy-box>img{
+                margin-bottom: 10px;
+            }
+            .diy-box>p{
+                text-align: left;
+                margin-bottom: 10px;
+            }
+            .diy-box>div.diy-tagged-icon{
+                position: absolute;
+                bottom: 3px;
+                right: 11px;
+                font-size: 25px;
+                color: seagreen;
+            }
+            .diy-box>div.diy-tagged-icon-hide{
+                display: none;
+            }
+
+            /* 标签提交区 */
+            #diy-tag-submit-area{
+                margin-bottom: 10px;
+            }
+
+            /* 已确定好的标签 */
+            #diy-inputed-tags>.diy-tag{
+                margin-bottom: 5px;
+                margin-right: 5px;
+            }
+            #diy-inputed-tags>.diy-tag-example{
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid" style="margin-top: 20px;">
+            <div class="row-fluid">
+                <!-- 图区 -->
+                <div id="diy-tus-area" class="col-xs-8"></div>
+                <!-- 操作区 -->
+                <div id="diy-op-area" class="col-xs-4">
+                    <!-- 提交标签 -->
+                    <div id="diy-tag-submit-area" class="row-fluid form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon">打标签</div>
+                                <input id="diy-inputed-tags-str" type="text" class="form-control" placeholder="逗号分隔，按回车键选定">
+                            </div>
+                        </div>
+                        <button id="diy-tag-submit" class="btn btn-primary">提交</button>
+                    </div>
+                    <!-- 已确定好的标签 -->
+                    <div id="diy-inputed-tags" class="row-fluid">
+                        <a class="diy-tag diy-tag-example btn btn-info">示例标签</a>
+                    </div>
+                    <!-- 操作日志 -->
+                    <div id="diy-op-log-area" class="row-fluid well"></div>
+                    <!-- 其它操作 -->
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function(){
+
+                function getByNoTagged(cb, errCb){
+                    $.get('/tu/getByNoTagged/20', function(j){
+                        if (j.code == 0) {
+                            if (j.data.constructor.name == 'Array') {
+                                cb.call(this, j.data);
+                            } else {
+                                errCb.call(this, '列表数据错误');
+                            }
+                        } else {
+                            errCb.call(this, j.msg);
+                        }
+                    }, 'json');
+                }
+
+                function tplRender(tpl, data){
+                    return tpl.replace(/@@([\w\_]+)@@/g, function(){
+                        return (typeof data[arguments[1]]==='undefined')?'':data[arguments[1]];
+                    });
+                }
+
+                function renderList(list){
+                    var tpl = 
+                        '<div class="diy-box well col-xs-3" data-id="@@tuId@@" data-tagged="0" data-width="@@width@@" data-height="@@height@@">\
+                            <img src="@@url@@" onclick="window.open(\'@@url@@\', \'_blank\')">\
+                            <p>文件：@@savefile@@</p>\
+                            <p>尺寸：@@width@@ x @@height@@</p>\
+                            <div class="diy-tagged-icon diy-tagged-icon-hide"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>\
+                        </div>';
+                    for (var i = 0; i < list.length; i ++) {
+                        var tusArea = $('#diy-tus-area');
+                        var unitTpl = tplRender(tpl, list[i]);
+                        tusArea.append(unitTpl);
+                        var lastBox = tusArea.children('.diy-box').last();
+                        var lastImg = lastBox.children('img').first();
+                        lastImg.css({width: lastBox.width(), height: lastBox.height()*0.66});
+                        initBox(lastBox, list[i]);
+                    }
+                }
+
+                function renderError(msg){
+                    alert(msg);
+                }
+
+                function initBox(box, data){
+                    box.click(function(evt){ //选中以批量打标签
+                        var taggedIcon = box.children('div.diy-tagged-icon').first();
+                        if ($(this).data('tagged') == '1') {
+                            taggedIcon.addClass('diy-tagged-icon-hide');
+                            $(this).data('tagged', 0);
+                            $(this).attr('data-tagged', 0);
+                        } else {
+                            taggedIcon.removeClass('diy-tagged-icon-hide');
+                            $(this).data('tagged', 1);
+                            $(this).attr('data-tagged', 1);
+                        }
+                    });
+                }
+
+                function getTaggedTuIds(){
+                    var ids = [];
+                    $('.diy-box[data-tagged=1]').each(function(i, e){
+                        ids.push($(e).data('id'));
+                    });
+                    return ids;
+                }
+
+                function collectTags(tags, tag){
+                    tag = tag.trim();
+                    if (-1 == _.indexOf(tags, tag) && '' != tag) {
+                        tags.push(tag);
+                    }
+                    return tags;
+                }
+
+                function getInputedTagsByStr(){
+                    var tags = [];
+                    var inputed = $('#diy-inputed-tags-str').val().split(/,|，/);
+                    for (var i in inputed) {
+                        tags = collectTags(tags, inputed[i]);
+                    }
+                    return tags;
+                }
+
+                function getInputedTagsByNode(){
+                    var tags = [];
+                    var inputed = $('#diy-inputed-tags>.diy-tag').not('.diy-tag-example');
+                    inputed.each(function(i, e){
+                        tags = collectTags(tags, e.innerText);
+                    });
+                    return tags;
+                }
+
+                function getInputedTags(){
+                    var tagsByStr = getInputedTagsByStr();
+                    var tagsByNode = getInputedTagsByNode();
+                    return _.uniq(_.union(tagsByStr, tagsByNode));
+                }
+
+                function bindTagInput(){
+                    $('#diy-inputed-tags-str').keyup(function(evt){
+                        if (evt.keyCode == 13) {
+                            var tagsByStr = getInputedTagsByStr();
+                            var tagsByNode = getInputedTagsByNode();
+                            var exampleTagNode = $('#diy-inputed-tags>.diy-tag-example');
+                            for (var i in tagsByStr) {
+                                var tag = tagsByStr[i];
+                                if (-1 == _.indexOf(tagsByNode, tag)) {
+                                    var newTagNode = exampleTagNode.clone();
+                                    newTagNode.removeClass('diy-tag-example').text(tag);
+                                    $('#diy-inputed-tags').append(newTagNode);
+                                }
+                            }
+                            this.value = '';//之后清空自身
+                        }
+                    });
+                }
+
+                function sendTagged(tuId, tags){
+                    var url = '/tu/setTags/' + tuId;
+                    var args = {tags: tags.join(',')};
+                    var log = ['<font color=green>图[ID=' + tuId + ']将打入标签：' + tags.join(', ') + '，操作中...</font>'];
+                    $.post(url, args, function(j){
+                        if (j.code == 0) {
+                            if (j.data.newTags.length > 0) {
+                                log.push('图[ID=' + tuId + ']' + '成功打入新标签：');
+                                log.push(j.data.newTags.join(','));
+                                log.push('其它已有的标签不再重复打入.');
+                            } else {
+                                log.push('图[ID=' + tuId + ']' + '打标签提示：以上指定标签，历史已有，不必重复操作');
+                            }
+                        } else {
+                            log.push('图[ID:' + tuId + ']打标签出错：' + j.msg);
+                        }
+                        log = log.join('<br/>');
+                        $('#diy-op-log-area').append('<p>' + log + '</p>');
+                    }, 'json');
+                }
+
+                function bindTagSubmit(){
+                    $('#diy-tag-submit').click(function(){
+                        var tuIds = getTaggedTuIds();
+                        var tags = getInputedTags();
+                        for (var i in tuIds) {
+                            sendTagged(tuIds[i], tags);
+                        }
+                    });
+                }
+
+                getByNoTagged(renderList, renderError);
+                bindTagInput();
+                bindTagSubmit();
+
+            });
+        </script>
+    </body>
+</html>
