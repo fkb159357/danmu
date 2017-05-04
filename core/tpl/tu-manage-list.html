@@ -166,6 +166,7 @@
                             <img src="@@url@@" onclick="window.open(\'@@url@@\', \'_blank\')">\
                             <p>文件：@@savefile@@</p>\
                             <p>尺寸：@@width@@ x @@height@@</p>\
+                            <p>大小：@@filesize@@ Bytes</p>\
                             <div class="diy-tagged-icon diy-tagged-icon-hide"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>\
                         </div>';
                     var tusArea = $('#diy-tus-area');
@@ -175,7 +176,7 @@
                         tusArea.append(unitTpl);
                         var lastBox = tusArea.children('.diy-box').last();
                         var lastImg = lastBox.children('img').first();
-                        lastImg.css({width: lastBox.width(), height: lastBox.height()*0.66});
+                        lastImg.css({width: lastBox.width(), height: lastBox.height()*0.6});
                         initBox(lastBox, list[i]);
                     }
                     renderPage();
