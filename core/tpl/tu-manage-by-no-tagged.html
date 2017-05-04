@@ -32,6 +32,10 @@
                 display: none;
             }
 
+            #diy-change-list-area{
+                margin-bottom: 10px;
+            }
+
             /* 标签提交区 */
             #diy-tag-submit-area{
                 margin-bottom: 10px;
@@ -57,6 +61,23 @@
                 <div id="diy-tus-area" class="col-xs-8"></div>
                 <!-- 操作区 -->
                 <div id="diy-op-area" class="col-xs-4">
+                    <!-- 选择列表来源 -->
+                    <div id="diy-change-list-area" class="row-fluid">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                切换图片列表
+                                <span class="caret"></span>
+                            </button>
+                            <ul id="diy-channge-list" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li data-list="all"><a href="#">全部</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li data-list="alltagged"><a href="#">所有已打标签的</a></li>
+                                <li data-list="tagged-recent"><a href="#">最近打标签的</a></li>
+                                <li data-list="tagged-2"><a href="#">仅打两个标签以内的</a></li>
+                                <li data-list="tagged-0"><a href="#">未打任何标签的</a></li>
+                            </ul>
+                        </div>
+                    </div>
                     <!-- 提交标签 -->
                     <div id="diy-tag-submit-area" class="row-fluid form-inline">
                         <div class="form-group">
@@ -83,10 +104,39 @@
         <script>
             $(function(){
 
-                // var SUBMIT_PROGRESS_MAP = {};//多个提交进度
+                var CURR_LIST_SOURCE_URL = '/getListData';
+                var CURR_LIST_SOURCE_ARGS = {p: 1, limit: 20};
+
+                function bindChangeList(){ //@TODO: 切换已支持，但尚未支持切换参数，这部分功能转移到具体列表的附加控件来实现
+                    $('#diy-channge-list>li').click(function(evt){
+                        debugger;
+                        var listMode = $(this).data('list');
+                        switch (listMode) {
+                            case 'all':
+                                CURR_LIST_SOURCE_URL = '/getListData';
+                                CURR_LIST_SOURCE_ARGS = {p: 1, limit: 20};
+                                break;
+                            case 'alltagged':
+                                break;
+                            case 'tagged-recent':
+                                break;
+                            case 'tagged-max':
+                                break;
+                            case 'tagged-2':
+                                break;
+                            case 'tagged-0':
+                                CURR_LIST_SOURCE_URL = '/tu/getByNoTagged/20';
+                                CURR_LIST_SOURCE_ARGS = {};
+                                break;
+                        }
+                        listMode && getByNoTagged(renderList, renderError);
+                    });
+                }
 
                 function getByNoTagged(cb, errCb){
-                    $.get('/tu/getByNoTagged/20', function(j){
+                    var url = CURR_LIST_SOURCE_URL;
+                    var args = CURR_LIST_SOURCE_ARGS;
+                    $.get(url, args, function(j){
                         if (j.code == 0) {
                             if (j.data.constructor.name == 'Array') {
                                 cb.call(this, j.data);
@@ -113,8 +163,9 @@
                             <p>尺寸：@@width@@ x @@height@@</p>\
                             <div class="diy-tagged-icon diy-tagged-icon-hide"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>\
                         </div>';
+                    var tusArea = $('#diy-tus-area');
+                    tusArea.html('');
                     for (var i = 0; i < list.length; i ++) {
-                        var tusArea = $('#diy-tus-area');
                         var unitTpl = tplRender(tpl, list[i]);
                         tusArea.append(unitTpl);
                         var lastBox = tusArea.children('.diy-box').last();
@@ -254,6 +305,7 @@
                 }
 
                 getByNoTagged(renderList, renderError);
+                bindChangeList();
                 bindTagInput();
                 bindTagSubmit();
 
