@@ -125,7 +125,7 @@ class TuDo extends DIDo {
             $useTagged = (bool)(arg('useTagged', false));//是否使用tagged表进行超深挖掘
             $taggedLayer = intval(arg('taggedLayer', 0));//超深挖掘层数，当useTagged=true时有效
             $this->elseParams = compact('tags', 'useTagged', 'taggedLayer');
-            $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+            $tags = array_filter(array_unique(explode(',', preg_replace('/\s*,\s*/', ',', trim($tags)))));
             $tuIds = Tagged::digTabIdsByTags('tu', $tags, 'union', true, 'all', $useTagged, $taggedLayer);
             //分页
             $tuIds = array_slice($tuIds, ($p-1)*$limit, $limit);
@@ -151,7 +151,7 @@ class TuDo extends DIDo {
             $useTagged = (bool)(arg('useTagged', false));//是否使用tagged表进行超深挖掘
             $taggedLayer = intval(arg('taggedLayer', 0));//超深挖掘层数，当useTagged=true时有效
             $this->elseParams = compact('tags', 'useTagged', 'taggedLayer');
-            $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+            $tags = array_filter(array_unique(explode(',', preg_replace('/\s*,\s*/', ',', trim($tags)))));
             $tuIds = Tagged::digTabIdsByTags('tu', $tags, 'union', true, 'all', $useTagged, $taggedLayer);
             //分页
             $this->page = supermodel()->pager($p, $limit, $scope, count($tuIds));
@@ -214,7 +214,8 @@ class TuDo extends DIDo {
     
     //根据输入的标签，获取历史的打标签组合，及频率从高到低排序的相关标签。方便选择
     function getGroupsAndTopTagsByTag($tags = ''){
-        $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+        $tags = $tags ?: arg('tags', '');
+        $tags = array_filter(array_unique(explode(',', preg_replace('/\s*,\s*/', ',', trim($tags)))));
         $ret = Tagged::getGroupsAndTopTagsByTag('tu', $tags);
         putjson(0, $ret);
     }

@@ -25,7 +25,7 @@ class TuTag extends DIEntity {
     */
     static function setTags($tuId, $tags){
         $results = array();
-        $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+        $tags = array_filter(array_unique(explode(',', preg_replace('/\s*,\s*/', ',', trim($tags)))));
         foreach ($tags as $tag) {
             if (self::_saveNew($tuId, $tag)) {
                 array_push($results, $tag);

@@ -27,7 +27,7 @@ class Tagged extends DIEntity {
     //设置标签，并返回新设置的标签
     static function setTags($tabName, $tabId, $tags){
         $results = array();
-        $tags = array_filter(array_unique(explode(',', preg_replace('/\s/', '', $tags))));
+        $tags = array_filter(array_unique(explode(',', preg_replace('/\s*,\s*/', ',', trim($tags)))));
         foreach ($tags as $tag) {
             if (count(self::_saveNew($tabName, $tabId, $tag)) > 0) {
                 array_push($results, $tag);
