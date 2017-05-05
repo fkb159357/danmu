@@ -446,6 +446,10 @@
                     $('#diy-tag-submit').click(function(){
                         var tuIds = getTaggedTuIds();
                         var tags = getInputedTags();
+                        if (0 == tuIds.length || 0 == tags.length) {
+                            alert('没有选中的图或标签');
+                            return false;
+                        }
                         for (var i in tuIds) {
                             sendTagged(tuIds[i], tags);
                         }
