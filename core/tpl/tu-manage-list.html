@@ -289,12 +289,13 @@
                     var lastTuTagsBlock = $('#diy-last-tu-tags');
                     var exampleTagNode = lastTuTagsBlock.children('.diy-tag-example');
                     var lastTuIdSpan = $('#diy-last-tu-id>span');
+                    lastTuIdSpan.text(data.tuId);
+                    lastTuTagsBlock.find('.diy-tag:not(.diy-tag-example)').remove();
+                    lastTuTagsBlock.find('p').remove();
                     $.get('/tu/getTagsByTabId/' + data.tuId, function(j){
-                        lastTuIdSpan.text(data.tuId);
                         if (j.code == 0) {
-                            lastTuTagsBlock.find('.diy-tag:not(.diy-tag-example)').remove();
                             if (j.data.tags.constructor.name != 'Array') {
-                                lastTuTagsBlock.text('获取已打标签列表数据有误');
+                                lastTuTagsBlock.append('<p>获取已打标签列表数据有误</p>');
                                 return;
                             }
                             if (j.data.tags.length > 0) {
@@ -304,10 +305,10 @@
                                     lastTuTagsBlock.append(newTagNode);
                                 });
                             } else {
-                                lastTuTagsBlock.text('当前焦点图没有已打标签');
+                                lastTuTagsBlock.append('<p>当前焦点图没有已打标签</p>');
                             }
                         } else {
-                            lastTuTagsBlock.text(msg);
+                            lastTuTagsBlock.append('<p>' + msg + '</p>');
                         }
                         lastTuTagsArea.show();
                     }, 'json');
