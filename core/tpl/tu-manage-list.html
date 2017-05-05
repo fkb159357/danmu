@@ -304,7 +304,7 @@
                                     lastTuTagsBlock.append(newTagNode);
                                 });
                             } else {
-                                lastTuTagsBlock.text('当前选中图没有已打标签');
+                                lastTuTagsBlock.text('当前焦点图没有已打标签');
                             }
                         } else {
                             lastTuTagsBlock.text(msg);
@@ -328,7 +328,7 @@
                     box.click(function(evt){
                         toggleBox(box, data);//选中以便后续批量打标签
                         toggleFocusBox(box);//强调显示当前点击焦点的图
-                        showTagsOnToggleBox(box, data);//选中图时，显示当前图的已打标签
+                        showTagsOnToggleBox(box, data);//显示当前焦点图的已打标签
                         showTaggedTus();//显示已选中的图
                     });
                 }
