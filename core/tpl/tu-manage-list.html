@@ -21,6 +21,14 @@
                 text-align: left;
                 margin-bottom: 10px;
             }
+            .diy-box>.diy-box-tuid{
+                position: absolute;
+                top: 0;
+                left: 0;
+                font-size: 8px;
+                font-weight: bold;
+                color: darkgray;
+            }
             .diy-box>div.diy-tagged-icon{
                 position: absolute;
                 bottom: 3px;
@@ -36,6 +44,12 @@
                 margin-bottom: 10px;
             }
 
+            /* 已显示的图的区域 */
+            #diy-selected-tu-area{
+                margin-bottom: 10px;
+                display: none;
+            }
+
             /* 标签提交区 */
             #diy-tag-submit-area{
                 margin-bottom: 10px;
@@ -49,7 +63,31 @@
             #diy-inputed-tags>.diy-tag-example{
                 display: none;
             }
+            #diy-inputed-tags-clear-area{
+                margin-bottom: 10px;
+            }
+            #diy-tag-op-tip{
+                color: cadetblue;
+            }
             #diy-tag-clear-tagnodes{
+                display: none;
+            }
+
+            /* 当前焦点的图的已打标签 */
+            #diy-last-tu-tags-area{
+                margin-top: 10px;
+                display: none;
+            }
+            #diy-last-tu-tags>.diy-tag{
+                margin-bottom: 5px;
+                margin-right: 5px;
+            }
+            #diy-last-tu-tags>.diy-tag-example{
+                display: none;
+            }
+
+            /* 日志区 */
+            #diy-op-log-area{
                 display: none;
             }
         </style>
@@ -78,6 +116,15 @@
                             </ul>
                         </div>
                     </div>
+                    <!-- 当前焦点的图的已打标签 -->
+                    <div id="diy-last-tu-tags-area" class="row-fluid">
+                        <p id="diy-last-tu-id">当前焦点图ID：<span>0</span>，历史已有标签：</p>
+                        <div id="diy-last-tu-tags" class="well">
+                            <a class="diy-tag diy-tag-example btn btn-info">示例标签</a>
+                        </div>
+                    </div>
+                    <!-- 已选中的图的区域 -->
+                    <div id="diy-selected-tu-area" class="row-fluid"></div>
                     <!-- 提交标签 -->
                     <div id="diy-tag-submit-area" class="row-fluid form-inline">
                         <div class="form-group">
@@ -92,9 +139,10 @@
                     <div id="diy-inputed-tags" class="row-fluid">
                         <a class="diy-tag diy-tag-example btn btn-info">示例标签</a>
                     </div>
-                    <button id="diy-tag-clear-tagnodes" class="btn btn-primary">清空已选标签</button>
-                    <p class="row-fluid">注意：输入框及回车选定的标签，将合并提交</p>
-                    
+                    <div id="diy-inputed-tags-clear-area" class="row-fluid">
+                        <button id="diy-tag-clear-tagnodes" class="btn btn-primary">清空已选标签</button>
+                        <p id="diy-tag-op-tip">注意：输入框及回车选定的标签，将合并提交</p>
+                    </div>
                     <!-- 操作日志 -->
                     <div id="diy-op-log-area" class="row-fluid well"></div>
                     <!-- 其它操作 -->
@@ -167,6 +215,7 @@
                             <p>文件：@@savefile@@</p>\
                             <p>尺寸：@@width@@ x @@height@@</p>\
                             <p>大小：@@filesize@@ Bytes</p>\
+                            <div class="diy-box-tuid">Id: @@tuId@@</span></div>\
                             <div class="diy-tagged-icon diy-tagged-icon-hide"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></div>\
                         </div>';
                     var tusArea = $('#diy-tus-area');
@@ -217,18 +266,70 @@
                     alert(msg);
                 }
 
-                function initBox(box, data){
-                    box.click(function(evt){ //选中以批量打标签
-                        var taggedIcon = box.children('div.diy-tagged-icon').first();
-                        if ($(this).data('tagged') == '1') {
-                            taggedIcon.addClass('diy-tagged-icon-hide');
-                            $(this).data('tagged', 0);
-                            $(this).attr('data-tagged', 0);
+                function toggleBox(box, data){
+                    var taggedIcon = box.children('div.diy-tagged-icon').first();
+                    if (box.data('tagged') == '1') {
+                        taggedIcon.addClass('diy-tagged-icon-hide');
+                        box.data('tagged', 0);
+                        box.attr('data-tagged', 0);
+                    } else {
+                        taggedIcon.removeClass('diy-tagged-icon-hide');
+                        box.data('tagged', 1);
+                        box.attr('data-tagged', 1);
+                    }
+                }
+
+                function toggleFocusBox(box){
+                    $('#diy-tus-area>.diy-box').css('border-color', '');
+                    box.css('border-color', 'dodgerblue');
+                }
+
+                function showTagsOnToggleBox(box, data){
+                    var lastTuTagsArea = $('#diy-last-tu-tags-area');
+                    var lastTuTagsBlock = $('#diy-last-tu-tags');
+                    var exampleTagNode = lastTuTagsBlock.children('.diy-tag-example');
+                    var lastTuIdSpan = $('#diy-last-tu-id>span');
+                    $.get('/tu/getTagsByTabId/' + data.tuId, function(j){
+                        lastTuIdSpan.text(data.tuId);
+                        if (j.code == 0) {
+                            lastTuTagsBlock.find('.diy-tag:not(.diy-tag-example)').remove();
+                            if (j.data.tags.constructor.name != 'Array') {
+                                lastTuTagsBlock.text('获取已打标签列表数据有误');
+                                return;
+                            }
+                            if (j.data.tags.length > 0) {
+                                $.each(j.data.tags, function(i, e){
+                                    var newTagNode = exampleTagNode.clone();
+                                    newTagNode.removeClass('diy-tag-example').text(e);
+                                    lastTuTagsBlock.append(newTagNode);
+                                });
+                            } else {
+                                lastTuTagsBlock.text('当前选中图没有已打标签');
+                            }
                         } else {
-                            taggedIcon.removeClass('diy-tagged-icon-hide');
-                            $(this).data('tagged', 1);
-                            $(this).attr('data-tagged', 1);
+                            lastTuTagsBlock.text(msg);
                         }
+                        lastTuTagsArea.show();
+                    }, 'json');
+                }
+
+                function showTaggedTus(){
+                    var area = $('#diy-selected-tu-area');
+                    var ids = getTaggedTuIds();
+                    if (ids.length > 0) {
+                        area.html('<p>已选中的图ID有：<font color="red">' + ids.join('、') + '</font>，这些图可批量打入标签。</p>');
+                        area.show();
+                    } else {
+                        area.html('').hide();
+                    }
+                }
+
+                function initBox(box, data){
+                    box.click(function(evt){
+                        toggleBox(box, data);//选中以便后续批量打标签
+                        toggleFocusBox(box);//强调显示当前点击焦点的图
+                        showTagsOnToggleBox(box, data);//选中图时，显示当前图的已打标签
+                        showTaggedTus();//显示已选中的图
                     });
                 }
 
@@ -294,6 +395,7 @@
                     });
                     $('#diy-tag-clear-tagnodes').click(function(evt){ //清空已选标签
                         $('#diy-inputed-tags>.diy-tag:not(.diy-tag-example)').remove();
+                        $(this).hide();
                     });
                     setInterval(function(){ //维护清空标签按钮的状态
                         var tagsByNode = getInputedTagsByNode();
@@ -335,6 +437,7 @@
                         var oneLogBlock = logArea.find('div[data-logid=' + logId + ']');
                         oneLogBlock.append('<p>' + log + '</p>');
                         oneLogBlock.find('span.diy-log-loading').remove();
+                        logArea.show();
                     }, 'json');
                 }
 
