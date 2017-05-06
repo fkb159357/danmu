@@ -135,10 +135,6 @@ abstract class DIModel extends DIBase implements DIModelTemplate {
 	}
 	
 	final function delete(array $cond){
-if ($_GET['__HEHE__'] == 1) {
-    var_dump(array('cond'=>$cond, 'this'=>$this));
-    die;
-}
 		//填写模板套用过程，并在DIModelTemplate中声明这些模板方法
 		if (empty($cond)) return false;
 		return $this->_driver_handler->delete($cond);
