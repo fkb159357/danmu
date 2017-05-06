@@ -257,6 +257,8 @@ class DIMySQL implements DIModelTemplate {
     }
     
     function delete(array $cond){
+//TEST
+if ($_REQUEST['__HEHE__']==1)die("DELETE FROM ".$this->table.$this->_where( $cond ));
         if(empty($cond)) return false;
         return $this->execute("DELETE FROM ".$this->table.$this->_where( $cond ));
     }
