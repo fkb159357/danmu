@@ -592,10 +592,9 @@ class TestDo extends DIDo{
         $sql = "select tgd.id from dm_tu tu, dm_tag tg, dm_tagged tgd where tu.id = tgd.tab_id and tg.id = tgd.tag_id and tgd.tab_name = 'tu' and tag in ('金馆长','装逼','吃屎','你要的屎') and tgd.tab_id in (1713,1712,1711,1710,1709,1708,1707,1706,1705,1704,1703,1702,1701,1700)";
         $list = supermodel()->query($sql);
         var_dump($list);
-        die;
         dump($list);
         foreach ($list as $v) {
-            var_dump(supertable('Tagged')->delete(array('id' => $v['id'])));
+            var_dump(supertable('Tagged')->delete(array('id' => $v->id)));
             echo '<br>';
         }
     }
