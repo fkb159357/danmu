@@ -589,6 +589,8 @@ class TestDo extends DIDo{
         $list = supermodel()->query($sql);
         dump($list);
         foreach ($list as $v) {
+            var_dump(supertable('Tagged'));
+            continue;
             var_dump(supertable('Tagged')->delete(array('id' => $v['id'])));
             echo '<br>';
         }
