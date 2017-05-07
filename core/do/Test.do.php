@@ -443,6 +443,9 @@ class TestDo extends DIDo{
 	}
 	
 	function hehe(){
+		$list = Tagged::getRecent('tu');
+		dump($list);
+		die;
 	    //根据数据ID获取对应标签
 	    $list = Tagged::getTagsByTabId('tu', 375);
 	    dump($list);
@@ -595,6 +598,5 @@ class TestDo extends DIDo{
             echo '<br>';
         }
     }
-
 
 }
