@@ -443,7 +443,7 @@ class TestDo extends DIDo{
 	}
 	
 	function hehe(){
-		$list = Tagged::getRecent('tu');
+		$list = Tagged::getHistory('tu');
 		dump($list);
 		die;
 	    //根据数据ID获取对应标签
