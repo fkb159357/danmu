@@ -188,8 +188,8 @@ class Tagged extends DIEntity {
     }
 
 
-    //获取指定对象的最近打标签的记录
-    static function getRecent($tabName, array $option = array()){
+    //获取指定对象的打标签记录
+    static function getHistory($tabName, array $option = array()){
         @$uid = $option['uid'] ?: 0;
         @$tabId = $option['tabId'] ?: 0;
         @$tagId = $option['tagId'] ?: 0;
