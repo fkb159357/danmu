@@ -186,5 +186,19 @@ class Tagged extends DIEntity {
         foreach ($list as $v) $tabIds[] = $v->tab_id;
         return $tabIds;
     }
+
+
+    //获取指定对象的最近打标签的记录
+    static function getRecent($tabName, array $option = array()){
+        @$uid = $option['uid'] ?: 0;
+        @$tabId = $option['tabId'] ?: 0;
+        @$tagId = $option['tagId'] ?: 0;
+        @$page = $option['page'] ?: 1;
+        @$limit = $option['limit'] ?: 10;
+        @$scope = $option['scope'] ?: 10;
+        $tgdObj = supertable('Tagged');
+        $list = $tgdObj->select(array('tab_name' => $tabName), 'tag_id, tab_id, settime, setuid', 'settime DESC', array($page, $limit, 10)) ?: array();
+        return $list;
+    }
     
 }
