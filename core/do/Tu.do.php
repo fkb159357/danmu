@@ -136,6 +136,13 @@ class TuDo extends DIDo {
     }
 
 
+    //按id获取图数据
+    function getById($id){
+        $info = Tu::getInfoById($id);
+        putjson($info);
+    }
+
+
     //通用列表
     function getList($p = 1, $limit = 5, $scope = 10){
         $tu = supertable('Tu');
