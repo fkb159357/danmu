@@ -14,8 +14,8 @@ class Tourist extends DIEntity {
         }
     
         $M = DIModelUtil::supertable('Tourist');
-        $tourist = $M->find(compact('ip'));
-        $vtime = empty($tourist) ? false : $tourist->vtime;
+        $tourist = $M->find(compact('ip')) ?: array();
+        $vtime = empty($tourist) ? false : $tourist['vtime'];
     
         if ($vtime >= strtotime(date('Y-m-d'))) {
             //今天已上报过

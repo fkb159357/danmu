@@ -24,14 +24,14 @@ class DanmuDo extends TemplateDo {
             exit;
         }
         
-        $M = DIModelUtil::supertable('Tourist');
-        $tourist = $M->find(compact('ip'));
+        $M = supertable('Tourist');
+        $tourist = $M->find(compact('ip')) ?: array();
         //防止本地测试时一直都是在启动页不跳转
         if ($ip == '127.0.0.1') {
             false === $tourist ? $M->insert(array('ip'=>$ip,'vtime'=>time())) : $M->update(compact('ip'), array('vtime'=>time()));
         }
         
-        $vtime = empty($tourist) ? false : $tourist->vtime;
+        $vtime = empty($tourist) ? false : $tourist['vtime'];
         if ($vtime >= strtotime(date('Y-m-d'))-1209600) {
             $this->gen();
         } else {
@@ -62,7 +62,13 @@ class DanmuDo extends TemplateDo {
         (int)$skin || $skin = 0;
         (int)$fontsize || $fontsize = 18;
         $topic = 0;
-        $uid = session_exists(DM_SESSION_MY) ? session(DM_SESSION_MY)->id : 0;
+        if (session_exists(DM_SESSION_MY)) {
+            $sessionMy = session(DM_SESSION_MY);
+            $uid = $sessionMy['id'];
+        } else {
+            $uid = 0;
+        }
+        //$uid = session_exists(DM_SESSION_MY) ? session(DM_SESSION_MY)->id : 0;
         $cretime = time();
         $createip = getip();
         
@@ -93,7 +99,7 @@ class DanmuDo extends TemplateDo {
         $nameArr = array('某UP', '懒货UP', '二货UP', '闲人UP', '阿卡林', '印度阿三', '唐僧', '元首', '小黄', '德国BOY', '王尼玛', 'AC娘', '比利海灵顿', '脱裤哥', '100块小红帽', '瓜子哥', '井叉蜀黍', '劳资', '菊花的表哥', '金坷垃');
         $preName = $nameArr[rand(0, count($nameArr)-1)];
         ! $vname && $vname = $preName . ' (' . Api_ip::get_client_ip() . ') 于 [' . date('Y-m-d H:i:s') . '] 生成';
-        $id = DIModelUtil::supertable('Danmu')->insert(compact('v_url', 'd_url', 'player', 'skin', 'vname', 'topic', 'uid', 'cretime', 'createip'));
+        $id = supertable('Danmu')->insert(compact('v_url', 'd_url', 'player', 'skin', 'vname', 'topic', 'uid', 'cretime', 'createip'));
         
         if (!is_numeric($id)) {
             putjson(0, null, '生成失败');
@@ -129,14 +135,14 @@ class DanmuDo extends TemplateDo {
         }
         $conds = compact('id');
         if (! User::isLogin()) $conds['hide'] = 0;//游客不能看隐藏内容
-        $danmu = DIModelUtil::supertable('Danmu')->find($conds);
+        $danmu = DIModelUtil::supertable('Danmu')->find($conds) ?: array();
         if (empty($danmu)) {
             dispatch(DI_PAGE_404);
         }
         
-        $danmu->swf = preg_replace(array('/\[flash=\d{1,}\,\d{1,}\]/', '/\[\/flash\]/'), '', $danmu->ubb);
+        $danmu['swf'] = preg_replace(array('/\[flash=\d{1,}\,\d{1,}\]/', '/\[\/flash\]/'), '', $danmu['ubb']);
         $args = func_get_args();
-        if (empty($danmu->swf) || isset($args[1])) {
+        if (empty($danmu['swf']) || isset($args[1])) {
             $fontsize < 5 && $fontsize = 18;//防止字体过小
             if (3 == $danmu->player) {
                 $ret = Danmu::ubb3($id, $fontsize);
@@ -147,10 +153,10 @@ class DanmuDo extends TemplateDo {
             }
             
             if (false === $ret) {
-                $danmu->swf = '';//数据格式错误，生成失败
+                $danmu['swf'] = '';//数据格式错误，生成失败
             } else {
-                $danmu->ubb = $ret['ubb'];
-                $danmu->swf = $ret['swf'];
+                $danmu['ubb'] = $ret['ubb'];
+                $danmu['swf'] = $ret['swf'];
             }
         }
         
@@ -174,11 +180,11 @@ class DanmuDo extends TemplateDo {
         $modtime = time();
         
         $D = supertable('Danmu');
-        $danmu = $D->find(compact('id'));
+        $danmu = $D->find(compact('id')) ?: array();
         if (! $danmu) putjson(0, null, '内容不存在');
         if (!(@$my = User::isLogin())) putjson(0, null, '登录后才能修改');
         file_put_contents(DI_LOG_PATH.'debug.txt', var_export(array($danmu, $my), true));
-        !! $danmu->uid && $danmu->uid != $my->id && putjson(0, null, '你只能修改自己的');
+        !! $danmu['uid'] && $danmu['uid'] != $my['id'] && putjson(0, null, '你只能修改自己的');
         
         $D->update(compact('id'), compact('vname', 'v_url', 'd_url', 'player', 'skin', 'modtime'));
         if (3 == $player) {
@@ -227,15 +233,15 @@ class DanmuDo extends TemplateDo {
                 if ('return' == $output) return false; 
             } else {
                 $this->isme = true;//确认当前用户进入本人列表
-                $elseconds .= " AND `uid` = '{$mySession->id}' ";
+                $elseconds .= " AND `uid` = '{$mySession['id']}' ";
             }
         }
         
         $D = DIModelUtil::supertable('Danmu');
         $count_sql = "SELECT COUNT(*) AS cnt FROM {$D->table}
             WHERE (`id` LIKE :id OR `vname` LIKE :vname) AND ({$elseconds})";
-        $count_rs = $D->query($count_sql, $conds);
-        $count = !empty($count_rs) ? $count_rs[0]->cnt : false;
+        $count_rs = $D->query($count_sql, $conds) ?: array();
+        $count = !empty($count_rs) ? $count_rs[0]['cnt'] : false;
         
         $danmus = array();
         $pager = $D->pager(1, 10, 10, 0);
@@ -247,12 +253,12 @@ class DanmuDo extends TemplateDo {
                 WHERE (`id` LIKE :id OR `vname` LIKE :vname) AND ({$elseconds})
                 ORDER BY `cretime` DESC 
                 LIMIT {$offset}, {$limit} ";
-            $danmus = $D->query($presql, $conds);
+            $danmus = $D->query($presql, $conds) ?: array();
         }
 
         foreach ($danmus as &$d) {
-            $d->link = DI_URL_PREFIX . 'av' . $d->id;
-            $d->firstword = Danmu::getFaceWord($d->vname);
+            $d['link'] = DI_URL_PREFIX . 'av' . $d['id'];
+            $d['firstword'] = Danmu::getFaceWord($d['vname']);
         }
  
         if ('return' == $output) {
@@ -281,9 +287,9 @@ class DanmuDo extends TemplateDo {
         }
         
         if (!(@$my = User::isLogin())) putjson(0, null, '登录后才能删除');
-        $danmu = supertable('Danmu')->find(compact('id'));
+        $danmu = supertable('Danmu')->find(compact('id')) ?: array();
         if (! $danmu) putjson(0, null, '内容不存在');
-        $danmu->uid != $my->id && putjson(0, null, '你只能删除自己的');
+        $danmu['uid'] != $my['id'] && putjson(0, null, '你只能删除自己的');
         
         
         $opt = DIModelUtil::supertable('Danmu')->delete(compact('id'));
@@ -302,22 +308,22 @@ class DanmuDo extends TemplateDo {
      * @since 2014-12-30
      */
     function load($id, $fontsize = 18){
-        $d = DIModelUtil::supertable('Danmu')->find(compact('id'));
-        if (empty($d->d_url) || !preg_match('/^http\:\/\/.+\.(xml|json|ass)$/', $d->d_url)) {
+        $d = DIModelUtil::supertable('Danmu')->find(compact('id')) ?: array();
+        if (empty($d['d_url']) || !preg_match('/^http\:\/\/.+\.(xml|json|ass)$/', $d['d_url'])) {
             $flag = false;
-            $d->d_url = 'http://comment.bilibili.com/73345.xml';
+            $d['d_url'] = 'http://comment.bilibili.com/73345.xml';
         }
         
-        $d_local = preg_match('/(127\.0\.0\.\d{1,3}|localhost)+/', $d->d_url);
-        $d_172_192 = preg_match('/(172\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})+/', $d->d_url);
+        $d_local = preg_match('/(127\.0\.0\.\d{1,3}|localhost)+/', $d['d_url']);
+        $d_172_192 = preg_match('/(172\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3})+/', $d['d_url']);
         $host_local = preg_match('/127\.0\.0\.\d{1,3}|localhost/', $_SERVER['HTTP_HOST']);
         $host_172_192 = preg_match('/172\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}/', $_SERVER['HTTP_HOST']);
         if ($d_local&&!$host_local || $d_172_192&&!$host_local&&!$host_172_192) {
-            header("Location: {$d->d_url}");
+            header("Location: {$d['d_url']}");
             exit;
         }
 
-        $xml = Danmu::curlxml($d->d_url);
+        $xml = Danmu::curlxml($d['d_url']);
         $xml = Danmu::modFontsize($xml, $fontsize);
         
         header('Content-type:text/xml; charset=uft-8');

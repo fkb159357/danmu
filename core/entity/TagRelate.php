@@ -51,12 +51,12 @@ class TagRelate extends DIEntity {
         $tagRelObj = supertable('TagRelate');
         $sql = "SELECT tag_id, reltag_id FROM {$tagRelObj->table}
                 WHERE ( tag_id IN ({$tagIdsIn}) OR reltag_id IN ({$relTagIdsIn}) ) {$relationSql} ";
-        $list = $tagRelObj->query($sql, $sqlConds);
+        $list = $tagRelObj->query($sql, $sqlConds) ?: array();
         //组装结果
         $resultTagIds = array();
         foreach ($list as $v) {
-            $resultTagIds[] = $v->tag_id;
-            $resultTagIds[] = $v->reltag_id;
+            $resultTagIds[] = $v['tag_id'];
+            $resultTagIds[] = $v['reltag_id'];
         }
         return array_unique($resultTagIds);
     }

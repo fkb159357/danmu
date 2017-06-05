@@ -21,13 +21,13 @@ class Rootist extends DIEntity {
         $M = DIModelUtil::supertable('Rootist');
         
         //同一个IP上报频率限制
-        $needcheck = $M->select(compact('ip'), 'vtime,uid', 'vtime DESC', intval($limit));
-        empty($needcheck) && $needcheck = array();
+        $needcheck = $M->select(compact('ip'), 'vtime,uid', 'vtime DESC', intval($limit)) ?: array();
+        //empty($needcheck) && $needcheck = array();
         $now = time();
         $start = $now - intval($gap);
         $realnum = 0;//记录同UID同IP的上报次数
         foreach ($needcheck as $nc) {
-            if ($start <= intval($nc->vtime) && $uid == intval($nc->uid)) {
+            if ($start <= intval($nc['vtime']) && $uid == intval($nc['uid'])) {
                 $realnum ++;
             }
         }

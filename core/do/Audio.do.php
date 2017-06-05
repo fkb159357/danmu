@@ -97,7 +97,7 @@ class AudioDo extends DIDo {
         $sql = "SELECT singerid, singer, avatar FROM `dm_audio5sing` AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM `dm_audio5sing`)-(SELECT MIN(id) FROM `dm_audio5sing`))+(SELECT MIN(id) FROM `dm_audio5sing`)) AS id) AS t2 WHERE t1.id >= t2.id LIMIT {$num}";
         $rs = supermodel()->query($sql);
         foreach ($rs as $r) {
-            $map[$r->singerid] = $r;
+            $map[$r['singerid']] = $r;
         }
         if (count($map) < $num && $layer < $maxLayer) {
             $this->randAvatars($num, $map, $layer + 1, $maxLayer);

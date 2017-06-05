@@ -7,9 +7,8 @@ class TmpDo extends DIDo {
         return;//关闭
         
         $m = supertable('Audio5sing');
-        $d = $m->query('select * from dm_audio5sing where id>354');
+        $d = $m->query('select * from dm_audio5sing where id>354') ?: array();
         foreach ($d as &$dd) {
-            $dd = (array) $dd;
             unset($dd['id']);
         }
         

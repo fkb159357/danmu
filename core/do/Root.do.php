@@ -15,10 +15,9 @@ class RootDo extends TemplateDo {
     //非ROOTER页面：游客当天最初访问记录(Tourist表，IP有唯一索引)
     function tourist($page=1, $persize=10, $pagescope=20){
         $T = DIModelUtil::supertable('Tourist');
-        $ts = $T->select('', '', 'vtime DESC,id DESC', array($page, $persize, $pagescope));
-        empty($ts) && $ts = array();
+        $ts = $T->select('', '', 'vtime DESC,id DESC', array($page, $persize, $pagescope)) ?: array();
         foreach ($ts as &$t) {
-            $t->vtime = date('Y-m-d H:i:s', $t->vtime);
+            $t['vtime'] = date('Y-m-d H:i:s', $t['vtime']);
         }
         $this->tourists = $ts;
         $this->pager = $T->page;
@@ -30,10 +29,9 @@ class RootDo extends TemplateDo {
     //ROOTER页面：所有用户(包括游客)访问记录(Rootist表，IP没有唯一索引)
     function rootist($page = 1, $persize = 10, $pagescope = 20){
         $R = DIModelUtil::supertable('Rootist');
-        $rs = $R->select('', '', 'vtime DESC, ip DESC', array($page, $persize, $pagescope));//注意，这里的ip DESC没错，就按IP二级排序，不是上面的id DESC
-        empty($rs) && $rs = array();
+        $rs = $R->select('', '', 'vtime DESC, ip DESC', array($page, $persize, $pagescope)) ?: array();//注意，这里的ip DESC没错，就按IP二级排序，不是上面的id DESC
         foreach ($rs as &$r) {
-            $r->vtime = date('Y-m-d H:i:s', $r->vtime);
+            $r['vtime'] = date('Y-m-d H:i:s', $r['vtime']);
         }
         $this->rootists = $rs;
         $this->pager = $R->page;

@@ -101,11 +101,11 @@ class TuDo extends DIDo {
     //获取所有标签
     function getAllTags($page = 1, $limit = 0){
         $limitArr = (0 === $limit) ? null : array(max($page,1), $limit, 10);
-        $list = supertable('Tag')->select(array(), 'tag, pure_tag', null, $limitArr);
+        $list = supertable('Tag')->select(array(), 'tag, pure_tag', null, $limitArr) ?: array();
         $tags = array();
         foreach ($list as $v) {
-            if (! in_array($v->tag, $tags)) $tags[] = $v->tag;
-            if (! in_array($v->pure_tag, $tags)) $tags[] = $v->pure_tag;
+            if (! in_array($v['tag'], $tags)) $tags[] = $v['tag'];
+            if (! in_array($v['pure_tag'], $tags)) $tags[] = $v['pure_tag'];
         }
         putjson(0, compact('tags'));
     }
@@ -120,7 +120,7 @@ class TuDo extends DIDo {
         if (empty($tags)) {
             $retList = $tuObj->select('', 'id', 'id DESC', array($p, $limit, 10)) ?: array();
             $tuIds = array();
-            foreach ($retList as $v) $tuIds[] = $v->id;
+            foreach ($retList as $v) $tuIds[] = $v['id'];
         } else { //进入标签搜索模式
             $useTagged = (bool)(arg('useTagged', false));//是否使用tagged表进行超深挖掘
             $taggedLayer = intval(arg('taggedLayer', 0));//超深挖掘层数，当useTagged=true时有效
@@ -176,7 +176,7 @@ class TuDo extends DIDo {
         $tuObj = supertable('Tu');
         $tuTagObj = supertable('TuTag');
         if ($id) {
-        	$tu = $tuObj->find(compact('id'), 'id tuId, filename, url');
+        	$tu = $tuObj->find(compact('id'), 'id tuId, filename, url') ?: array();
         	$this->list = array($tu);
         } else { //支持简单、非深度挖掘
             $tuIds = Tagged::digTabIdsByTags('tu', explode(',', $tags), 'union', true, 'all');
@@ -226,6 +226,21 @@ class TuDo extends DIDo {
         $ret = Tagged::getGroupsAndTopTagsByTag('tu', $tags);
         putjson(0, $ret);
     }
+
+
+    //获取打标签历史
+    function getTaggedHistory(){
+        if (arg('api') == 1) {
+            $opt = array();
+            if (arg('uid')) $opt['uid'] = arg('uid');
+            if (arg('tabId')) $opt['tabId'] = arg('tabId');
+            if (arg('tagId')) $opt['tagId'] = arg('tagId');
+            if (arg('page')) $opt['page'] = arg('page');
+            if (arg('limit')) $opt['limit'] = arg('limit');
+            if (arg('scope')) $opt['scope'] = arg('scope');
+            putjson(0, Tu::getTaggedHistory($opt));
+        }
+    }
     
     
     function del(){
@@ -245,8 +260,8 @@ class TuDo extends DIDo {
         //插入tag表(tag+raw_tag字段要唯一)
         foreach ($list as $v) {
             $data = array(
-                'tag' => $v->tag,
-                'pure_tag' => Tag::getPureTag($v->tag),
+                'tag' => $v['tag'],
+                'pure_tag' => Tag::getPureTag($v['tag']),
             );
             $find = supertable('Tag')->find($data);
             if (empty($find)) {
@@ -262,15 +277,15 @@ class TuDo extends DIDo {
         //作tag表MAP，tag=>[id1,id2]
         $tagMap = array();
         $pureTagMap = array();
-        $list = supertable('Tag')->select();
+        $list = supertable('Tag')->select() ?: array();
         foreach ($list as $v) {
-            $tagMap[$v->tag][] = $v->id;
-            $pureTagMap[$v->pure_tag][] = $v->id;
+            $tagMap[$v['tag']][] = $v['id'];
+            $pureTagMap[$v['pure_tag']][] = $v['id'];
         }
         //分段取TuTag源
         $limit = 150;
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
-        $list = supertable('TuTag')->select(array(), '', null, array($page, $limit, 10));
+        $list = supertable('TuTag')->select(array(), '', null, array($page, $limit, 10)) ?: array();
         $pager = supertable('TuTag')->pager($page, $limit, 10, supertable('TuTag')->count(array()));
         echo "当前进度页码：{$page} / {$pager['total_page']} <br>";
         $page = ($page >= $pager['total_page']) ? 1 : ($page + 1); 
@@ -278,15 +293,15 @@ class TuDo extends DIDo {
         //插入tagged表
         foreach ($list as $v) {
             foreach (array('tagMap', 'pureTagMap') as $mapName) {
-                if (! isset(${$mapName}[$v->tag])) continue;
-                $tagIdList = ${$mapName}[$v->tag];
-                foreach (${$mapName}[$v->tag] as $vTagId) {
+                if (! isset(${$mapName}[$v['tag']])) continue;
+                $tagIdList = ${$mapName}[$v['tag']];
+                foreach (${$mapName}[$v['tag']] as $vTagId) {
                     $data = array(
                         'tag_id' => $vTagId,
-                        'tab_id' => $v->tu_id,
+                        'tab_id' => $v['tu_id'],
                         'tab_name' => 'tu',
                     );
-                    $find = supertable('Tagged')->find($data);
+                    $find = supertable('Tagged')->find($data) ?: array();
                     if (empty($find)) {
                         supertable('Tagged')->insert($data);
                     }
@@ -300,7 +315,7 @@ class TuDo extends DIDo {
     function importTaggedDataToTagRelate(){
         /* $limit = 150;
         $page = session(__CLASS__.__FUNCTION__.'page') ?: 1;
-        $list = supertable('Tagged')->select(array(), '', null, array($page, $limit, 10));
+        $list = supertable('Tagged')->select(array(), '', null, array($page, $limit, 10)) ?: array();
         $pages = supertable('Tagged')->page;
         echo "当前进度页码：{$page} / {$pages['total_page']} <br>";
         $page = ($page >= $pages['total_page']) ? 1 : ($page + 1);

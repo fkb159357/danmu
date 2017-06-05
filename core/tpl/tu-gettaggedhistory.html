@@ -1,0 +1,18 @@
+<div>
+
+</div>
+<script>
+$(function(){
+    var url = '/getTaggedHistory';
+    var req = {
+        api: 1
+    };
+    $.getJSON(url, req, function(j){
+        if (j.code == 0) {
+            $.each(j.list, function(i, e){
+                
+            });
+        }
+    });
+});
+</script>

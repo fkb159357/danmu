@@ -9,7 +9,7 @@ class TuTag extends DIEntity {
         	'tu_id' => $tuId,
             'tag' => $tag,
             'settime' => time(),
-            'setuid' => ($info = User::isLogin()) ? $info->id : 0,
+            'setuid' => ($info = User::isLogin()) ? $info['id'] : 0,
         );
         try {
             $lastId = supertable('TuTag')->insert($tt);

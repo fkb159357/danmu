@@ -15,10 +15,10 @@ class Audio5sing extends DIEntity {
      */
     static function parseSong($addr, $force = 0){
         $songid = self::getSongID($addr);
-        $find = DIModelUtil::supertable('Audio5sing')->find(compact('songid'));//该值后面还会用到
-        if (is_object($find) && self::checkSongValid($find->file) && ! $force) {
-            unset($find->id);
-            return (array)$find;
+        $find = DIModelUtil::supertable('Audio5sing')->find(compact('songid')) ?: array();//该值后面还会用到
+        if ($find && self::checkSongValid($find['file']) && ! $force) {
+            unset($find['id']);
+            return $find;
         }
         
         $flag = false;
@@ -53,8 +53,8 @@ class Audio5sing extends DIEntity {
                     $data['singer'] = pq(".user.lt>a:eq(0)")->attr('title');
                     $data['avatar'] = pq(".user.lt>a>img:eq(0)")->attr('src');
                 }
-                if (is_object($find) && $find->file!=$data['file']) {
-                    self::syncSong($data, (array)$find);
+                if ($find && $find['file']!=$data['file']) {
+                    self::syncSong($data, $find);
                 } else {
                     DIModelUtil::supertable('Audio5sing')->insert($data);
                 }
@@ -70,10 +70,10 @@ class Audio5sing extends DIEntity {
      * 通过移动端的WebView抓取
      */
     static function parseSong2($songid, $songtype = 'fc'){
-        $find = DIModelUtil::supertable('Audio5sing')->find(compact('songid'));//该值后面还会用到
-        if (is_object($find) && self::checkSongValid($find->file)) {
-            unset($find->id);
-            return (array)$find;
+        $find = DIModelUtil::supertable('Audio5sing')->find(compact('songid')) ?: array();//该值后面还会用到
+        if ($find && self::checkSongValid($find['file'])) {
+            unset($find['id']);
+            return $find;
         }
         
         $str = "http://5sing.kugou.com/m/detail/$songtype-$songid-1.html";
@@ -91,27 +91,34 @@ class Audio5sing extends DIEntity {
 
         import('phpQuery/phpQuery');
         phpQuery::newDocumentHTML($src);
-        $text_title = pq('title:eq(0)')->text();
+        $songname = pq('title:eq(0)')->text();
+        preg_match('/content\=\"(.+)最新力作，/', $src, $matches);
+        $singer = str_replace($songname, '', $matches[1]);
+        /*$text_title = pq('title:eq(0)')->text();
         $arr_title = explode('-', $text_title);
         $songname = trim($arr_title[0]);
         $singer = trim($arr_title[1]);
-        $avatar = pq('.m_head>img:eq(0)')->attr('src');
+        $avatar = pq('.m_head>img:eq(0)')->attr('src');*/
+        $avatar = pq('div:first>img:first')->attr('src');
         
-        preg_match('/m\/space\/\d+\.html/', $src, $matches);
+        /*preg_match('/m\/space\/\d+\.html/', $src, $matches);
         !empty($matches) && preg_match('/\d+/', $matches[0], $matches);
-        $singerid = !empty($matches) ? $matches[0] : false;
+        $singerid = !empty($matches) ? $matches[0] : false;*/
+        preg_match('/singerId\s*:\s*"(\d+)"\s*,/i', $src, $matches);
+        $singerid = $matches[1];
 
-        preg_match('|"href","(.*)"|U', $src, $mp3);
-        $mp3= str_replace('data','img',$mp3);
-        $file = !empty($mp3) ? $mp3[1] : false;
+        /*preg_match('|"href","(.*)"|U', $src, $mp3);
+        $mp3 = str_replace('data','img',$mp3);
+        $file = !empty($mp3) ? $mp3[1] : false;*/
+        $file = pq('audio:first')->attr('src');
 
         $data = compact(
             'songid', 'songtype', 'songname', 'file',
             'singerid', 'singer', 'avatar'
         );
 
-        if (is_object($find) && $find->file!=$data['file']) {
-            self::syncSong($data, (array)$find);
+        if ($find && $find['file']!=$data['file']) {
+            self::syncSong($data, $find);
         } else {
             DIModelUtil::supertable('Audio5sing')->insert($data);
         }
@@ -234,8 +241,8 @@ class Audio5sing extends DIEntity {
         	@$songtype = $arr[0];
         	@$songid = $arr[1];
         	if (!!$songtype && !!$songid) {
-        	    $find = $M->find(compact('songid'));
-        	    if (is_object($find)) {
+        	    $find = $M->find(compact('songid')) ?: array();
+        	    if ($find) {
         	        $songs[] = $find;
         	    } else {
             	    $info = Audio5sing::parseSong2($songid, $songtype);

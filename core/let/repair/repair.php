@@ -1,5 +1,5 @@
 <?php
-if (! (@$my = User::isLogin()) || ! Rooter::isRooter($my->passport)) putalert('你不是管理员或未登录');
+if (! (@$my = User::isLogin()) || ! Rooter::isRooter($my['passport'])) putalert('你不是管理员或未登录');
 
 //指定开发环境和线上环境不进行安装操作，直接跳到首页。配置详见Install.filter.php
 $ret = call_user_func_array(array(new InstallFilter, 'in_ignore'), array());

@@ -14,9 +14,9 @@ class Tagged extends DIEntity {
             	'tag_id' => $vTagId,
             );
             $data = $conds + array(
-                'setuid' => ($info = User::isLogin()) ? $info->id : 0,
+                'setuid' => ($info = User::isLogin()) ? $info['id'] : 0,
             );
-            $find = supertable('Tagged')->find($conds);
+            $find = supertable('Tagged')->find($conds) ?: array();
             if (empty($find)) {
                 $newTaggedIdList[] = supertable('Tagged')->insert($data);
             }
@@ -43,14 +43,14 @@ class Tagged extends DIEntity {
     static function getTagsByTabId($tabName, $tabId){
         $tagObj = supertable('Tag');
         $taggedObj = supertable('Tagged');
-        $tagDataList = $taggedObj->select(array('tab_id' => $tabId), 'tag_id');
+        $tagDataList = $taggedObj->select(array('tab_id' => $tabId), 'tag_id') ?: array();
         $sql = "SELECT t.tag, t.pure_tag FROM {$taggedObj->table} tgd, {$tagObj->table} t 
                 WHERE tgd.tag_id = t.id AND tgd.tab_id = :tabId AND tgd.tab_name = :tabName";
         $tagDataList = $taggedObj->query($sql, array('tabId' => $tabId, 'tabName' => $tabName));
         $result = array();
         foreach ($tagDataList as $v) {
-            if (! in_array($v->tag, $result)) $result[] = $v->tag;
-            if (! in_array($v->pure_tag, $result)) $result[] = $v->pure_tag;
+            if (! in_array($v['tag'], $result)) $result[] = $v['tag'];
+            if (! in_array($v['pure_tag'], $result)) $result[] = $v['pure_tag'];
         }
         return $result;
     }
@@ -88,8 +88,8 @@ class Tagged extends DIEntity {
         $tgdList = supermodel()->query($groupSql, $conds) ?: array();
         $groups = array();
         foreach ($tgdList as $v) {
-            if (! isset($groups[$v->tab_id])) $groups[$v->tab_id] = array();
-            if (! in_array($v->pure_tag, $groups[$v->tab_id])) $groups[$v->tab_id][] = $v->pure_tag;
+            if (! isset($groups[$v['tab_id']])) $groups[$v['tab_id']] = array();
+            if (! in_array($v['pure_tag'], $groups[$v['tab_id']])) $groups[$v['tab_id']][] = $v['pure_tag'];
         }
         return compact('topTags', 'groups');
     }
@@ -113,11 +113,11 @@ class Tagged extends DIEntity {
         $nextTagIdsArg = array();//递归调用的tagIds参数
         $taggedObj = supertable('Tagged');
         foreach ($tagIds as $tagId) {
-            $dataIdlist = $taggedObj->select(array('tag_id' => $tagId, 'tab_name' => $tabName), 'tab_id');
+            $dataIdlist = $taggedObj->select(array('tag_id' => $tagId, 'tab_name' => $tabName), 'tab_id') ?: array();
             foreach ($dataIdlist as $vData) {
-                $tagIdList = $taggedObj->select(array('tab_id' => $vData->tab_id, 'tab_name' => $tabName), 'tag_id');
+                $tagIdList = $taggedObj->select(array('tab_id' => $vData['tab_id'], 'tab_name' => $tabName), 'tag_id') ?: array();
                 foreach ($tagIdList as $vTag) {
-                    $currTagId = (int) $vTag->tag_id;
+                    $currTagId = (int) $vTag['tag_id'];
                     if (! in_array($currTagId, $collect)) {
                         $collect[] = $currTagId;
                         if (! in_array($currTagId, $tagIdsArgHistory)) {
@@ -180,25 +180,35 @@ class Tagged extends DIEntity {
                 WHERE tgd.tab_name = :tabName AND tgd.tag_id IN ({$sqlIdsIn})
                 GROUP BY tgd.tab_id $havingSql
                 ORDER BY tgd.tab_id DESC"; //于20170504加入此DESC语句，如有错误，则删除之
-        $list = $taggedObj->query($sql, $conds);
+        $list = $taggedObj->query($sql, $conds) ?: array();
         //组合结果
         $tabIds = array();
-        foreach ($list as $v) $tabIds[] = $v->tab_id;
+        foreach ($list as $v) $tabIds[] = $v['tab_id'];
         return $tabIds;
     }
 
 
     //获取指定对象的打标签记录
     static function getHistory($tabName, array $option = array()){
-        @$uid = $option['uid'] ?: 0;
-        @$tabId = $option['tabId'] ?: 0;
-        @$tagId = $option['tagId'] ?: 0;
-        @$page = $option['page'] ?: 1;
-        @$limit = $option['limit'] ?: 10;
-        @$scope = $option['scope'] ?: 10;
+        $page = (int)@$option['page'] ?: 1;
+        $limit = (int)@$option['limit'] ?: 10;
+        $scope = (int)@$option['scope'] ?: 10;
+        $where = ['AND', ['tab_name', '=', $tabName]];
+        if (@$option['uid']) $where[] = ['setuid', '=', (int)$option['uid']];
+        if (@$option['tabId']) $where[] = ['tab_id', '=', (int)$option['tabId']];
+        if (@$option['tagId']) $where[] = ['tag_id', '=', (int)$option['tagId']];
+        $senior = new SeniorModel();
         $tgdObj = supertable('Tagged');
-        $list = $tgdObj->select(array('tab_name' => $tabName), 'tag_id, tab_id, settime, setuid', 'settime DESC', array($page, $limit, 10)) ?: array();
-        return $list;
+        $queryData = $senior->seniorSelect(array(
+            'select' => 'tag_id tagId, tab_id tabId, settime, setuid',
+            'from' => $tgdObj->table,
+            'where' => $where,
+            'orderBy' => 'settime DESC',
+            'limit' => [$page, $limit, $scope],
+            'pageable' => true,
+        ));
+        unset($queryData['debug']);
+        return $queryData;
     }
     
 }

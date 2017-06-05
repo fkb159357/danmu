@@ -269,7 +269,7 @@ class DIMySQL implements DIModelTemplate {
 		if(is_array($limit)){
 			if(! $total = $this->query('SELECT COUNT(*) as dw_counter '.$sql))return null;
 			$limit = $limit + array(1, 10, 10);
-			$limit = $this->pager($limit[0], $limit[1], $limit[2], $total[0]->dw_counter);
+			$limit = $this->pager($limit[0], $limit[1], $limit[2], $total[0]['dw_counter']);
 			$limit = empty($limit) ? '' : ' LIMIT '.$limit['offset'].','.$limit['limit'];			
 		}else{
 			$limit = !empty($limit) ? ' LIMIT '.$limit : '';
@@ -304,7 +304,7 @@ class DIMySQL implements DIModelTemplate {
 	    } else {
 	        $count = $this->query("{$select} {$where}", $bindparams);
 	    }
-	    return isset($count[0]->total) && $count[0]->total ? intval($count[0]->total) : 0;
+	    return isset($count[0]['total']) && $count[0]['total'] ? intval($count[0]['total']) : 0;
 	}
 	
 	function execute($sql=null, $params=array()){

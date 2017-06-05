@@ -6,7 +6,7 @@ class Util extends DIEntity {
      * 调用之前需：header("Content-type: image/PNG"); 
      * 调用完成后：imagepng($im); imagedestroy($im);//输出并释放图片所占内存
      */
-    function genValicode($code, $w = 60, $h = 20){
+    static function genValicode($code, $w = 60, $h = 20){
         $im = imagecreate($w, $h); 
         $black = imagecolorallocate($im, 0, 0, 0); 
         $gray = imagecolorallocate($im, 200, 200, 200); 

@@ -39,9 +39,9 @@ class UserDo extends DIDo {
         $sucb = arg('sucb');
         $facb = arg('facb');
         $M = DIModelUtil::supertable('User');
-        $u = $M->find(compact('passport'));
+        $u = $M->find(compact('passport')) ?: array();
         
-        if (is_object($u) && sha1($password) === $u->password) {
+        if ($u && sha1($password) === $u['password']) {
             session(DM_SESSION_MY, $u);
             'json' == $output && putjson(0, null, '登录成功');
             'tpl' == $output && redirect(url($sucb));
@@ -83,7 +83,7 @@ class UserDo extends DIDo {
             $ins = $M->insert(compact('passport', 'password', 'nickname', 'regtime'));
             session_remove(DM_SESSION_REG_VALICODE);
             if (!!$ins) {
-                is_numeric($ins) && $ins > 0 && is_object($u = supertable('User')->find(array('id' => $ins))) && session(DM_SESSION_MY, $u);//注册成功后自动登录
+                is_numeric($ins) && $ins > 0 && ($u = supertable('User')->find(array('id' => $ins))) && session(DM_SESSION_MY, $u);//注册成功后自动登录
                 superput(0, null, '注册成功', array('redirect' => url_prefix()));
             } else {
                 superput(-2, null, '注册失败');
@@ -101,8 +101,8 @@ class UserDo extends DIDo {
             $code .= rand(0, 9); 
         }
         session(DM_SESSION_REG_VALICODE, $code);
-        header("Content-type: image/PNG");
         $im = Util::genValicode($code);
+        header("Content-type: image/PNG");
         imagepng($im);
         imagedestroy($im);
     }

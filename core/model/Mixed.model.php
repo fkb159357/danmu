@@ -51,10 +51,9 @@ class MixedModel extends SeniorModel {
         $cache = dw_cache()->get(__CLASS__.sha1($name));
         if ($cache) return $cache;
         
-        $item = $this->find(array('name' => $name, 'valid' => 1));
+        $item = $this->find(array('name' => $name, 'valid' => 1)) ?: array();
         
         if (empty($item)) return null;
-        $item = (array) $item;
         $item['content'] = json_decode($item['content'], 1);
         
         dw_cache()->set(__CLASS__.sha1($name), $item);

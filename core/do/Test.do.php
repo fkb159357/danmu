@@ -446,6 +446,30 @@ class TestDo extends DIDo{
 		$list = Tagged::getHistory('tu');
 		dump($list);
 		die;
+		$ret = Audio5sing::collectTopSongs('fc');
+		dump($ret);
+		die;
+		$ret = Audio5sing::parseSinger2('38934606');
+		dump($ret);
+		die;
+		$ret = Audio5sing::parseSinger('38934606');
+		var_dump($ret);
+		die;
+		$ret = Audio5sing::parseSong2('13643363', 'fc');
+		var_dump($ret);
+		die;
+		$ret = Audio5sing::collectSingerSongsByType('38934606');
+		var_dump($ret);
+		die;
+		$ret = Audio5sing::parseSong('http://5sing.kugou.com/fc/13643363.html', 1);
+		var_dump($ret);
+		die;
+		$hist = Tu::getTaggedHistory();
+		dump($hist);
+		die;
+		$list = Tagged::getHistory('tu');
+		dump($list);
+		die;
 	    //根据数据ID获取对应标签
 	    $list = Tagged::getTagsByTabId('tu', 375);
 	    dump($list);
@@ -507,7 +531,7 @@ class TestDo extends DIDo{
             if (preg_match('/\s*(update|delete|set)\s+/i', $sql) && ! $canModify) {
                 $output .= "HEHE";
             } else {
-                $output .= '<pre>'.print_r((array)supermodel()->query($sql), true).'</pre>';
+                $output .= '<pre>'.print_r(supermodel()->query($sql)?:array(), true).'</pre>';
             }
             $output .= "</div>";
         }

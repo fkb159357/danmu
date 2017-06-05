@@ -24,23 +24,23 @@
     <?php foreach ($rootists as $v):?>
     <div class="row">
         <div class="col-xs-4">
-            <div class="col-xs-2"><?php print $v->id?></div>
-            <div class="col-xs-4"><?php print $v->ip?></div>
-            <div class="col-xs-6"><?php print $v->vtime?></div>
+            <div class="col-xs-2"><?php print $v['id']?></div>
+            <div class="col-xs-4"><?php print $v['ip']?></div>
+            <div class="col-xs-6"><?php print $v['vtime']?></div>
         </div>
         <div class="col-xs-2">
-            <div class="col-xs-6"><?php print $v->uid?></div>
-            <div class="col-xs-6"><?php print $v->is_exception?></div>
+            <div class="col-xs-6"><?php print $v['uid']?></div>
+            <div class="col-xs-6"><?php print $v['is_exception']?></div>
         </div>
         <div class="col-xs-3">
-            <div class="col-xs-4"><?php print $v->country?></div>
-            <div class="col-xs-4"><?php print $v->province?></div>
-            <div class="col-xs-4"><?php print $v->city?></div>
+            <div class="col-xs-4"><?php print $v['country']?></div>
+            <div class="col-xs-4"><?php print $v['province']?></div>
+            <div class="col-xs-4"><?php print $v['city']?></div>
         </div>
         <div class="col-xs-3">
-            <div class="col-xs-6"><?php print $v->isp?></div>
-            <div class="col-xs-3"><?php print $v->ip_desc?></div>
-            <div class="col-xs-3"><?php print $v->ip_type?></div>
+            <div class="col-xs-6"><?php print $v['isp']?></div>
+            <div class="col-xs-3"><?php print $v['ip_desc']?></div>
+            <div class="col-xs-3"><?php print $v['ip_type']?></div>
         </div>
     </div>
     <?php endforeach;?>

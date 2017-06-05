@@ -47,16 +47,16 @@ class Danmu extends DIEntity {
      */
     static function ubb3($id, $fontsize = 18, $width = 730, $height = 462, $auto_update = true){
         $danmu = DIModelUtil::supertable('Danmu');
-        $d = $danmu->find(compact('id'));
+        $d = $danmu->find(compact('id')) ?: array();
         if (empty($d)) return false;
-        if (empty($d->v_url)) return false;
-        if (empty($d->d_url)) return false;
-        (int) $d->skin || $d->skin= 1;
+        if (empty($d['v_url'])) return false;
+        if (empty($d['d_url'])) return false;
+        (int) $d['skin'] || $d['skin']= 1;
         
         $player_url = self::players(3);
-        $skin_url = self::skins($d->skin);
+        $skin_url = self::skins($d['skin']);
         
-        $swf = "{$player_url}?id={$id}/{$fontsize}&file={$d->v_url}&skin={$skin_url}&autostart=false";
+        $swf = "{$player_url}?id={$id}/{$fontsize}&file={$d['v_url']}&skin={$skin_url}&autostart=false";
         $tran = array("[" => "%5B", "]" => "%5D");
         foreach ($tran as $k => $t) {
             $swf = str_replace($k, $t, $swf);
@@ -79,14 +79,14 @@ class Danmu extends DIEntity {
      */
     static function ubb2($id, $width = 730, $height = 462){
         $danmu = DIModelUtil::supertable('Danmu');
-        $d = $danmu->find(compact('id'));
+        $d = $danmu->find(compact('id')) ?: array();
         if (empty($d)) return false;
-        if (empty($d->v_url)) return false;
-        if (empty($d->d_url)) return false;
+        if (empty($d['v_url'])) return false;
+        if (empty($d['d_url'])) return false;
     
         $player_url = self::players(2);
     
-        $swf = "{$player_url}?cfile={$d->d_url}&file={$d->v_url}";
+        $swf = "{$player_url}?cfile={$d['d_url']}&file={$d['v_url']}";
         $tran = array("[" => "%5B", "]" => "%5D");
         foreach ($tran as $k => $t) {
             $swf = str_replace($k, $t, $swf);
@@ -106,17 +106,17 @@ class Danmu extends DIEntity {
      */
     static function ubb1($id, $fontsize = 18, $width = 730, $height = 462){
         $danmu = DIModelUtil::supertable('Danmu');
-        $d = $danmu->find(compact('id'));
+        $d = $danmu->find(compact('id')) ?: array();
         if (empty($d)) return false;
-        if (empty($d->v_url)) return false;
-        if (empty($d->d_url)) return false;
-        (int) $d->skin || $d->skin= 1;
+        if (empty($d['v_url'])) return false;
+        if (empty($d['d_url'])) return false;
+        (int) $d['skin'] || $d['skin']= 1;
     
         $player_url = self::players(1);
-        $skin_url = self::skins($d->skin);
+        $skin_url = self::skins($d['skin']);
     
         //$swf = "{$player_url}?id={$id}/{$fontsize}&file={$d->v_url}&skin={$skin_url}&autostart=false";
-        $swf = "{$player_url}?cfile={$d->d_url}&file={$d->v_url}&skin={$skin_url}&autostart=false";
+        $swf = "{$player_url}?cfile={$d['d_url']}&file={$d['v_url']}&skin={$skin_url}&autostart=false";
         $tran = array("[" => "%5B", "]" => "%5D");
         foreach ($tran as $k => $t) {
             $swf = str_replace($k, $t, $swf);

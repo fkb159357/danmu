@@ -18,8 +18,7 @@ class FmDo extends DIDo {
         
         //试验品：到时不会批量请求
         $m = supertable('Audio5sing');
-        $r = $m->select(null, 'DISTINCT singerid');
-        !$r && !$r = array();
+        $r = $m->select(null, 'DISTINCT singerid') ?: array();
         $infos = array();
         foreach ($r as $rr) {
             $infos[] = Audio5sing::parseSinger2($rr->singerid);
@@ -30,7 +29,7 @@ class FmDo extends DIDo {
     
     //随机获取一曲
     function loadOne(){
-        $song = supertable('Audio5sing')->select('', '', 'rand()', 1);
+        $song = supertable('Audio5sing')->select('', '', 'rand()', 1) ?: array();
         empty($song) && putjsonp(-1, null, 'song is not found');
         putjsonp(0, $song[0]);
     }

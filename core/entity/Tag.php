@@ -15,11 +15,11 @@ class Tag extends DIEntity {
             	'tag' => $tag,
                 'pure_tag' => $pt,
             );
-            $find = supertable('Tag')->find($data);
+            $find = supertable('Tag')->find($data) ?: array();
             if (empty($find)) {
                 $lastId = supertable('Tag')->insert($data);
             } else {
-                $lastId = $find->id;
+                $lastId = $find['id'];
             }
             $lastIdList[] = $lastId;
         }
@@ -49,13 +49,13 @@ class Tag extends DIEntity {
         $tagObj = supertable('Tag');
         $sql = "SELECT * FROM {$tagObj->table} WHERE `tag` = :tag OR pure_tag = :pure_tag";
         foreach ($tags as $tag) {
-            $list = $tagObj->query($sql, array('tag' => $tag, 'pure_tag' => $tag));
+            $list = $tagObj->query($sql, array('tag' => $tag, 'pure_tag' => $tag)) ?: array();
             foreach ($list as $v) {
-                $currId = (int) $v->id;
+                $currId = (int) $v['id'];
                 if (! in_array($currId, $collect)) {
                     $collect[] = $currId;
-                    if (! in_array($v->tag, $tagsArgHistory)) $nextTagsArg[] = $v->tag;
-                    if (! in_array($v->pure_tag, $tagsArgHistory)) $nextTagsArg[] = $v->pure_tag;
+                    if (! in_array($v['tag'], $tagsArgHistory)) $nextTagsArg[] = $v['tag'];
+                    if (! in_array($v['pure_tag'], $tagsArgHistory)) $nextTagsArg[] = $v['pure_tag'];
                 }
             }
         }

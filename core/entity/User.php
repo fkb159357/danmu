@@ -7,7 +7,7 @@ class User extends DIEntity {
      */
     static function exists($conds, DIModel &$M = null){
     	$M || $M = DIModelUtil::supertable('User');
-        $f = $M->find($conds);
+        $f = $M->find($conds) ?: array();
         return !!$f;
     }
 
@@ -16,7 +16,7 @@ class User extends DIEntity {
      * @return object|bool 成功返回当前会话存储的user表对象
      */
     static function isLogin(){
-        if (session_exists(DM_SESSION_MY) && is_object($my=session(DM_SESSION_MY))) {
+        if (session_exists(DM_SESSION_MY) && is_array($my=session(DM_SESSION_MY))) {
             return $my;
         } else {
             return false;

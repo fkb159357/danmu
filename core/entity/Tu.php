@@ -5,7 +5,7 @@ class Tu extends DIEntity {
     static protected function _getOld($file){
         if (! file_exists($file['tmp_name'])) return array();
         $sha1 = @sha1_file($file['tmp_name']);
-        $tu = supertable('Tu')->find(compact('sha1'));
+        $tu = supertable('Tu')->find(compact('sha1')) ?: array();
         return $tu;
     }
     
@@ -29,7 +29,7 @@ class Tu extends DIEntity {
                 'hide' => 0,
                 'clear' => 0,
                 'uptime' => time(),
-                'upuid' => ($info = User::isLogin()) ? $info->id : 0,
+                'upuid' => ($info = User::isLogin()) ? $info['id'] : 0,
             );
             if ($tuId) {
                 $tu['id'] = $tuId;
@@ -45,8 +45,8 @@ class Tu extends DIEntity {
     static function saveRecord($file, $imgDirGroup = ''){
         $oldTu = self::_getOld($file);
         if (! empty($oldTu)) {
-            $lastId = $oldTu->id;
-            $tu = (array) $oldTu;
+            $lastId = $oldTu['id'];
+            $tu = $oldTu;
             $isOld = true;
         } else {
             import('file/ImgUpload');
@@ -96,7 +96,7 @@ class Tu extends DIEntity {
     //通用信息获取
     static function getInfoById($tuId){
         $tuObj = supertable('Tu');
-        $tu = $tuObj->find(array('id' => $tuId), 'id tuId, filename, fileext, mimetype, filesize, width, height, savefile, url');
+        $tu = $tuObj->find(array('id' => $tuId), 'id tuId, filename, fileext, mimetype, filesize, width, height, savefile, url') ?: array();
         return $tu;
     }
 
@@ -122,6 +122,18 @@ class Tu extends DIEntity {
         }
         $sql = "SELECT id FROM {$tuObj->table} tu WHERE id ORDER BY id DESC";
         */
+    }
+
+
+    //获取最近打标签的记录
+    static function getTaggedHistory(array $option = array()){
+        $hist = Tagged::getHistory('tu', $option);
+        foreach ($hist['list'] as $k => $v) {
+            $hist['list'][$k]['user'] = supertable('User')->find(array('id' => $v['setuid']), 'id, nickname, FROM_UNIXTIME(regtime) regtime') ?: array();
+            $hist['list'][$k]['tu'] = self::getInfoById($v['tabId']) ?: array();
+            $hist['list'][$k]['tag'] = supertable('Tag')->find(array('id' => $v['tagId']), 'id, tag, pure_tag pureTag');
+        }
+        return $hist;
     }
     
 }
