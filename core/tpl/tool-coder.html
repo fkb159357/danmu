@@ -1,0 +1,35 @@
+<input id="a" style="width:200px;">
+<button id="gen">生成</button>
+<input id="b" style="width:750px;">
+<br>
+<input id="c" style="width:200px;">
+<button id="de">取反</button>
+<input id="d" style="width:750px;">
+<script src="https://cdn.jsdelivr.net/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+<script>
+
+function req(url, str, cb){
+    $.get(url, {str:str}, function(j){
+        if (j.code == 1) {
+            $.get(url, {str:str}, function(j){
+                if (j.code == 2) {
+                    cb(j)
+                }
+            }, 'jsonp');
+        }
+    }, 'jsonp');
+}
+
+document.getElementById('gen').onclick=function(){
+  req('http://tool.miku.us/?xx=y6k1~Xvj-r(!)5_MYAGiw3', document.getElementById('a').value, function(j){
+    document.getElementById('b').value=j.data;
+  });
+}
+
+document.getElementById('de').onclick=function(){
+  req('http://tool.miku.us/?xx=-Ewdhd@N@lVT-6!HCeu6)C', document.getElementById('c').value, function(j){
+    document.getElementById('d').value=j.data;
+  });
+}
+
+</script>

@@ -40,6 +40,11 @@ class ToolDo extends DIDo {
         $this->_beforeCd4js(__FUNCTION__);
         putjsonp(2, ltreDeCrypt(arg('str')));
     }
+
+    //自用加解密工具
+    function coder(){
+        $this->stpl();
+    }
     
 }
 
