@@ -13,7 +13,7 @@ class ToolDo extends DIDo {
     }
     
     private function _beforeCd4js($fun){
-        if (! preg_match('/^https?:\/\/([\w.]*acggeek\.com|[\w.]*miku\.us|[\w.]*larele\.com|[\w.]*yooo\.moe)\//', @$_SERVER['HTTP_REFERER']?:'')) {
+        if (! preg_match('/^https?:\/\/([\w.]*acggeek\.com|[\w.]*miku\.us|[\w.]*larele\.com|[\w.]*yooo\.moe|[\w.]*acggeek.dev|[\w.]*danmu.me|[\w.]*larele.me)\//', @$_SERVER['HTTP_REFERER']?:'')) {
             putjsonp(-1);//非法请求 -1
         }
         $now = time();
