@@ -13,6 +13,7 @@ switch ($hostname) {
 	case 'fm.danmu.me'://绑定了danmu目录，和127.0.0.1
     case 'tu.danmu.me'://绑定了danmu目录，和127.0.0.1
     case 'tool.danmu.me'://绑定了danmu目录，和127.0.0.1
+    case 'book.danmu.me'://绑定了danmu目录，和127.0.0.1
 	case 'danmu.webdev.duowan.com': //公司内网
 	    {
 	        define('DI_ROUTE_REWRITE', true);
@@ -36,6 +37,7 @@ switch ($hostname) {
     case 'tu.miku.us'://Hostker - fkb159357.host.smartgslb.com
     case 'fm.miku.us':
     case 'tool.miku.us':
+    case 'book.miku.us':
 	case 'www.iio.ooo'://Hostker - fkb159357.host.smartgslb.com
 	case 'iio.ooo'://Hostker - fkb159357.host.smartgslb.com
     case 'www.yooo.moe'://Conoha - 133.130.96.131
