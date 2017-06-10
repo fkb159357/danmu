@@ -35,7 +35,7 @@ class Book extends DIEntity {
     }
 
 
-    static function list(){
+    static function getList(){
         $mapFile = DI_CACHE_PATH . 'books.map';
         @$json = file_get_contents($mapFile) ?: '{}';
         return json_decode($json, 1);
