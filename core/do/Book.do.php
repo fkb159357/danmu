@@ -10,7 +10,7 @@ class BookDo extends DIDo {
     function read($code, $p = 1){
         $data = Book::read($code, $p);
         if ($data) {
-            echo '<div style="width: 720px; overflow: auto; font-size: 25px;">';
+            echo '<div style="width: 720px; overflow: auto; font-size: 28px;">';
             echo preg_replace('/\r\n|\r|\n/', '<br><br>', $data['s']);
             echo '</div>';
             $lastP = $data['p'] > 1 ? $data['p'] - 1 : 1;
