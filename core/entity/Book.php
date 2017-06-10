@@ -21,8 +21,6 @@ class Book extends DIEntity {
         $mapFile = DI_CACHE_PATH . 'books.map';
         $json = file_get_contents($mapFile) ?: '{}';
         $map = json_decode($json, 1);
-        var_dump($map);
-        die;
         if (isset($map[$code])) {
             $data = $map[$code];
             $file = DI_CACHE_PATH . "{$data['folder']}/{$p}.txt";
@@ -31,7 +29,6 @@ class Book extends DIEntity {
                 's' => $s,
                 'p' => $p,
                 'name' => $data['name'],
-                'code' => $data['code'],
             );
         }
         return false;

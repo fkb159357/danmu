@@ -9,9 +9,8 @@ class BookDo extends DIDo {
 
     function read($code, $p = 1){
         $data = Book::read($code, $p);
-        var_dump($data);
         if ($data) {
-            echo '<pre style="overflow: auto;">';
+            echo '<pre>';
             echo $data['s'];
             echo '</pre>';
         }
