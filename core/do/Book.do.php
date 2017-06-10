@@ -10,9 +10,9 @@ class BookDo extends DIDo {
     function read($code, $p = 1){
         $data = Book::read($code, $p);
         if ($data) {
-            echo '<pre>';
-            echo $data['s'];
-            echo '</pre>';
+            echo '<div style="width: 720px; overflow: auto;">';
+            echo preg_replace('/\r\n|\r|\n/', '<br><br>', $data['s']);
+            echo '</div>';
         }
     }
 
