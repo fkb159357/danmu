@@ -13,6 +13,9 @@ class BookDo extends DIDo {
             echo '<div style="width: 720px; overflow: auto;">';
             echo preg_replace('/\r\n|\r|\n/', '<br><br>', $data['s']);
             echo '</div>';
+            $lastP = $data['p'] > 1 ? $data['p'] - 1 : 1;
+            $nextP = $data['p'] + 1;
+            echo "<br><br><a href=\"/read/{$code}/{$lastP}\">上一页</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"/read/{$code}/{$nextP}\">下一页</a>";
         }
     }
 
