@@ -3,7 +3,7 @@
 class BookDo extends DIDo {
 
     function start(){
-
+        dump(Book::list());
     }
 
 

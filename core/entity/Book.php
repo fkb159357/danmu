@@ -19,12 +19,12 @@ class Book extends DIEntity {
 
     static function read($code, $p = 1){
         $mapFile = DI_CACHE_PATH . 'books.map';
-        $json = file_get_contents($mapFile) ?: '{}';
+        @$json = file_get_contents($mapFile) ?: '{}';
         $map = json_decode($json, 1);
         if (isset($map[$code])) {
             $data = $map[$code];
             $file = DI_CACHE_PATH . "{$data['folder']}/{$p}.txt";
-            $s = file_get_contents($file);
+            @$s = file_get_contents($file) ?: '';
             return array(
                 's' => $s,
                 'p' => $p,
@@ -32,6 +32,13 @@ class Book extends DIEntity {
             );
         }
         return false;
+    }
+
+
+    static function list(){
+        $mapFile = DI_CACHE_PATH . 'books.map';
+        @$json = file_get_contents($mapFile) ?: '{}';
+        return json_decode($json, 1);
     }
 
 
