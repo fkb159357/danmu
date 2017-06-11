@@ -24,7 +24,7 @@ class BookPlus extends DIEntity {
         $map = json_decode($json, 1);
         if (isset($map[$code])) {
             $data = $map[$code];
-            list($offset, $limit) = $data['chunks'][$p] ?: [1, 4096];
+            list($offset, $limit) = $data['chunks'][$p] ?: [0, 4096];
             $s = self::_getChunk($data['file'], $offset, $limit);
             return array(
                 's' => $s,
