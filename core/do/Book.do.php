@@ -8,6 +8,7 @@ class BookDo extends DIDo {
     }
 
 
+    //read对应prepare
     function read($code, $p = 1){
         $data = BookPlus::read($code, $p);
         if ($data) {
@@ -21,6 +22,7 @@ class BookDo extends DIDo {
     }
 
 
+    //read2对应prepare2
     function read2($code, $p = 1){
         $data = Book::read($code, $p);
         if ($data) {
