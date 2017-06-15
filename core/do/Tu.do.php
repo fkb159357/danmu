@@ -82,7 +82,7 @@ class TuDo extends DIDo {
         }
         $code = $ret['code'] == 0 && $ret['id'] != 0 ? 0 : -1;
         if (arg('getJson') == 1) {
-            putjson($code, $ret);die;//等toup页面也改造为json接收，则可以将此接口完全改为json输出
+            putjson($code, $ret, $ret['msg']);die;//等toup页面也改造为json接收，则可以将此接口完全改为json输出
         }
         dump($ret);
     }
