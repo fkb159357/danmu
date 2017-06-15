@@ -10,7 +10,11 @@ class TuInject extends DIInject {
         //默认最大0.5MB
         $size = (int) (((float)session(DM_SESSION_TOUP_SIZE) ?: 0.5) * 1024 * 1024);
         if ($_FILES['tu']['error'] == UPLOAD_ERR_OK && $size < $_FILES['tu']['size']) {
-            die("[INJECT MSG] limit {$size} Bytes!");
+            if (arg('getJson') == 1) {
+                putjson(-99, null, "[INJECT MSG] limit {$size} Bytes!");
+            } else {
+                die("[INJECT MSG] limit {$size} Bytes!");
+            }
         }
     }
     

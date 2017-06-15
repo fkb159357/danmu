@@ -183,22 +183,25 @@
 
             function upFile(file, options){
                 var xhr = new XMLHttpRequest();
-                xhr.addEventListener('progress', function(evt){
+                xhr.upload.addEventListener('progress', function(evt){
                     if (evt.lengthComputable) {
-                        var perc = Math.round(evt.loaded * 100) / evt.total;
+                        var perc = Math.round(evt.loaded * 100 / evt.total);
                         if (perc < 100) {
                             options.progressbar.innerText = perc + '%';
                         }
                     }
+                }, false);
+                xhr.upload.addEventListener('load', function(evt){
+                    options.progressbar.innerText = '100%';
                 }, false);
                 xhr.addEventListener('load', function(evt){
                     var jsonText = xhr.responseText;
                     var j = JSON.parse(jsonText);
                     options.loading.style.display = 'none';
                     if (j.code != 0) {
-                        options.srcBar.innerText = j.msg;
+                        options.progressbar.innerText = j.msg;
+                        options.progressbar.style.color = 'red';
                     } else {
-                        options.progressbar.innerText = '100%';
                         options.srcBar.value = j.url
                         options.srcBar.style.display = 'block';
                         options.srcBar.onclick = function(){this.select();};
@@ -212,6 +215,7 @@
                 xhr.open('POST', 'http://video.duowan.com/?r=test/upImg', true);
                 var fd = new FormData();
                 fd.append('img', file);
+                xhr.withCredentials = true;
                 xhr.send(fd);
             }
         </script>

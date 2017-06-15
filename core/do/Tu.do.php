@@ -71,6 +71,7 @@ class TuDo extends DIDo {
      *      /test/session/session_toup_unlock/set/1
      */
     protected function up($tuId = 0){
+        dealOptionsMethod();//处理OPTIONS请求，用于进度监控
         $file = $_FILES['tu'];
         if (! $file) putjson(1, null, 'no input file');
         $imgDirGroup = DI_DEBUG_MODE ? 'tu-miku-us-test/' : 'default/';
@@ -80,7 +81,7 @@ class TuDo extends DIDo {
             $ret = Tu::saveRecord($file, $imgDirGroup);//测试时，请指定测试分组目录！
         }
         $code = $ret['code'] == 0 && $ret['id'] != 0 ? 0 : -1;
-        if (arg('tmp') == 1) {
+        if (arg('getJson') == 1) {
             putjson($code, $ret);die;//等toup页面也改造为json接收，则可以将此接口完全改为json输出
         }
         dump($ret);
