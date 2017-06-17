@@ -192,7 +192,8 @@
                     }
                 }, false);
                 xhr.upload.addEventListener('load', function(evt){
-                    options.progressbar.innerText = '100%';
+                    // options.progressbar.innerText = '100%';
+                    options.progressbar.innerText = '上传完毕，处理中...';
                 }, false);
                 xhr.addEventListener('load', function(evt){
                     var jsonText = xhr.responseText;
@@ -202,6 +203,7 @@
                         options.progressbar.innerText = j.msg;
                         options.progressbar.style.color = 'red';
                     } else {
+                        options.progressbar.innerText = '上传成功！';
                         options.srcBar.value = j.url
                         options.srcBar.style.display = 'block';
                         options.srcBar.onclick = function(){this.select();};
