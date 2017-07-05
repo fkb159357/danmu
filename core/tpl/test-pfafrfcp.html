@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <button>验证本次请求在本页中，是否属于第一次</button>
+        <script>
+        $(function(){
+            $('button').click(function(evt){
+                var url = '/test/assertFirstReqFromCurrPage';
+                $.getJSON(url, function(j){
+                    console.log(j);
+                    alert(j.msg);
+                });
+            });
+        });
+        </script>
+    </body>
+</html>

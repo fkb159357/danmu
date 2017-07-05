@@ -623,4 +623,26 @@ class TestDo extends DIDo{
         }
     }
 
+
+    //判断当前页发起的此请求是否为第一次
+    function assertFirstReqFromCurrPage(){
+        $cKey = 'pfafrfcp';
+        $hdl = @$_COOKIE[$cKey] . __CLASS__ . __FUNCTION__;
+        $num = session($hdl) ?: 1;
+        session($hdl, $num + 1);
+        if ($num == 1) {
+            putjson(0, null, 'is first');
+        } else {
+            putjson(-1, null, 'not first');
+        }
+    }
+
+    //用于“判断当前页发起的此请求是否为第一次”的【当前页面】
+    function pageForAssertFirstReqFromCurrPage(){
+        $cKey = 'pfafrfcp';
+        $cValue = sha1(str_replace('.', '', (string)microtime(1)) . rand(0, getrandmax()));
+        setcookie($cKey, $cValue);//每次加载，都下发唯一页面ID，用于跟踪
+        $this->stpl('test-pfafrfcp');
+    }
+
 }
