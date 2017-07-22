@@ -39,6 +39,26 @@ class BceDo extends DIDo {
     }
 
 
+    //语言处理基础技术 - 依存句法分析（1000次/天免费）
+    public function depParser(){
+        $s = arg('s', '');
+        import('bce/aipNlp/AipNlp');
+        $aipNlp = new AipNlp($this->appId, $this->apiKey, $this->secretKey);
+        $ret = $aipNlp->depParser($s);
+        putjson(0, $ret);
+    }
+
+
+    //语言处理基础技术 - 词法分析（50000次/天免费）
+    public function lexer(){
+        $s = arg('s', '');
+        import('bce/aipNlp/AipNlp');
+        $aipNlp = new AipNlp($this->appId, $this->apiKey, $this->secretKey);
+        $ret = $aipNlp->lexer($s);
+        putjson(0, $ret);
+    }
+
+
     //手动写入API验证信息
     public function setAuth(){
         if (isPost()) {
@@ -80,8 +100,5 @@ class BceDo extends DIDo {
         }
         list ($this->appId, $this->apiKey, $this->secretKey) = array_slice($infArr, 0, 3);
     }
-
-
-
 
 }
