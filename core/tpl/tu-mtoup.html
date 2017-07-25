@@ -67,6 +67,7 @@
             <input id="setTags" type="button" value="打上">(按下回车出候选提示)
         </div>
 
+        <!-- 纯上传图片 -->
         <script>
             var dropArea = document.getElementById('drop-area');
             var filesArea = document.getElementById('files-area');
@@ -150,6 +151,7 @@
                     if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
                         var fileLi = renderFileBeforeUp(file, filesArea);
                         upFile(file, {
+                            fileLi: fileLi,
                             progressbar: fileLi.getElementsByClassName('up-progress')[0],
                             loading: fileLi.getElementsByClassName('up-loading')[0], 
                             srcBar: fileLi.getElementsByClassName('img-src')[0],
@@ -209,8 +211,9 @@
                         options.progressbar.innerText = j.msg;
                         options.progressbar.style.color = 'red';
                     } else {
+                        options.fileLi.setAttribute('tuid', j.data.id);
                         options.progressbar.innerText = '上传成功！';
-                        options.srcBar.value = j.data.url
+                        options.srcBar.value = j.data.url;
                         options.srcBar.style.display = 'block';
                         options.srcBar.onclick = function(){this.select();};
                         options.preview.src = j.data.url;
@@ -228,6 +231,39 @@
                 xhr.send(fd);
             }
         </script>
+
+
+        <!-- 打标签 -->
+        <script>
+            document.getElementById('setTags').onclick = function(){
+                var tags = document.getElementById('tags').value;
+                var lis = document.getElementById('files-area').children;
+                for (var i = 0; i < lis.length; i ++) {
+                    ~ function(e){
+                        var tuId = e.getAttribute('tuid');
+                        var xhr = new XMLHttpRequest();
+                        xhr.addEventListener('load', function(evt){
+                            var jsonText = xhr.responseText;
+                            var j = JSON.parse(jsonText);
+                            var span = document.createElement('span');
+                            span.style.color = 'green';
+                            span.innerText = '已打入以前没有的标签：' + j.data.newTags.join('、');
+                            e.appendChild(span);
+                        }, false);
+                        xhr.addEventListener('error', function(evt){
+                            var span = document.createElement('span');
+                            span.style.color = 'red';
+                            span.innerText = 'xhr error';
+                            e.appendChild(span);
+                        }, false);
+                        var url = '/?tu/setTags/' + tuId + '/' + tags;
+                        xhr.open('GET', url, true);
+                        xhr.send();
+                    }( lis[i] );
+                }
+            };
+        </script>
+
 
         <!-- 兼容性检测 -->
         <script>
