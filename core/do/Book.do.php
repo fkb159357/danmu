@@ -35,7 +35,8 @@ class BookDo extends DIDo {
         }
     }
 
-
+    
+    //http://book.miku.us/prepare?pageNum=0&url=http://res.miku.us/res/other/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%8B%B1%E8%AF%AD.txt&per=1024&name=%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%8B%B1%E8%AF%AD
     function prepare(){
         ignore_user_abort();
         set_time_limit(0);
