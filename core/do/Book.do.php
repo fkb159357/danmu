@@ -3,8 +3,7 @@
 class BookDo extends DIDo {
 
     function start(){
-        dump(Book::getList());
-        dump(BookPlus::getList());
+        putjson(0, ['book' => Book::getList(), 'bookPlus' => BookPlus::getList()]);
     }
 
 
