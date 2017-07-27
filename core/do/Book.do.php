@@ -43,7 +43,7 @@ class BookDo extends DIDo {
         $pageNum = arg('pageNum', 1); //保存的页数（传0则保存所有页码的分片）
         $per = arg('per', 4096); //每页多少字符
         $url = arg('url', 'http://res.miku.us/res/other/ditieguishi.txt');
-        $name = '地铁诡事';
+        $name = arg('name', '地铁诡事');
         if ($url) {
             BookPlus::prepare($name, $url, $pageStart, $pageNum, $per);
         }
