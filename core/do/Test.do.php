@@ -443,6 +443,19 @@ class TestDo extends DIDo{
 	}
 	
 	function hehe(){
+        $urlToFind = '';
+        $url = 'http://i.youku.com/i/UMzA5ODU3MTE5Ng==?spm=a2h0j.8191423.subscription_wrap.DD~A';
+        $url = 'http://www.acfun.cn/u/331065.aspx#page=1';
+        $url = 'http://space.bilibili.com/15498311#!/';
+        if (preg_match('/^(https?\:\/\/space\.bilibili\.com\/\d+)\D*/', $url, $matches)) {
+            $urlToFind = $matches[1];
+        } elseif (preg_match('/^(https?\:\/\/i\.youku\.com\/\i\/\w+)\W*/', $url, $matches)) {
+            $urlToFind = $matches[1];
+        } elseif (preg_match('/^(https?\:\/\/www.acfun.cn\/u\/\d+)\D*/', $url, $matches)) {
+            $urlToFind = $matches[1];
+        }
+        var_dump($urlToFind);
+        die;
 		$list = Tagged::getHistory('tu');
 		dump($list);
 		die;
@@ -513,6 +526,8 @@ class TestDo extends DIDo{
 
     
     function lqs(){
+        var_dump(User::isLogin());
+        die;
         if (! (@$my = User::isLogin()) || $my->passport != 'abc') die('WTF');
         
         $mixed = new MixedModel();
