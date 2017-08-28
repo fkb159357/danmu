@@ -526,13 +526,11 @@ class TestDo extends DIDo{
 
     
     function lqs(){
-        var_dump(User::isLogin());
-        die;
-        if (! (@$my = User::isLogin()) || $my->passport != 'abc') die('WTF');
+        if (! (@$my = User::isLogin()) || $my['passport'] != 'abc') die('WTF');
         
         $mixed = new MixedModel();
         $hdl = __CLASS__.__FUNCTION__.'1';
-        $username = $my->passport;
+        $username = $my['passport'];
         $canModify = @$_COOKIE['modifysql'] === 'updatedeleteset';//是否可执行修改操作
         $sql = arg('sql', '');
         if ($sql) $sql = urldecode(strrev($sql));
