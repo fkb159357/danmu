@@ -695,6 +695,13 @@ class TestDo extends DIDo{
                 }
                 echo '已清空！';
                 break;
+            case 'del':
+                $name = arg('name');
+                if (empty($name)) die('fuck param err!');
+                $file = "{$folder}form_".sha1($name);
+                @unlink($file);
+                echo "删除 [{$name}] 成功!";
+                break;
             default:
                 echo '<form action="/test/form" method="post">
                     姓名：<input name="name"><br>
