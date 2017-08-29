@@ -699,6 +699,7 @@ class TestDo extends DIDo{
                 $name = arg('name');
                 if (empty($name)) die('fuck param err!');
                 $file = "{$folder}form_".sha1($name);
+                if (! file_exists($file)) die("不存在 [{$name}] 的记录！");
                 @unlink($file);
                 echo "删除 [{$name}] 成功!";
                 break;
