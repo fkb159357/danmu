@@ -268,7 +268,7 @@ class TestDo extends DIDo{
 	 */
 	function test1(){
 	    var_dump(func_get_args());
-	    var_dump(DIRuntime::getRuntime());
+	    //var_dump(DIRuntime::getRuntime());
 	}
 	
 	function time(){
