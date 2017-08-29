@@ -704,6 +704,7 @@ class TestDo extends DIDo{
                 echo "删除 [{$name}] 成功!";
                 break;
             default:
+                echo '<html><head><meta charset="utf-8"></head><body>';
                 echo '<form action="/test/form" method="post">
                     姓名：<input name="name"><br>
                     部门：<input name="dpt"><br>
@@ -714,6 +715,7 @@ class TestDo extends DIDo{
                     <input type="submit" value="提交">
                     <input type="hidden" name="action" value="submit">
                     </form><a href="/test/form?action=list" target="_blank">查看列表</a>';
+                echo '</body></html>';
         }
     }
 
