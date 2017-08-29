@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>ACG Random FM - LTRE LAB</title>
     <meta name="description" content="ACG随机电台">
-    <meta name="keywords" content="ACG随机电台,Miku.us,Larele.com,Ltre.me,Ltre.cc,MukioPlayer,MukioPlayerPlus,FM,Oreki,Ltre,Miku,Larele">
+    <meta name="keywords" content="ACG随机电台,FM,Ltre Oreki">
     <meta name="author" content="Ltre Oreki">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="res/lib/favicon.ico">
