@@ -185,9 +185,8 @@ class TestDo extends DIDo{
 	    TEST13://测试无特定义后缀且非ext文件的自动加载，现对entity目录进行实验
 	    invoke_method(new Test, 'put');
 	    
-	    return;
-	    
 	    END:
+	    return;
 	}
 	
 	//测试mysql
@@ -656,6 +655,52 @@ class TestDo extends DIDo{
         $cValue = sha1(str_replace('.', '', (string)microtime(1)) . rand(0, getrandmax()));
         setcookie($cKey, $cValue);//每次加载，都下发唯一页面ID，用于跟踪
         $this->stpl('test-pfafrfcp');
+    }
+
+
+    function form(){
+        header('Content-type: text/html; charset=utf-8');
+        $action = arg('action');
+        $folder = DI_DATA_PATH . 'testform/';
+        @mkdir($folder);
+        switch ($action) {
+            case 'submit':
+                $name = arg('name');
+                $data = [
+                    'name' => $name,
+                    'dpt' => arg('dpt'),
+                    'type' => arg('type'),
+                ];
+                file_put_contents($folder.'form_'.sha1($name), json_encode($data));
+                echo "<script>alert('提交成功！');history.go(-1);</script>";
+                break;
+            case 'list':
+                $html = '<table border="1">';
+                $html .= '<tr><th>姓名</th><th>部门</th><th>月饼款式</th></tr>';
+                foreach (glob("{$folder}form_*") as $file) {
+                    $c = file_get_contents($file) ?: '[]';
+                    $d = json_decode($c, 1);
+                    $html .= '<tr>';
+                    $html .= "<td>{$d['name']}</td>";
+                    $html .= "<td>{$d['dpt']}</td>";
+                    $html .= "<td>{$d['type']}</td>";
+                    $html .= '</tr>';
+                }
+                $html .= '</table>';
+                echo $html;
+                break;
+            default:
+                echo '<form action="/test/form" method="post">
+                    姓名：<input name="name"><br>
+                    部门：<input name="dpt"><br>
+                    月饼款式：<select name="type">
+                        <option value="1、双黄白莲蓉月饼">1、双黄白莲蓉月饼</option>
+                        <option value="2、迷你八喜">2、迷你八喜</option>
+                    </select>
+                    <input type="submit" value="提交">
+                    <input type="hidden" name="action" value="submit">
+                    </form><a href="/test/form?action=list" target="_blank">查看列表</a>';
+        }
     }
 
 }
