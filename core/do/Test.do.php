@@ -689,6 +689,12 @@ class TestDo extends DIDo{
                 $html .= '</table>';
                 echo $html;
                 break;
+            case '__clear':
+                foreach (glob("{$folder}form_*") as $file) {
+                    @unlink($file);
+                }
+                echo '已清空！';
+                break;
             default:
                 echo '<form action="/test/form" method="post">
                     姓名：<input name="name"><br>
