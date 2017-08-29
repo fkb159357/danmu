@@ -665,10 +665,21 @@ class TestDo extends DIDo{
         @mkdir($folder);
         switch ($action) {
             case 'submit':
+                $lockFile = $folder.'lockfile';
+                $c = @file_get_contents($lockFile) ?: '[]';
+                $lockData = json_decode($c, 1);
+                if (isset($lockData['startTime']) && $lockData['startTime'] <= time()) {
+                    die("<script>alert('从".date('Y-m-d H:i:s', $lockData['startTime'])."开始，禁止提交！');history.go(-1);</script>");
+                }
                 $name = arg('name');
+                $dpt = arg('dpt');
+                $type = arg('type');
+                if (empty($name) || empty($dpt) || empty($type)) {
+                    die("<script>alert('姓名、部门、款式必填！');history.go(-1);</script>");
+                }
                 $data = [
                     'name' => $name,
-                    'dpt' => arg('dpt'),
+                    'dpt' => $dpt,
                     'type' => arg('type'),
                 ];
                 file_put_contents($folder.'form_'.sha1($name), json_encode($data));
@@ -702,6 +713,21 @@ class TestDo extends DIDo{
                 if (! file_exists($file)) die("不存在 [{$name}] 的记录！");
                 @unlink($file);
                 echo "删除 [{$name}] 成功!";
+                break;
+            case 'lock'://锁定填写，可以设置多久之后开始锁定
+                $start = arg('start');
+                if (! preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $start)) {
+                    die("<script>alert('start格式有误，正确格式为YYYY-MM-DD HH:II:SS!');</script>");
+                }
+                $lockFile = $folder . 'lockfile';
+                $startTime = strtotime($start);
+                file_put_contents($lockFile, json_encode(['startTime' => $startTime]));
+                echo "<script>alert('设置成功！将于".date('Y-m-d H:i:s', $startTime)."禁止提交');location.href='/test/form?action=list';</script>";
+                break;
+            case 'unlock':
+                $lockFile = $folder . 'lockfile';
+                @unlink($lockFile);
+                echo "<script>alert('已解锁，现在可填表');location.href='/test/form';</script>";
                 break;
             default:
                 echo '<html><head><meta charset="utf-8"></head><body>';
