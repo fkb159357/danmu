@@ -15,8 +15,8 @@
             <div class="row">
                 <div class="col-xs-6 col-xs-offset-3">
                     <div class="well bs-component">
-                        <form class="form-horizontal" method="post">
-                            <input type="hidden" name="x" value="user/reg">
+                        <form class="form-horizontal" method="post" action="/user/reg">
+                            <!-- <input type="hidden" name="x" value="user/reg"> -->
                             <input type="hidden" name="puttype" value="alert">
                             <fieldset>
                                 <legend align="right">入社单</legend>
