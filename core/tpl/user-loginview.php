@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-xs-6 col-xs-offset-3">
                     <div class="well bs-component">
-                        <form class="form-horizontal" method="post" action="?user/login">
+                        <form class="form-horizontal" method="post" action="/user/login">
                             <!-- <input type="hidden" name="user/login"> -->
                             <input type="hidden" name="sucb" value="<?php print $sucb?>">
                             <input type="hidden" name="facb" value="<?php print $facb?>">
