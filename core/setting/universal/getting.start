@@ -6,3 +6,22 @@
 
 设计获取数据源的方法：取列表，按条件取某个数据
 
+==========================================================================
+
+table_struct
+    table_id
+    table_name
+    table_desc
+
+table_field
+    field_id
+    field_name
+    field_type:number|string|text
+    default_value
+    table_id
+
+table_data
+    data_id
+    number_value
+    string_value
+    text_value
