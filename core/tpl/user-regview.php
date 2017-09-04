@@ -2,7 +2,7 @@
 
     <head>
 
-        <title>入社 - LTRE LAB power by 折木 | iio.ooo | miku.us | larele.com | ltre.me </title>
+        <title>入社 - LTRE LAB</title>
         <link href="./res/lib/bootstrap3/css/bootstrap.min.css" rel="stylesheet">
         <link href="./res/lib/bootstarp-material-design/css/ripples.min.css" rel="stylesheet">
     	<link href="./res/lib/bootstarp-material-design/css/material-wfont.min.css" rel="stylesheet">
