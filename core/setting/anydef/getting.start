@@ -22,6 +22,7 @@ table_field
 
 table_data
     data_id
+    field_id
     number_value
     string_value
     text_value
