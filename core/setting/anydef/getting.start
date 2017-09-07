@@ -12,30 +12,64 @@ table_struct
     table_id
     table_name
     table_desc
+    created
+    updated
 
 table_field
     field_id
     field_name
-    field_type:number|string|text
-    default_value
+    field_type:number|string|text|bool
+    widget_type: image|input|hidden|radio|checkbox|textarea|select|file
+    default_value, varchar(255)
+    enum_range, 枚举值范围,json表示
+    regexp, 正则表达式(用于格式、长度等限制)
+    value_range, varchar(255), 可使用带变量占位符的表达式如【$ > 1 && $ <= 5】、【$ <= 1 || $ > 5】、【$ > 'abc' || strcmp($, 'def')==1 && $ != '\\$'】
     table_id
 
 table_data
     data_id
     field_id
-    number_value
-    string_value
-    text_value
+    number_value, bigint(20)
+    string_value, varchar(255)
+    text_value, text
+    bool_value, tinyint
 
 tpl
     tpl_id
     tpl_name
-    tpl_domain, 如abc.com
-    tpl_path, 如/a/b.html
-  如何实现domain,path如何定位模板？
+    -- tpl_domain, 如abc.com
+    -- tpl_path, 如/a/b.html
+    tpl_desc
+    tpl_encode
+    created
+    updated
+
+[发布内容的方式，这里待研究，可以想象为路由]publisher
+    pub_id
+    pub_type: list列表页|unit列表中某单元的明细|mix混合内容
+    tpl_id
+    pub_domain, 如abc.com
+    pub_path, 如abc.com
+    route, 用正则表达式确定在anydef.miku.us域名下的URL(默认预览用的URL)，如/^\/path\/to\/\d+(\.html?)?$/i
+
+==========================================================================
+
+  如何实现domain,path定位模板？
   答：
     可提供统一模板获取接口，参数用domain+path，业务方自己把当前访问域名和PATH转发给接口，接口返回解析后的最终内容。
     另一个方案，业务方可以作好自己业务具体模板与模板ID的对应关系，将id转发给接口，接口返回解析后的最终内容。（这样统一接口方不必保存模板对应啥domain和path，不过从系统可扩展性来讲，还是第一种方案较为靠谱）
+    <!-- 这里可能是错误的： 此外，统一接口方的模板还具备与域名无关的默认URL，该URL格式为anydef.miku.us/t/<tpl_id>.html -->
+
+==========================================================================
+
+域名上下线支持：
+    在miku.us下存档具备Anydef能力的域名，支持添加、删除域名。
+    技术难点：通过程序控制域名解析和路由配置。
+        域名解析方提供变更接口；
+        业务方提供路由配置接口。
+    上线流程：
+        业务方将任意PATH解析至一个控制器，该控制器再实现接口数据获取能力
+        业务方通过接口方增加其需要的模板
 
 ==========================================================================
 
