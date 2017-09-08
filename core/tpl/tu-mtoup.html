@@ -112,10 +112,16 @@
                     filesArea.innerHTML = '';
                     var items = evt.clipboardData.items;
                     var files = [];
-                    if (items.length >= 1) {
-                        var file = evt.clipboardData.items[0].getAsFile();
-                        file && files.push(file);
+                    for (var i = 0; i < items.length; ++ i) {
+                        if (items[i].kind === 'file' && items[i].type.indexOf('image') === 0) {
+                            file = items[i].getAsFile();
+                            file && files.push(file);
+                        }
                     }
+                    // if (items.length >= 1) {
+                    //     var file = evt.clipboardData.items[0].getAsFile();
+                    //     file && files.push(file);
+                    // }
                     loopFiles(files, filesArea);
                 }, false);
             }();
