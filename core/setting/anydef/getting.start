@@ -49,8 +49,14 @@ tpl
     pub_type: list列表页|unit列表中某单元的明细|mix混合内容
     tpl_id
     pub_domain, 如abc.com
-    pub_path, 如abc.com
+    pub_path, 如/a/b.html
     route, 用正则表达式确定在anydef.miku.us域名下的URL(默认预览用的URL)，如/^\/path\/to\/\d+(\.html?)?$/i
+    data_source 数据源
+
+数据源data_source （如何科学描述一坨根据需求查询出的数据？）
+    data_struct
+    data_conds
+
 
 ==========================================================================
 
