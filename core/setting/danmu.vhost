@@ -7,7 +7,7 @@ Apache HP PC in wamp 3:
 	<Directory  "e:/installedapp/zend/apache2/htdocs/danmu/">
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride All
-		Require local
+		Require all granted
 	</Directory>
 </VirtualHost>
 
@@ -24,7 +24,7 @@ Apache Company PC in wamp 3:
 	<Directory  "d:/SERV_WORKSPACE/pub/danmu/">
 		Options Indexes FollowSymLinks MultiViews
 		AllowOverride All
-		Require local
+		Require all granted
 	</Directory>
 </VirtualHost>
 
@@ -44,7 +44,7 @@ Nginx Conoha Tokyo:
 
 server {
 listen 80;
-server_name www.miku.us miku.us tu.miku.us fm.miku.us tool.miku.us iio.ooo www.iio.ooo yooo.moe www.yooo.moe danmu.me fm.danmu.me tu.danmu.me ;
+server_name www.miku.us miku.us tu.miku.us fm.miku.us tool.miku.us book.miku.us iio.ooo www.iio.ooo yooo.moe www.yooo.moe danmu.me fm.danmu.me tu.danmu.me tool.danmu.me book.danmue.me;
 access_log /home/wwwlogs/www.miku.us_nginx.log combined;
 index index.html index.htm index.jsp index.php;
 include other.conf;
