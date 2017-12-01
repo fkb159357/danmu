@@ -9,5 +9,10 @@ class CtrlDo extends DIDo {
     function qr(){
         $this->stpl();
     }
+
+    //图片同步显示
+    function img(){
+        $this->stpl();
+    }
     
 }
