@@ -1,0 +1,130 @@
+<html>
+    <head>
+        <title>Image Sync</title>
+        <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="//cdn.bootcss.com/underscore.js/1.7.0/underscore-min.js"></script>
+        <script src="//cdn.bootcss.com/moment.js/2.13.0/moment.min.js"></script>
+        <script src="//cdn.bootcss.com/moment.js/2.13.0/moment-with-locales.min.js"></script>
+
+        <script src="//res.miku.us/res/js/controlable.js"></script>
+    </head>
+    <body>
+
+        <div class="container" style="background-color:cornflowerblue;">
+            <div class="row" style="background-color:lightblue; margin-top:100px;">
+                <div class="col-xs-6 col-xs-offset-3" style="SB-background-color:darkgoldenrod">
+                    <div class="row" style="background-color:cadetblue; min-height:350px;">
+                        <img id="preview" alt="preview">
+                    </div>
+                    <div class="row" style="SB-background-color:chocolate; text-align:center">
+                        <img id="up-loading" width="20" height="20" src="http://s1.dwstatic.com/duowanvideo/20170503/09/5103534.gif" style="display:none">
+                        <span id="up-msg">拖放图片到此处</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        var Common = {
+            preview: '', //预览图
+            emit: null //发送指令的执行器，由controlable.js初始化得到，调用方式：emit(自定义指令字符串, 任意类型数据)
+        };
+
+        var im = document.getElementById('preview');
+
+        document.body.onload = function(){
+            im.setAttribute('width', im.parentElement.offsetWidth);
+        };
+
+        function initDrop(callback){
+            im.addEventListener('dragenter', function(evt){
+                evt.stopPropagation();
+                evt.preventDefault();
+            }, false);
+            im.addEventListener('dragover', function(evt){
+                evt.stopPropagation();
+                evt.preventDefault();
+            }, false);
+            im.addEventListener('drop', function(evt){
+                evt.stopPropagation();
+                evt.preventDefault();
+                callback.call(this, evt);
+            }, false);
+        }
+
+        initDrop(function(evt){
+            var upLoading = $('#up-loading');
+            var upMsg = $('#up-msg');
+            var files = evt.dataTransfer.files;
+            var file = files[0];//存在多张图时，只取第一张
+            if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
+                var formData = new FormData();
+                formData.append('img', file);
+                //开始上传
+                $.ajax({
+                    url: '//video.duowan.com/?r=test/upImg',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    contentType: false, //必须设置false才会避开jQuery对 formdata 的默认处理 XMLHttpRequest会对 formdata 进行正确的处理
+                    processData: false, //必须设置false才会自动加上正确的Content-Type
+                    xhr: function(){
+                        //捕获上传进度
+                        var xhr = $.ajaxSettings.xhr();
+                        xhr.withCredentials = true;
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', function(evt){
+                                if (evt.lengthComputable) {
+                                    var perc = Math.round(evt.loaded * 100 / evt.total);
+                                    if (perc < 100) {
+                                        upLoading.text(perc + '%, 上传中..');
+                                    }
+                                }
+                            }, false);
+                            xhr.upload.addEventListener('load', function(evt){
+                                upLoading.text('100%, 上传即将完成..');
+                            }, false);
+                        }
+                        return xhr; //xhr对象返回给jQuery使用
+                    },
+                    success: function(j){
+                        if (j.code == 0) {
+                            im.setAttribute('src', j.url);
+                            upMsg.css({display:'', color:'green'}).text('上传成功').show();
+                            //开始向被控端发送新图
+                            Common.preview = j.url;
+                            Common.emit('newImage', j.url);
+                        } else {
+                            if (j.code == '-6') j.msg = '图片大小超过限制';
+                            upMsg.css({display:'', color:'red'}).text(j.msg);//上传失败信息
+                        }
+                        upLoading.hide();
+                    }
+                });
+            }
+        });
+
+        Ltrelib.controlable({
+            tokenGetter: function(socket) {
+                return 1;
+            },
+            onAccept: function(socket, localToken, type, value) {
+                switch (type) {
+                    case 'newImage': 
+                        im.setAttribute('src', value);
+                        alert('received image');
+                        break;
+                }
+            },
+            initializer: function(socket, localToken) {
+                console.log('nothing to do ...');
+            },
+            emitor: function(emit) {
+                Common.emit = emit;
+            }
+        });
+        </script>
+    </body>
+</html>
