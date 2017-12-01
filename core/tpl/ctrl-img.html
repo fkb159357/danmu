@@ -10,10 +10,12 @@
     </head>
     <body>
 
+        <input id="file-input" type="file" style="display:none" accept="image/jpeg,image/png,image/gif" multiple="multiple"><!-- accept="image/*" OR accept="image/jpeg,image/png,image/gif" OR accept=".jpg,.png,.gif" 兼容性详见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input -->
+
         <div class="container-fluid" style="background-color:cornflowerblue;">
             <div class="row-fluid" style="background-color:deepskyblue; margin-top:100px;">
                 <div class="col-xs-6 col-xs-offset-3" style="SB-background-color:darkgoldenrod">
-                    <div id="qr-code" class="row-fluid" style="margin-top:20px"></div>
+                    <div id="qr-code" class="row-fluid" style="margin-top:20px; cursor:pointer"></div>
                     <div id="drop-area" class="row-fluid" style="background-color:mediumslateblue; min-height:350px; margin-top:20px">
                         <img id="preview" alt="preview">
                     </div>
@@ -26,20 +28,37 @@
         </div>
 
         <script>
+
         var Common = {
             preview: '', //预览图
             emit: null //发送指令的执行器，由controlable.js初始化得到，调用方式：emit(自定义指令字符串, 任意类型数据)
         };
 
+
         var upLoading = $('#up-loading');
         var upMsg = $('#up-msg');
         var im = document.getElementById('preview');
+        var fileInput = document.getElementById('file-input');
         var dropArea = document.getElementById('drop-area');
 
-        document.body.onload = function(){
-            im.setAttribute('width', im.parentElement.offsetWidth);
-            im.style.visibility = 'hidden';
-        };
+
+        function initFileInput(input){
+            input.addEventListener('change', function(evt){
+                if (this.files.length > 0) {
+                    upload(this.files[0]);
+                }
+            }, false);
+            dropArea.addEventListener('click', function(evt){
+                if(!! document.all) {
+                    input.select();
+                    document.execCommand("delete");
+                } else {
+                    input.value = '';
+                }
+                input.click();
+            }, false);
+        }
+
 
         function initDrop(callback){
             dropArea.addEventListener('dragenter', function(evt){
@@ -57,54 +76,67 @@
             }, false);
         }
 
+
+        function upload(file) {
+            var formData = new FormData();
+            formData.append('img', file);
+            //开始上传
+            $.ajax({
+                url: '//video.duowan.com/?r=test/upImg',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                contentType: false, //必须设置false才会避开jQuery对 formdata 的默认处理 XMLHttpRequest会对 formdata 进行正确的处理
+                processData: false, //必须设置false才会自动加上正确的Content-Type
+                xhr: function(){
+                    //捕获上传进度
+                    var xhr = $.ajaxSettings.xhr();
+                    xhr.withCredentials = true;
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', function(evt){
+                            if (evt.lengthComputable) {
+                                var perc = Math.round(evt.loaded * 100 / evt.total);
+                                if (perc < 100) {
+                                    upLoading.text(perc + '%, 上传中..');
+                                }
+                            }
+                        }, false);
+                        xhr.upload.addEventListener('load', function(evt){
+                            upLoading.text('100%, 上传即将完成..');
+                        }, false);
+                    }
+                    return xhr; //xhr对象返回给jQuery使用
+                },
+                success: function(j){
+                    if (j.code == 0) {
+                        im.setAttribute('src', j.url);
+                        im.style.visibility = 'inherit';
+                        upMsg.css({display:'', color:'green'}).text('上传成功').show();
+                        //开始向被控端发送新图
+                        Common.preview = j.url;
+                        Common.emit('newImage', j.url);
+                    } else {
+                        if (j.code == '-6') j.msg = '图片大小超过限制';
+                        upMsg.css({display:'', color:'red'}).text(j.msg);//上传失败信息
+                    }
+                    upLoading.hide();
+                }
+            });
+        }
+
+
+        document.body.onload = function(){
+            im.setAttribute('width', im.parentElement.offsetWidth);
+            im.style.visibility = 'hidden';
+        };
+
+        initFileInput(fileInput);
+
         initDrop(function(evt){
             var files = evt.dataTransfer.files;
             var file = files[0];//存在多张图时，只取第一张
             if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
-                var formData = new FormData();
-                formData.append('img', file);
-                //开始上传
-                $.ajax({
-                    url: '//video.duowan.com/?r=test/upImg',
-                    type: 'POST',
-                    data: formData,
-                    dataType: 'json',
-                    contentType: false, //必须设置false才会避开jQuery对 formdata 的默认处理 XMLHttpRequest会对 formdata 进行正确的处理
-                    processData: false, //必须设置false才会自动加上正确的Content-Type
-                    xhr: function(){
-                        //捕获上传进度
-                        var xhr = $.ajaxSettings.xhr();
-                        xhr.withCredentials = true;
-                        if (xhr.upload) {
-                            xhr.upload.addEventListener('progress', function(evt){
-                                if (evt.lengthComputable) {
-                                    var perc = Math.round(evt.loaded * 100 / evt.total);
-                                    if (perc < 100) {
-                                        upLoading.text(perc + '%, 上传中..');
-                                    }
-                                }
-                            }, false);
-                            xhr.upload.addEventListener('load', function(evt){
-                                upLoading.text('100%, 上传即将完成..');
-                            }, false);
-                        }
-                        return xhr; //xhr对象返回给jQuery使用
-                    },
-                    success: function(j){
-                        if (j.code == 0) {
-                            im.setAttribute('src', j.url);
-                            im.style.visibility = 'inherit';
-                            upMsg.css({display:'', color:'green'}).text('上传成功').show();
-                            //开始向被控端发送新图
-                            Common.preview = j.url;
-                            Common.emit('newImage', j.url);
-                        } else {
-                            if (j.code == '-6') j.msg = '图片大小超过限制';
-                            upMsg.css({display:'', color:'red'}).text(j.msg);//上传失败信息
-                        }
-                        upLoading.hide();
-                    }
-                });
+                upload(file);
             }
         });
 
