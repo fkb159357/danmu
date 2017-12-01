@@ -2,20 +2,19 @@
     <head>
         <title>Image Sync</title>
         <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-        <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
         <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-        <script src="//cdn.bootcss.com/underscore.js/1.7.0/underscore-min.js"></script>
-        <script src="//cdn.bootcss.com/moment.js/2.13.0/moment.min.js"></script>
-        <script src="//cdn.bootcss.com/moment.js/2.13.0/moment-with-locales.min.js"></script>
+        <script src="//cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
 
         <script src="//res.miku.us/res/js/controlable.js"></script>
     </head>
     <body>
 
         <div class="container" style="background-color:cornflowerblue;">
-            <div class="row" style="background-color:lightblue; margin-top:100px;">
+            <div class="row" style="background-color:deepskyblue; margin-top:100px;">
                 <div class="col-xs-6 col-xs-offset-3" style="SB-background-color:darkgoldenrod">
-                    <div class="row" style="background-color:cadetblue; min-height:350px;">
+                    <div id="qr-code" class="row" style="margin-top:20px"></div>
+                    <div id="drop-area" class="row" style="background-color:mediumslateblue; min-height:350px; margin-top:20px">
                         <img id="preview" alt="preview">
                     </div>
                     <div class="row" style="SB-background-color:chocolate; text-align:center">
@@ -32,22 +31,26 @@
             emit: null //发送指令的执行器，由controlable.js初始化得到，调用方式：emit(自定义指令字符串, 任意类型数据)
         };
 
+        var upLoading = $('#up-loading');
+        var upMsg = $('#up-msg');
         var im = document.getElementById('preview');
+        var dropArea = document.getElementById('drop-area');
 
         document.body.onload = function(){
             im.setAttribute('width', im.parentElement.offsetWidth);
+            im.style.visibility = 'hidden';
         };
 
         function initDrop(callback){
-            im.addEventListener('dragenter', function(evt){
+            dropArea.addEventListener('dragenter', function(evt){
                 evt.stopPropagation();
                 evt.preventDefault();
             }, false);
-            im.addEventListener('dragover', function(evt){
+            dropArea.addEventListener('dragover', function(evt){
                 evt.stopPropagation();
                 evt.preventDefault();
             }, false);
-            im.addEventListener('drop', function(evt){
+            dropArea.addEventListener('drop', function(evt){
                 evt.stopPropagation();
                 evt.preventDefault();
                 callback.call(this, evt);
@@ -55,8 +58,6 @@
         }
 
         initDrop(function(evt){
-            var upLoading = $('#up-loading');
-            var upMsg = $('#up-msg');
             var files = evt.dataTransfer.files;
             var file = files[0];//存在多张图时，只取第一张
             if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
@@ -92,6 +93,7 @@
                     success: function(j){
                         if (j.code == 0) {
                             im.setAttribute('src', j.url);
+                            im.style.visibility = 'inherit';
                             upMsg.css({display:'', color:'green'}).text('上传成功').show();
                             //开始向被控端发送新图
                             Common.preview = j.url;
@@ -108,18 +110,22 @@
 
         Ltrelib.controlable({
             tokenGetter: function(socket) {
-                return 1;
+                return location.hash.replace('#','') || + new Date;//token也可手动用fragment生成
             },
-            onAccept: function(socket, localToken, type, value) {
+            onAccept: function(socket, token, type, value) {
                 switch (type) {
                     case 'newImage': 
                         im.setAttribute('src', value);
-                        alert('received image');
+                        im.style.visibility = 'inherit';
+                        upMsg.text('收到新图').fadeIn('fast');
                         break;
                 }
             },
-            initializer: function(socket, localToken) {
-                console.log('nothing to do ...');
+            initializer: function(socket, token) {
+                var q = $('#qr-code')[0];
+                var w = q.offsetWidth;
+                var h = w;
+                $('#qr-code').qrcode({width:w, height:h, text:location.protocol+'//'+location.host+'/?ctrl/img#'+token});
             },
             emitor: function(emit) {
                 Common.emit = emit;
