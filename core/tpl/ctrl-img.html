@@ -149,7 +149,7 @@
                     case 'newImage': 
                         im.setAttribute('src', value);
                         im.style.visibility = 'inherit';
-                        upMsg.text('收到新图').fadeIn('fast');
+                        upMsg.text('收到新图');
                         break;
                 }
             },
@@ -157,7 +157,7 @@
                 var q = $('#qr-code')[0];
                 var w = q.offsetWidth;
                 var h = w;
-                $('#qr-code').qrcode({width:w, height:h, text:location.protocol+'//'+location.host+'/?ctrl/img#'+token});
+                $('#qr-code').qrcode({width:w, height:h, text:location.protocol+'//'+location.host+'/ctrl/img#'+token});
             },
             emitor: function(emit) {
                 Common.emit = emit;
