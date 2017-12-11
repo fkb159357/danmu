@@ -26,12 +26,16 @@ class DIFilterMap {
 		return array(
 			//过滤器名(免Filter后缀) => array(作用域)
 			'Login' => array(
+                'Tu',
+                /* 屏蔽这么多？直接全部屏蔽吧 'Tu/start',
+                'Tu/list',
+                'Tu/getListData',
                 'Tu/mtoup',
 				'Tu/toup',
                 'Tu/up',
                 'Tu/setTags',
                 'Tu/del',
-                'Tu/manageList',
+                'Tu/manageList', */
 			),
 			/* 'Xxx'	=> array(
 				'Test/test', //Do方法
