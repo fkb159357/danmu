@@ -162,7 +162,7 @@
                 progress.innerText = '0%';
                 progress.className = 'up-progress';
                 var loading = document.createElement('img');
-                loading.src = 'http://s1.dwstatic.com/duowanvideo/20170503/09/5103534.gif';
+                loading.src = 'https://s1.dwstatic.com/duowanvideo/20170503/09/5103534.gif';
                 loading.className = 'up-loading';
                 loading.width = 20;
                 loading.height = 20;
@@ -204,6 +204,7 @@
                         options.progressbar.innerText = j.msg;
                         options.progressbar.style.color = 'red';
                     } else {
+                        j.url = j.url.replace(/^https?(\:\/\/)/, 'https$1');
                         options.progressbar.innerText = '上传成功！';
                         options.srcBar.value = j.url
                         options.srcBar.style.display = 'block';
