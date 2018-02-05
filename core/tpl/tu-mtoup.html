@@ -217,6 +217,7 @@
                         options.progressbar.innerText = j.msg;
                         options.progressbar.style.color = 'red';
                     } else {
+                        //j.data.url = j.data.url.replace(/^https?(\:\/\/)/, 'https$1');
                         options.fileLi.setAttribute('tuid', j.data.id);
                         options.progressbar.innerText = '上传成功！';
                         options.srcBar.value = j.data.url;
