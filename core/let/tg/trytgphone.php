@@ -119,20 +119,20 @@ class ttp {
             'first_name' => 'hehe',
         ]);
         if (false === $ret) {
-            $this->alert(print_r(['msg' => '请求出错', 'data' => compact('token', 'phone', 'ret')], 1));
+            $this->alert($phone, print_r(['msg' => '请求出错', 'data' => compact('token', 'phone', 'ret')], 1));
         } else {
             $response = json_decode($ret, 1);
             if (false === $response) {
-                $this->alert(print_r(['msg' => '响应结构不是JSON', 'data' => compact('token', 'phone', 'ret')], 1));
+                $this->alert($phone, print_r(['msg' => '响应结构不是JSON', 'data' => compact('token', 'phone', 'ret')], 1));
             } else {
                 if (! $response['ok']) {
-                    $this->alert(print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
+                    $this->alert($phone, print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
                 } else {
                     if (isset($response['result']['contact']['user_id'])) {
                         $user_id = $response['result']['contact']['user_id'];
-                        $this->alert(print_r(['msg' => "已找到用户ID: {$user_id}", 'data' => compact('token', 'phone', 'response')], 1));
+                        $this->alert($phone, print_r(['msg' => "已找到用户ID: {$user_id}", 'data' => compact('token', 'phone', 'response')], 1));
                     } else {
-                        $this->alert(print_r(['msg' => "未找到用户ID", 'data' => compact('token', 'phone', 'response')], 1));
+                        $this->alert($phone, print_r(['msg' => "未找到用户ID", 'data' => compact('token', 'phone', 'response')], 1));
                     }
                 }
             }
@@ -141,7 +141,7 @@ class ttp {
     }
 
 
-    function alert($msg){
+    function alert($phone, $msg){
         $token = $this->getNextToken();
         $api = "https://api.telegram.org/bot{$token}/sendMessage";
         $h = new dwHttp;
@@ -149,6 +149,7 @@ class ttp {
             'chat_id' => 533702151,
             'text' => $msg,
         ]);
+        file_put_contents(DI_DATA_PATH.'cache/trytgphones.log', $phone, FILE_APPEND);
     }
 
 
