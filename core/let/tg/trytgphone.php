@@ -1,4 +1,6 @@
 <?php
+// cd /root/tmp; nohup php trytgphone.php > trytgphone.nohup.out &
+// ps aux | grep trytgphone
 
 import('net/dwHttp');
 
@@ -109,6 +111,18 @@ class ttp {
     }
 
 
+    //防止机器人被封
+    function protectBot($token){
+        $setup = $this->getSetup();
+        foreach ($setup->map as $id => $v) {
+            if ($v['token'] == $token) {
+                $setup->map[$id]['status'] = 0;
+            }
+        }
+        $this->save($setup);
+    }
+
+
     function req($phone){
         $lockFile = DI_DATA_PATH.'cache/trytgphone.lock';
         @list($lock, $lastTime) = json_decode(file_get_contents($lockFile)?:'[0, 0]', 1);
@@ -132,6 +146,10 @@ class ttp {
             } else {
                 if (! $response['ok']) {
                     $this->alert($phone, print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
+                    if ($response['error_code'] == 429) {
+                        $this->protectBot($token);
+                        $this->alert($phone, print_r(['msg' => '请求过于频繁，暂时将该token暂停', 'data' => compact('token', 'phone', 'response')], 1));
+                    }
                 } else {
                     if (isset($response['result']['contact']['user_id'])) {
                         $user_id = $response['result']['contact']['user_id'];
@@ -192,7 +210,12 @@ switch ($a) {
         break;
     case 'req':
         if (empty($phone)) {
-            $phone = $ttp->getNextPhone();
+            $ps = [
+                ['15800000086', '15899999986', 100],
+                ['18300000050', '18399999950', 100],
+            ];
+            list($start, $end, $step) = $ps[rand(0, 1)];
+            $phone = $ttp->getNextPhone($start, $end, $step);
         }
         $ttp->req($phone);
         break;
@@ -203,3 +226,4 @@ switch ($a) {
     default:
         echo 'default';
 }
+
