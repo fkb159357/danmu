@@ -101,6 +101,8 @@ class ttp {
 
 
     function getNextPhone($start = 18300000050, $end = 18399999950, $step = 100){
+        // $phoneFile = DI_DATA_PATH.'cache/trytgphones.json';
+        // @$phoneList = json_decode(file_get_contents($phoneFile)?:'[]', 1);
         $r = rand(0, ceil(($end - $start) / $step));
         $phone = '+86' . ($start + $step * $r);
         return $phone;
@@ -116,7 +118,37 @@ class ttp {
             'phone_number' => $phone,
             'first_name' => 'hehe',
         ]);
-        dump(compact('token', 'phone', 'ret'));
+        if (false === $ret) {
+            $this->alert(print_r(['msg' => '请求出错', 'data' => compact('token', 'phone', 'ret')], 1));
+        } else {
+            $response = json_decode($ret, 1);
+            if (false === $response) {
+                $this->alert(print_r(['msg' => '响应结构不是JSON', 'data' => compact('token', 'phone', 'ret')], 1));
+            } else {
+                if (! $response['ok']) {
+                    $this->alert(print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
+                } else {
+                    if (isset($response['result']['contact']['user_id'])) {
+                        $user_id = $response['result']['contact']['user_id'];
+                        $this->alert(print_r(['msg' => "已找到用户ID: {$user_id}", 'data' => compact('token', 'phone', 'response')], 1));
+                    } else {
+                        $this->alert(print_r(['msg' => "未找到用户ID", 'data' => compact('token', 'phone', 'response')], 1));
+                    }
+                }
+            }
+        }
+        @dump(compact('token', 'phone', 'ret', 'response'));
+    }
+
+
+    function alert($msg){
+        $token = $this->getNextToken();
+        $api = "https://api.telegram.org/bot{$token}/sendMessage";
+        $h = new dwHttp;
+        $ret = $h->post($api, [
+            'chat_id' => 533702151,
+            'text' => $msg,
+        ]);
     }
 
 
