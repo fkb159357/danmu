@@ -112,7 +112,7 @@ class ttp {
     function req($phone){
         $lockFile = DI_DATA_PATH.'cache/trytgphone.lock';
         @list($lock, $lastTime) = json_decode(file_get_contents($lockFile)?:'[0, 0]', 1);
-        if ($lock && time() - $lastTime < 11) die('req locked!');//锁11秒
+        if ($lock && time() - $lastTime < 15) die('req locked!');//锁11秒
         file_put_contents($lockFile, json_encode([1, time()]));
 
         $token = $this->getNextToken();
