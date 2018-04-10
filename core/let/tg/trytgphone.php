@@ -110,6 +110,9 @@ class ttp {
 
 
     function req($phone){
+        @$lock = file_get_contents(DI_DATA_PATH.'cache/trytgphone.lock') ?: 0;
+        if ($lock) die('req locked!');
+
         $token = $this->getNextToken();
         $api = "https://api.telegram.org/bot{$token}/sendContact";
         $h = new dwHttp;
@@ -137,6 +140,8 @@ class ttp {
                 }
             }
         }
+
+        file_put_contents(DI_DATA_PATH.'cache/trytgphone.lock', 1);
         @dump(compact('token', 'phone', 'ret', 'response'));
     }
 
