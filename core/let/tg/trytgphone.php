@@ -70,7 +70,7 @@ class ttp {
     function getNext(){
         $setup = $this->getSetup();
         $keys = array_keys($setup->map);
-        if ($setup->pointer === null) {
+        if (empty($setup->pointer)) {
             $setup->pointer = reset($keys);
         } else {
             $i = array_search($setup->pointer, $keys);
@@ -110,8 +110,10 @@ class ttp {
 
 
     function req($phone){
-        @$lock = file_get_contents(DI_DATA_PATH.'cache/trytgphone.lock') ?: 0;
-        if ($lock) die('req locked!');
+        $lockFile = DI_DATA_PATH.'cache/trytgphone.lock';
+        @list($lock, $lastTime) = json_decode(file_get_contents($lockFile)?:'[0, 0]', 1);
+        if ($lock && time() - $lastTime < 15) die('req locked!');
+        file_put_contents($lockFile, json_encode([1, time()]));
 
         $token = $this->getNextToken();
         $api = "https://api.telegram.org/bot{$token}/sendContact";
@@ -141,7 +143,7 @@ class ttp {
             }
         }
 
-        file_put_contents(DI_DATA_PATH.'cache/trytgphone.lock', 1);
+        file_put_contents($lockFile, json_encode([0, time()]));
         @dump(compact('token', 'phone', 'ret', 'response'));
     }
 
