@@ -134,6 +134,7 @@ $a = arg('a');
 $token = arg('token') ?: '';
 $status = intval(arg('status')) ?: 1;
 $id = arg('id') ?: '';
+$phone = arg('phone') ?: '';
 $ttp = new ttp;
 switch ($a) {
     case 'setToken':
@@ -147,7 +148,9 @@ switch ($a) {
         echo 'deleted';
         break;
     case 'req':
-        $phone = $ttp->getNextPhone();
+        if (empty($phone)) {
+            $phone = $ttp->getNextPhone();
+        }
         $ttp->req($phone);
         break;
     case 'dumpTokenSetup':
