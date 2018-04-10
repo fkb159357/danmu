@@ -326,7 +326,16 @@
                     var area = $('#diy-selected-tu-area');
                     var ids = getTaggedTuIds();
                     if (ids.length > 0) {
-                        area.html('<p>已选中的图ID有：<font color="red">' + ids.join('、') + '</font>，这些图可批量打入标签。</p>');
+                        area.html('<p>已选中的图ID有：<font color="red">' + ids.join('、') + '</font>，<a id="diy-open-selected-tus" href="javascript:;">这些图</a>可批量打入标签。</p>');
+                        /*$('#diy-open-selected-tus').click(function(){
+                            for (var i in ids) {
+                                ids[i];
+                                $.getJSON('/tu/getById/'+ids[i], function(j){
+
+                                });
+                            }
+                            $('body').append(tpl);
+                        });*/
                         area.show();
                     } else {
                         area.html('').hide();
