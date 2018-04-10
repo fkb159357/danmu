@@ -136,6 +136,9 @@ class ttp {
                     if (isset($response['result']['contact']['user_id'])) {
                         $user_id = $response['result']['contact']['user_id'];
                         $this->alert($phone, print_r(['msg' => "已找到用户ID: {$user_id}", 'data' => compact('token', 'phone', 'response')], 1));
+                        if (in_array($user_id, [515656720, 524008226, 476290631])) { //如果是狗屎骗子的号，则特殊通知
+                            $this->alert($phone, print_r(['msg' => "已找到用户ID: {$user_id}", 'data' => compact('token', 'phone', 'response')], 1), 462394947);
+                        }
                     } else {
                         $this->alert($phone, print_r(['msg' => "未找到用户ID", 'data' => compact('token', 'phone', 'response')], 1));
                     }
@@ -148,12 +151,12 @@ class ttp {
     }
 
 
-    function alert($phone, $msg){
+    function alert($phone, $msg, $chat_id = 533702151){
         $token = $this->getNextToken();
         $api = "https://api.telegram.org/bot{$token}/sendMessage";
         $h = new dwHttp;
         $ret = $h->post($api, [
-            'chat_id' => 533702151,
+            'chat_id' => $chat_id,
             'text' => $msg,
         ]);
         file_put_contents(DI_DATA_PATH.'cache/trytgphones.log', "{$phone}: {$msg}\r\n", FILE_APPEND);
