@@ -149,7 +149,7 @@ class ttp {
             'chat_id' => 533702151,
             'text' => $msg,
         ]);
-        file_put_contents(DI_DATA_PATH.'cache/trytgphones.log', "{$phone}: {$msg}", FILE_APPEND);
+        file_put_contents(DI_DATA_PATH.'cache/trytgphones.log', "{$phone}: {$msg}\r\n", FILE_APPEND);
     }
 
 
