@@ -34,8 +34,8 @@ class DIRouteRewrite {
         '://book.miku.us/read/<code>/<p>' => 'book/read/<code>/<p>',
         '://danmu.me' => 'danmu/start',//注意：这几行对域名的配置会将DIUrlShell::$_default_shell覆盖
         '://larele.com' => 'shell.shell',
-        '://www.yooo.moe' => 'fm/start',
-        '://yooo.moe' => 'fm/start',
+        '://www.yooo.moe' => 'yo/start',
+        '://yooo.moe' => 'yo/start',
         
         'robots.txt' => 'seo/robots',
         'sitemap.xml' => 'seo/sitemap',
