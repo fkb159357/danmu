@@ -1,13 +1,26 @@
 <?php
 // cd /root/tmp; nohup php trytgphone.php > trytgphone.nohup.out &
 // ps aux | grep trytgphone
+/**
+ 跑脚本：
+    <?php
+    $u = 'http://......./tg.trytgphone?a=req';
+    while(1){
+        if (time() > strtotime('2018-04-12 12:00:00')) die('done');
+        echo file_get_contents($u);
+        sleep(30);
+    }
+
+    @todo: 发现有问题，半小时内没发现retry_after，需要先停止脚本，检查错误。防止被封
+ */
 
 import('net/dwHttp');
+import('debug/showTrace');
 
 class TokenSetup {
-    var $map = [];
+    var $map = [];//{id => {token:a, status:b, unlockTime:c}}
     var $pointer = null;
-    var $invalidPointers = [];//无效的token指针存放
+    var $invalidPointers = [];//无效的token指针存放(该字段已作废，但先保留，以适应已存储的token配置文件)
 }
 
 
@@ -38,14 +51,15 @@ class ttp {
     }
 
 
-    //1正常
-    function setToken($token, $status = 1){
+    //status=1正常, unlock=0不强制解锁
+    function setToken($token, $status = 1, $unlock = 0){
         $setup = $this->getSetup();
         $map = &$setup->map;
         $check = true;
         foreach ($map as $id => $v) {
             if ($v['token'] == $token) {
                 $map[$id]['status'] = $status;
+                $unlock AND $map[$id]['unlockTime'] = 0;
                 $check = false;
             }
         }
@@ -53,6 +67,7 @@ class ttp {
             $map[sha1(microtime(1).rand(0, 1000))] = [
                 'token' => $token,
                 'status' => $status,
+                'unlockTime' => 0,
             ];
         }
         $this->save($setup);
@@ -82,13 +97,14 @@ class ttp {
             $nextI = $i + 1 == count($keys) ? 0 : ($i + 1);
             $setup->pointer = $keys[$nextI];
         }
+        $next = &$setup->map[$setup->pointer];
+        @$next['unlockTime'] = $next['unlockTime'] ?: 0;
+        $next['status'] = time() > $next['unlockTime'] ? 1 : 0;
         $this->save($setup);
-        $next = $setup->map[$setup->pointer];
         if ($next['status'] == 1) return $next;
-        if (count($setup->invalidPointers) == count($keys)) return null;
-        if (! in_array($setup->pointer, $setup->invalidPointers)) {
-            $setup->invalidPointers[] = $setup->pointer;
-        }
+        $countInvalid = 0;
+        foreach ($setup->map as $v) if ($v['status'] == 0) $countInvalid ++;
+        if ($countInvalid == count($setup->map)) return null;
         return $this->getNext();
     }
 
@@ -112,11 +128,12 @@ class ttp {
 
 
     //防止机器人被封
-    function protectBot($token){
+    function protectBot($token, $afterSeconds){
         $setup = $this->getSetup();
         foreach ($setup->map as $id => $v) {
             if ($v['token'] == $token) {
                 $setup->map[$id]['status'] = 0;
+                $setup->map[$id]['unlockTime'] = time() + $afterSeconds;
             }
         }
         $this->save($setup);
@@ -126,17 +143,25 @@ class ttp {
     function req($phone){
         $lockFile = DI_DATA_PATH.'cache/trytgphone.lock';
         @list($lock, $lastTime) = json_decode(file_get_contents($lockFile)?:'[0, 0]', 1);
-        if ($lock && time() - $lastTime < 15) die('req locked!');//锁11秒
+        if ($lock && time() - $lastTime < 15) die('req locked!');//锁15秒
         file_put_contents($lockFile, json_encode([1, time()]));
 
         $token = $this->getNextToken();
         $api = "https://api.telegram.org/bot{$token}/sendContact";
         $h = new dwHttp;
         $ret = $h->post($api, [
-            'chat_id' => 533702151,
+            'chat_id' => 533702151,//常用收信用户
             'phone_number' => $phone,
             'first_name' => 'hehe',
         ]);
+        //debug
+        // $ret = json_encode([
+        //     'ok' => 1,
+        //     'error_code' => 429,
+        //     'parameters' => [
+        //         'retry_afer' => 1200,
+        //     ]
+        // ]);
         if (false === $ret) {
             $this->alert($phone, print_r(['msg' => '请求出错', 'data' => compact('token', 'phone', 'ret')], 1));
         } else {
@@ -145,10 +170,13 @@ class ttp {
                 $this->alert($phone, print_r(['msg' => '响应结构不是JSON', 'data' => compact('token', 'phone', 'ret')], 1));
             } else {
                 if (! $response['ok']) {
-                    $this->alert($phone, print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
                     if ($response['error_code'] == 429) {
-                        $this->protectBot($token);
+                        //@todo: 这里需要进一步获取下一次可请求的时间，记录到配置文件中，以便自动解锁
+                        $afterSeconds = $response['parameters']['retry_after'];
+                        $this->protectBot($token, $afterSeconds);
                         $this->alert($phone, print_r(['msg' => '请求过于频繁，暂时将该token暂停', 'data' => compact('token', 'phone', 'response')], 1));
+                    } else {
+                        $this->alert($phone, print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
                     }
                 } else {
                     if (isset($response['result']['contact']['user_id'])) {
@@ -194,13 +222,14 @@ class ttp {
 $a = arg('a');
 $token = arg('token') ?: '';
 $status = intval(arg('status')) ?: 1;
+$unlock = intval(arg('unlock')) ?: 0;//1-默认不解锁，1-强制解锁
 $id = arg('id') ?: '';
 $phone = arg('phone') ?: '';
 $ttp = new ttp;
 switch ($a) {
     case 'setToken':
         if (empty($token)) die('wtf');
-        $ttp->setToken($token, $status);
+        $ttp->setToken($token, $status, $unlock);
         echo 'writed';
         break;
     case 'delToken':
@@ -220,7 +249,7 @@ switch ($a) {
         $ttp->req($phone);
         break;
     case 'dumpTokenSetup':
-        die('nmb');//平时不给查
+        // die('nmb');//平时不给查
         dump($ttp->getSetup());
         break;
     default:
