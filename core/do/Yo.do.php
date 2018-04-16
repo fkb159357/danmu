@@ -1,5 +1,5 @@
 <?php
-class UserDo extends DIDo {
+class YoDo extends DIDo {
 
     function start(){
         die('yooooooooooooooooooooooooooooo');
