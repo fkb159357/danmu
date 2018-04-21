@@ -175,6 +175,9 @@ class ttp {
                         $afterSeconds = $response['parameters']['retry_after'];
                         $this->protectBot($token, $afterSeconds);
                         $this->alert($phone, print_r(['msg' => '请求过于频繁，暂时将该token暂停', 'data' => compact('token', 'phone', 'response')], 1));
+                    } elseif ($response['error_code'] == 401) {
+                        $this->protectBot($token, 9999999);
+                        $this->alert($phone, print_r(['msg' => '401错误，目测该bot被判死刑, description: '.$response['description'], 'data' => compact('token', 'phone', 'response')], 1));
                     } else {
                         $this->alert($phone, print_r(['msg' => '请求并不OK', 'data' => compact('token', 'phone', 'response')], 1));
                     }
