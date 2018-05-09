@@ -1,4 +1,5 @@
 <?php
+define('BASE_DIR', dirname(__FILE__).'/');
 //附加服务器环境检测
 if (version_compare(PHP_VERSION, '5.3.0') < 0) {
     header("Content-Type: text/html; charset=utf-8");
@@ -21,4 +22,6 @@ if (! function_exists('mysqli_connect')) {
     die("<h1 align=right>不知道食用方法？找你旁边的技♂术♂童♂鞋帮忙吧 )→_→) </h1>");
 }
 
+define('CLI_DEBUG', 0);
+CLI_DEBUG && require 'cli_debug.php';//启用CLI调试
 require 'core/base/__include.php';
