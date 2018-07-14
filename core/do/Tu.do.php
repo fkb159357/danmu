@@ -194,7 +194,7 @@ class TuDo extends DIDo {
     }
 
 
-    //随机获取一张图
+    //随机获取一张图, 提供给telegram hook后端调用，不需要登录态，详见login.filter
     function getRandomOne(){
         $taggedMode = arg('taggedMode') ?: 'all';//notagged, tagged, all
         $reqType = arg('reqType') ?: 'page';//page, api
