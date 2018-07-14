@@ -195,6 +195,7 @@ class TuDo extends DIDo {
 
 
     //随机获取一张图, 提供给telegram hook后端调用，不需要登录态，详见login.filter
+    //为保护个人隐私，加入了隐藏特性
     function getRandomOne(){
         $taggedMode = arg('taggedMode') ?: 'all';//notagged, tagged, all
         $reqType = arg('reqType') ?: 'page';//page, api
@@ -203,13 +204,13 @@ class TuDo extends DIDo {
         if ($taggedMode == 'notagged') {
             $list = Tu::getByNoTagged(1, 1);//@todo: 此处无法随机，暂时不改了，有心情再说
             $tuId = @$list[0]['tuId'];
-            if ($tuId) $tu = supertable('Tu')->find(['id' => $tuId], 'id tuId, filename, url');
+            if ($tuId) $tu = supertable('Tu')->find(['id' => $tuId, 'hide' => 0], 'id tuId, filename, url');
         } elseif ($taggedMode == 'tagged') {
             $sql = "SELECT tab_id FROM {$taggedObj->table} WHERE tab_name = 'tu' GROUP BY tab_id ORDER BY rand() limit 1";
             $tuIdRs = $taggedObj->query($sql) ?: [];
-            if (@$tuIdRs[0]['tab_id']) $tu = supertable('Tu')->find(['id' => @$tuIdRs[0]['tab_id']], 'id tuId, filename, url');
+            if (@$tuIdRs[0]['tab_id']) $tu = supertable('Tu')->find(['id' => @$tuIdRs[0]['tab_id'], 'hide' => 0], 'id tuId, filename, url');
         } else {
-            $tu = supertable('Tu')->find('', 'id tuId, filename, url', 'rand()');
+            $tu = supertable('Tu')->find(['hide' => 0], 'id tuId, filename, url', 'rand()');
         }
         
         if ($reqType == 'page') {
