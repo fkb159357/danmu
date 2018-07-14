@@ -201,7 +201,7 @@ class TuDo extends DIDo {
         $taggedObj = supertable('tagged');
         $tu = null;
         if ($taggedMode == 'notagged') {
-            $list = Tu::getByNoTagged(1);
+            $list = Tu::getByNoTagged(1, 1, true);
             $tuId = @$list[0]['tuId'];
             if ($tuId) $tu = supertable('Tu')->find(['id' => $tuId], 'id tuId, filename, url');
         } elseif ($taggedMode == 'tagged') {

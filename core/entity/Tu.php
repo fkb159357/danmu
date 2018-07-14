@@ -101,15 +101,16 @@ class Tu extends DIEntity {
     }
 
     //获取未打标签的图
-    static function getByNoTagged($limit = 20, $p = 1){
+    static function getByNoTagged($limit = 20, $p = 1, $rand = false){
         $offset = ($p - 1) * $limit;
         $taggedObj = supertable('Tagged');
         $tuObj = supertable('Tu');
+        $orderBy = $rand ? 'rand()' : 'tuId DESC';//默认按id降序
         $sql = 
             "SELECT id tuId, filename, fileext, mimetype, filesize, width, height, savefile, url 
             FROM {$tuObj->table} tu WHERE id NOT IN 
             ( SELECT tab_id FROM {$taggedObj->table} tgd WHERE tgd.tab_name = 'tu' GROUP BY tab_id )
-            ORDER BY tuId DESC LIMIT {$offset}, {$limit}";
+            ORDER BY {$orderBy} LIMIT {$offset}, {$limit}";
         $list = $tuObj->query($sql) ?: array();
         return $list;
         /*$taggedObj = supertable('Tagged');
