@@ -56,10 +56,6 @@ class DIFilterMap {
 		
 		return array(
 			//过滤器名(免Filter后缀) => array(作用域)
-			//过滤器名(免Filter后缀) => array(作用域)
-			'Login' => array(
-                'Tu/getRandomOne',//提供给telegram hook端pinkjj命令tagimg调用的接口
-			),
 			/* 'Xxx'	=> array(
 				'Testtest',	//Do模块
 				'Test/start', //Do方法
