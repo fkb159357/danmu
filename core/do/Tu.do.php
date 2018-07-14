@@ -194,6 +194,33 @@ class TuDo extends DIDo {
     }
 
 
+    //随机获取一张图
+    function getRandomOne(){
+        $taggedMode = arg('taggedMode') ?: 'all';//notagged, tagged, all
+        $reqType = arg('reqType') ?: 'page';//page, api
+        $taggedObj = supertable('tagged');
+        $tu = null;
+        if ($taggedMode == 'notagged') {
+            $list = Tu::getByNoTagged(1);
+            $tuId = @$list[0]['tuId'];
+            if ($tuId) $tu = supertable('Tu')->find(['id' => $tuId], 'id tuId, filename, url');
+        } elseif ($taggedMode == 'tagged') {
+            $sql = "SELECT tab_id FROM {$taggedObj->table} WHERE tab_name = 'tu' GROUP BY tab_id ORDER BY rand() limit 1";
+            $tuIdRs = $taggedObj->query($sql) ?: [];
+            if (@$tuIdRs[0]['tab_id']) $tu = supertable('Tu')->find(['id' => @$tuIdRs[0]['tab_id']], 'id tuId, filename, url');
+        } else {
+            $tu = supertable('Tu')->find('', 'id tuId, filename, url', 'rand()');
+        }
+        
+        if ($reqType == 'page') {
+            $this->list = $tu ? [$tu] : [];
+            @$this->stpl('tu-getlist');
+        } else {
+            putjsonp(0, $tu);
+        }
+    }
+
+
     //获取未打标签的图
     function getByNoTagged(){
         $limit = min(50, max(1, (int)arg('limit', 20)));
@@ -242,8 +269,8 @@ class TuDo extends DIDo {
             putjson(0, Tu::getTaggedHistory($opt));
         }
     }
-    
-    
+
+
     function del(){
         
     }
