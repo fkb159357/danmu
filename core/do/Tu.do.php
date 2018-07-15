@@ -273,6 +273,14 @@ class TuDo extends DIDo {
     }
 
 
+    function hide($tuId){
+        $tuId = intval('tuId');
+        if ($tuId) {
+            supertable('Tu')->update(['id' => $tuId], ['hide' => 1]);
+        }
+    }
+
+
     function del(){
         
     }
