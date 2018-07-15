@@ -216,7 +216,8 @@ class TuDo extends DIDo {
         if ($reqType == 'page') {
             $this->list = $tu ? [$tu] : [];
             @$this->stpl('tu-getlist');
-        } else {
+        } else {//接口模式时，多获取对应的标签
+            $tu['tags'] = $tu ? Tagged::getTagsByTabId('tu', $tu['tuId']) : [];
             putjsonp(0, $tu);
         }
     }
