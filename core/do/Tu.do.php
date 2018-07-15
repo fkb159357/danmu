@@ -273,6 +273,8 @@ class TuDo extends DIDo {
     }
 
 
+    //隐藏一张图, 提供给telegram hook后端调用，不需要登录态，详见login.filter
+    //为保护个人隐私，加入了隐藏特性
     function hide($tuId){
         $tuId = intval($tuId);
         if ($tuId) {
