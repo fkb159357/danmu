@@ -1,0 +1,5 @@
+# http://[domain]/cbupl/upimg.php
+# need copy from "/core/ext/file/ImgUpload.php" to "u.php"
+<?php
+include 'u.php';
+ImgUploadServer::testServer();
