@@ -229,7 +229,7 @@
                             var vid = 'v' + (+new Date);
                             var w = lastTu.width();
                             var h = lastTu.height();
-                            lastTu.replaceWith("<video id='" + vid + "' webkit-playsinline playsinline loop src='" + list[i].url + "'>");
+                            lastTu.replaceWith("<video id='" + vid + "' webkit-playsinline playsinline loop muted src='" + list[i].url + "'>");
                             lastTu = $('#'+vid);
                             lastTu.get(0).play();
                         }
