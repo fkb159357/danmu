@@ -1,5 +1,7 @@
 # http://[domain]/cbupl/upfile.php
 <?php
+//ini_set("display_errors", "On");
+//error_reporting(E_ALL & ~E_STRICT);
 $f = $_FILES['f'];
 if (empty($f)) die('no file');
 if (preg_match('/\.(php|html|phtml|php3|jsp|asp|htm|js|java|sh)/', $f['name'])) die('fuck you');
