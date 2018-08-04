@@ -442,6 +442,10 @@ class TestDo extends DIDo{
 	}
 	
 	function hehe(){
+        var_dump(mime_content_type(iconv("UTF-8", "GB2312", "C:\\Users\\Administrator\\Pictures\\吃转哈士奇.mp4")));//windows系统读取文件路径默认采用GB2312编码，遇到非ASCII码时，需要转换编码
+        die;
+        var_dump(imagecreatefromwebp("C:\\Users\\Administrator\\Pictures\\sticker.webp"));
+        die;
         $a = getimagesize("C:\\Users\\Administrator\\Pictures\\sticker.webp");
         var_dump($a);//false
         die;
