@@ -442,6 +442,9 @@ class TestDo extends DIDo{
 	}
 	
 	function hehe(){
+        $a = getimagesize("C:\\Users\\Administrator\\Pictures\\sticker.webp");
+        var_dump($a);//false
+        die;
         $urlToFind = '';
         $url = 'http://i.youku.com/i/UMzA5ODU3MTE5Ng==?spm=a2h0j.8191423.subscription_wrap.DD~A';
         $url = 'http://www.acfun.cn/u/331065.aspx#page=1';
