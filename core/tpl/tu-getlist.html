@@ -82,6 +82,19 @@
 		    });
 		});
 	</script>
+
+    <!-- 兼容显示mp4 -->
+    <script>
+        $(function(){
+            $('img').each(function(i, e){
+                var id = 'v' + (+new Date);
+                if (e.src.match(/\.mp4(\?.*)?$/)) {
+                    $(e).replaceWith("<video id='" + id + "' width='90%' webkit-playsinline playsinline src='" + e.src + "'>");
+                    $('#'+id)[0].play();
+                }
+            });
+        });
+    </script>
 	
 	<script>
 		$(function(){
