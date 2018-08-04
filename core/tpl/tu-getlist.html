@@ -91,7 +91,7 @@
                     var id = 'v' + (+new Date);
                     var w = $(e).width();
                     var h = $(e).height();
-                    $(e).replaceWith("<video id='" + id + "' width='" + w + "' webkit-playsinline playsinline src='" + e.src + "'>");
+                    $(e).replaceWith("<video id='" + id + "' width='" + w + "' webkit-playsinline playsinline loop src='" + e.src + "'>");
                     $('#'+id)[0].play();
                 }
             });
