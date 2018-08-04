@@ -92,11 +92,10 @@ class ImgUpload {
     
     //检测图片内容
     protected function _checkImgData($file){
-        $mimeType = mime_content_type($file['tmp_name']);
-        if (in_array($mimeType, ['image/webp', 'video/mp4'])) {
+        if (in_array(strtolower($file['type']), ['image/webp', 'video/mp4'])) {
             $this->_ret['width'] = 0;
             $this->_ret['height'] = 0;
-            $this->_ret['mimeType'] = $mimeType;
+            $this->_ret['mimeType'] = strtolower($file['type']);
             return true;
         }
 
@@ -160,7 +159,7 @@ class ImgUpload {
         }
         return true;
     }
-    
+
     //计算SHA1
     protected function _calcSha1($file){
         $this->_ret['sha1'] = sha1_file($file['tmp_name']);
@@ -240,6 +239,9 @@ class ImgUploadClient extends ImgUpload {
     
     //按需截图(注意：调用后，需unlink所生成图片)
     protected function _resize($file, $width = 0, $height = 0){
+        if (in_array(strtotime($file['type']), ['image/webp', 'video/mp4'])) {
+            return $file['tmp_name'];//webp, mp4不需要执行此过程
+        }
         if (! $width || ! $height) {
             return $file['tmp_name'];
         }
