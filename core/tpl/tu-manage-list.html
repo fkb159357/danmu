@@ -14,7 +14,7 @@
                 text-align: center;
                 height: 300px;
             }
-            .diy-box>img{
+            .diy-box>.diy-one-tu{
                 margin-bottom: 10px;
             }
             .diy-box>p{
@@ -211,7 +211,7 @@
                 function renderList(list){
                     var tpl = 
                         '<div class="diy-box well col-xs-3" data-id="@@tuId@@" data-tagged="0" data-width="@@width@@" data-height="@@height@@">\
-                            <img src="@@url@@" onclick="window.open(\'@@url@@\', \'_blank\')">\
+                            <img class="diy-one-tu" src="@@url@@" onclick="window.open(\'@@url@@\', \'_blank\')">\
                             <p>文件：@@savefile@@</p>\
                             <p>尺寸：@@width@@ x @@height@@</p>\
                             <p>大小：@@filesize@@ Bytes</p>\
@@ -224,8 +224,16 @@
                         var unitTpl = tplRender(tpl, list[i]);
                         tusArea.append(unitTpl);
                         var lastBox = tusArea.children('.diy-box').last();
-                        var lastImg = lastBox.children('img').first();
-                        lastImg.css({width: lastBox.width(), height: lastBox.height()*0.6});
+                        var lastTu = lastBox.children('.diy-one-tu').first();
+                        if (list[i].url.match(/\.mp4(\?.*)?$/)) {
+                            var vid = 'v' + (+new Date);
+                            var w = lastTu.width();
+                            var h = lastTu.height();
+                            lastTu.replaceWith("<video id='" + vid + "' webkit-playsinline playsinline loop muted src='" + list[i].url + "'>");
+                            lastTu = $('#'+vid);
+                            lastTu.get(0).play();
+                        }
+                        lastTu.css({width: lastBox.width(), height: lastBox.height()*0.6});
                         initBox(lastBox, list[i]);
                     }
                     renderPage();
@@ -327,6 +335,17 @@
                     var ids = getTaggedTuIds();
                     if (ids.length > 0) {
                         area.html('<p>已选中的图ID有：<font color="red">' + ids.join('、') + '</font>，这些图可批量打入标签。</p>');
+                        /*此注释代码为未完成的功能，具体做什么，忘了。需要时再说
+                        area.html('<p>已选中的图ID有：<font color="red">' + ids.join('、') + '</font>，<a id="diy-open-selected-tus" href="javascript:;">这些图</a>可批量打入标签。</p>');
+                        $('#diy-open-selected-tus').click(function(){
+                            for (var i in ids) {
+                                ids[i];
+                                $.getJSON('/tu/getById/'+ids[i], function(j){
+
+                                });
+                            }
+                            $('body').append(tpl);
+                        });*/
                         area.show();
                     } else {
                         area.html('').hide();

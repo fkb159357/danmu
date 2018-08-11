@@ -53,7 +53,7 @@
     </head>
     <body>
         <!-- 隐藏的file input -->
-        <input id="file-input" type="file" style="display:none" accept="image/jpeg,image/png,image/gif" multiple="multiple"><!-- accept="image/*" OR accept="image/jpeg,image/png,image/gif" OR accept=".jpg,.png,.gif" 兼容性详见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input -->
+        <input id="file-input" type="file" style="display:none" accept="image/jpeg,image/png,image/gif,image/webp,video/mp4" multiple="multiple"><!-- accept="image/*" OR accept="image/jpeg,image/png,image/gif" OR accept=".jpg,.png,.gif" 兼容性详见https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input -->
         <!-- 用于拖放上传，也可用于间接点击file input -->
         <div id="drop-area">
             点击此处或拖放图片上传
@@ -154,7 +154,7 @@
                 }
                 for (var i = 0; i < files.length; i ++) {
                     var file = files[i];
-                    if (-1 != ['image/jpeg', 'image/png', 'image/gif'].indexOf(file.type.toLowerCase())) {
+                    if (-1 != ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4'].indexOf(file.type.toLowerCase())) {
                         var fileLi = renderFileBeforeUp(file, filesArea);
                         upFile(file, {
                             fileLi: fileLi,
@@ -269,6 +269,22 @@
                     }( lis[i] );
                 }
             };
+        </script>
+
+
+        <!-- 兼容显示mp4 -->
+        <script>
+            $(function(){
+                setInterval(function(){
+                    $('img.img-preview').each(function(i, e){
+                        if (e.src.match(/\.mp4(\?.*)?$/)) {
+                            var id = 'v' + (+new Date);
+                            $(e).replaceWith("<video id='" + id + "' height='80' webkit-playsinline playsinline loop muted src='" + e.src + "'>");
+                            $('#'+id)[0].play();
+                        }
+                    });
+                }, 500);
+            });
         </script>
 
 

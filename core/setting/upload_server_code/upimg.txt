@@ -1,0 +1,7 @@
+# http://[domain]/cbupl/upimg.php
+# need copy from "/core/ext/file/ImgUpload.php" to "u.php"
+<?php
+//ini_set("display_errors", "On");
+//error_reporting(E_ALL & ~E_STRICT);
+include 'u.php';
+ImgUploadServer::testServer();

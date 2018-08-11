@@ -38,6 +38,8 @@ class ImgUpload {
             case 'image/png': $this->_ret['fileExt'] = 'png'; break;
             case 'image/bmp': $this->_ret['fileExt'] = 'bmp'; break;
             case 'image/tiff': $this->_ret['fileExt'] = 'tif'; break;
+            case 'image/webp': $this->_ret['fileExt'] = 'webp'; break;
+            case 'video/mp4': $this->_ret['fileExt'] = 'mp4'; break;
         }
         if (! $this->_ret['fileExt']) {
             $this->_ret['msg'] = "illegal file type [{$file['type']}]";
@@ -90,6 +92,13 @@ class ImgUpload {
     
     //检测图片内容
     protected function _checkImgData($file){
+        if (in_array(strtolower($file['type']), ['image/webp', 'video/mp4'])) {
+            $this->_ret['width'] = 0;
+            $this->_ret['height'] = 0;
+            $this->_ret['mimeType'] = strtolower($file['type']);
+            return true;
+        }
+
         @$getImgSize = getimagesize($file['tmp_name']);
         if (false === $getImgSize) {
             $this->_ret['msg'] = 'file is not an image';
@@ -121,7 +130,7 @@ class ImgUpload {
             return false;
         }
     }
-    
+
     //检测文件大小
     protected function _checkSize($file){
         $this->_ret['fileSize'] = $file['size'];
@@ -132,7 +141,7 @@ class ImgUpload {
         return true;
     }
     
-    //检测图片尺寸、比例
+    //[暂未启用]检测图片尺寸、比例
     protected function _checkDimension($file){
         $minW = $this->_limit['minWidth'];
         $minH = $this->_limit['minHeight'];
@@ -150,7 +159,7 @@ class ImgUpload {
         }
         return true;
     }
-    
+
     //计算SHA1
     protected function _calcSha1($file){
         $this->_ret['sha1'] = sha1_file($file['tmp_name']);
@@ -230,6 +239,9 @@ class ImgUploadClient extends ImgUpload {
     
     //按需截图(注意：调用后，需unlink所生成图片)
     protected function _resize($file, $width = 0, $height = 0){
+        if (in_array(strtotime($file['type']), ['image/webp', 'video/mp4'])) {
+            return $file['tmp_name'];//webp, mp4不需要执行此过程
+        }
         if (! $width || ! $height) {
             return $file['tmp_name'];
         }
@@ -269,12 +281,58 @@ class ImgUploadClient extends ImgUpload {
         
         return $this->_ret;
     }
+
+    /**
+     * 【未开发测试完成，暂不可用】
+     * 通过接口上传处理程序 - 参数为图片url的情况
+     */
+    public function upByImgUrl($imgUrl){
+        $this->_ret['fileName'] = $imgUrl;
+        $dir = BASE_DIR . 'protected/data/cache';
+        file_exists($dir) OR mkdir($dir, 0777);
+        $file = "{$dir}/".microtime(1).'.imgcache';
+        $c = file_get_contents($imgUrl);
+        if (empty($c)) {
+            $this->_ret['msg'] = '下载图片失败';
+            $this->_ret['code'] = -11;
+        }
+        $writeRs = file_put_contents($file, $c);
+        if (false === $c) {
+            $this->_ret['msg'] = '图片缓存写入失败，导致无法上传';
+            $this->_ret['code'] = -12;
+        }
+        $this->_ret['fileSize'] = filesize($file);
+        $getImaSize = getimagesize($file);
+        if (false === $getImaSize) {
+            $this->_ret['msg'] = '该URL，不是图片文件';
+            $this->_ret['code'] = -13;
+        }
+        list($width, $height, $type) = $getImaSize;
+        $this->_ret['width'] = $width;
+        $this->_ret['height'] = $height;
+        $this->_ret['mimeType'] = image_type_to_mime_type($type);
+        $this->_ret['fileExt'] = ltrim(image_type_to_extension($type), '.');//fileExt必须在_calcGroupPath之前得出
+        $path = $this->_calcGroupPath();
+        $ret = obj('dwFile')->uploadFile($file, '', $path);
+        @unlink($file);
+        $this->_ret['url'] = $ret['file_url'] ? str_replace('./', '', $ret['file_url']) : '';
+        $this->_ret['fileId'] = $ret['file_id'];
+        $this->_ret['msg'] = 'upload success';
+        return $this->_ret;
+    }
     
     //客户端调用接口测试用例
     static function testClient(){
         $client = new ImgUploadClient();
         $client->setLimit(array('maxSize' => 5242880));//5MB
         $ret = $client->up($_FILES['tu']);
+        dump($ret);
+    }
+
+    //【未开发测试完成，暂不可用】测试upByImgUrl
+    static function testUpByImgUrl(){
+        $client = new ImgUploadClient();
+        $ret = $client->upByImgUrl(arg('imgUrl'));
         dump($ret);
     }
 }
