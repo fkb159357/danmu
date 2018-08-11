@@ -76,7 +76,7 @@ class ImgUpload {
     }
     
     protected function _checkName($file){
-        if (preg_match('/\\0|\:|\/|\\|\?|\^|\*|\<|\>|\$/', $file['name'])) {
+        if (preg_match('/\\0|\:|\/|\\|\?|\^|\*|\<|\>/', $file['name'])) {
             $this->_ret['msg'] = 'illegal file name';
             return false;
         }
