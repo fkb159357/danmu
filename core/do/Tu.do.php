@@ -140,7 +140,7 @@ class TuDo extends DIDo {
     //按id获取图数据
     function getById($id){
         $info = Tu::getInfoById($id);
-        putjson($info);
+        putjson(0, $info);
     }
 
 
