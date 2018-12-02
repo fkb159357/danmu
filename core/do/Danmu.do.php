@@ -14,6 +14,8 @@ class DanmuDo extends TemplateDo {
     
     //首页
     function start(){
+        die('404 - HTTP Broken Shoes');
+
         import('net/ip');
         $ip = Api_ip::get_client_ip();
         //$ip = '119.129.211.107';//test
