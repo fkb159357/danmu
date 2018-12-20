@@ -190,7 +190,11 @@ class TuDo extends DIDo {
                     WHERE t.id = tt.tu_id AND `tag` IN (:taglist)";
             $this->list = $tuObj->query($sql, array('taglist' => "{$tag}")); */
         }
-        @$this->stpl('tu-getlist');
+        if (arg('getJson') == 1) {
+            putjsonp(0, $this->list);
+        } else {
+            @$this->stpl('tu-getlist');
+        }
     }
 
 
