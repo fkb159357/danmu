@@ -116,7 +116,7 @@ class TuDo extends DIDo {
     function getListData(){
         $tuObj = supertable('Tu');
         $p = max(1, (int)arg('p', 1));
-        $limit = min((int)arg('limit', 5), 20);
+        $limit = min((int)arg('limit', 5), 10000);
         $tags = arg('tags');
         if (empty($tags)) {
             $retList = $tuObj->select('', 'id', 'id DESC', array($p, $limit, 10)) ?: array();

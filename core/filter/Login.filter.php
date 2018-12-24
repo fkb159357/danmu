@@ -6,7 +6,7 @@ class LoginFilter implements DIFilter {
     
     //目前对tu/toup, tu/up, tu/setTags, tu/del进行限制
     public function doFilter() {
-        if (! in_array(strtolower(DI_DO_FUNC), ['getrandomone', 'hide', 'getbyid'])) {
+        if (! in_array(strtolower(DI_DO_FUNC), ['getrandomone', 'hide', 'getListData', 'getbyid'])) {
             $me = User::isLogin();
             if (! $me) {
                 dispatch('user/loginView');
