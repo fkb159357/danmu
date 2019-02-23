@@ -1,0 +1,21 @@
+<input id="a" style="width:200px;" placeholder="填写JS代码，不含script标签..">
+<button id="gen">转换</button>
+<input id="b" style="width:750px;">
+<script src="https://cdn.jsdelivr.net/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+<script>
+
+function req(url, js, cb){
+    $.get(url, {js:js}, function(j){
+        if (j.code == 0) {
+            cb(j)
+        }
+    }, 'jsonp');
+}
+
+document.getElementById('gen').onclick=function(){
+  req('/?xx=U2N4s4wwV7Tejh)5p4Hj)HKh', document.getElementById('a').value, function(j){
+    document.getElementById('b').value=j.data;
+  });
+}
+
+</script>
