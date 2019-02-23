@@ -46,6 +46,22 @@ class ToolDo extends DIDo {
         $this->stpl();
     }
     
+    //自用O0o JS代码生成器。需要安装nodejs模块 optimist
+    function O0oJS(){
+        if (arg('js')) {
+            $js = arg('js');
+            $jsf = DI_CACHE_PATH.sha1(microtime(1)).'.js';
+            file_put_contents($jsf, $js);
+            $bin = ltreDeCrypt("~zta'1_)OlDbi4z6_1MzUtKAPlQA'3Mo00'lYjHF!2Het1xjIfXifd!2VxSSX9)qJH!2C9MnZrYxnbTe97'9a0Ifj9!PM7qo_7_F-N'1AmDcOlN2VgGE~1-ERy(pmk'9)Dm8*CZkpn!2z7u0.0OkxdHpJn'1Vtk6SrVgYW~1LiVxGix6PjVpZtXizx_7xjEi~Dn6@lAy.8");
+            $jscode = trim(shell_exec('node '.$bin.' --codefile='.$jsf));
+            $code = '<script src="//res.miku.us/res/js/O0o-runtime2.prod.js?v='.date('YmdHis').'"></script><script>'.$jscode.'</script>';
+            @unlink($jsf);
+            putjsonp(0, compact('code'));
+        } else {
+            $this->stpl();
+        }
+    }
+
 }
 
 
