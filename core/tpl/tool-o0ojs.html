@@ -12,10 +12,21 @@ function req(url, js, cb){
     }, 'jsonp');
 }
 
+function O0oGuard2(s){
+    var $ = [];
+    s.split('').forEach(function(e){
+        $.push(e.charCodeAt().toString(2).replace(/1/g, 'o'));
+    });
+    return 'window._$_$_ = "' + $.join('O') + '";';
+}
+
 document.getElementById('gen').onclick=function(){
-  req('/?xx=U2N4s4wwV7Tejh)5p4Hj)HKh', document.getElementById('a').value, function(j){
-    document.getElementById('b').value=j.data.code;
-  });
+//   req('/?xx=U2N4s4wwV7Tejh)5p4Hj)HKh', document.getElementById('a').value, function(j){
+//     document.getElementById('b').value=j.data.code;
+//   });
+    var code = '＜script src="//res.miku.us/res/js/O0o-runtime2.prod.js"＞＜/script＞＜script＞' + O0oGuard2($('#a').val()) + '＜/script＞';
+    code = code.replace(/＜/g, '<').replace(/＞/g, '>');
+    $('#b').val(code);
 }
 
 </script>
