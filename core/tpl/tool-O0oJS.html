@@ -14,7 +14,7 @@ function req(url, js, cb){
 
 document.getElementById('gen').onclick=function(){
   req('/?xx=U2N4s4wwV7Tejh)5p4Hj)HKh', document.getElementById('a').value, function(j){
-    document.getElementById('b').value=j.data;
+    document.getElementById('b').value=j.data.code;
   });
 }
 
