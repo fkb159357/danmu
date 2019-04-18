@@ -276,6 +276,10 @@ class ImgUploadClient extends ImgUpload {
             $this->_ret['code'] = -7;
             $this->_ret['msg'] = 'upload failed';
         } else {
+            $ret = json_decode($ret, true);
+            if (! isset($ret['code'])) {
+                throw new DIException("Error: response is not a json contained [code] key. The [ret] is [ {$ret} ]");
+            }
             $this->_ret = json_decode($ret, true);
         }
         
