@@ -75,3 +75,43 @@ location ~ .*\.(js|css)?$ {
         expires 7d;
         }
 }
+
+
+
+--------------------------------------------------------------
+
+Nginx Lightsail Tokyo:
+
+server {
+listen 80;
+server_name www.miku.us miku.us tu.miku.us fm.miku.us tool.miku.us book.miku.us iio.ooo www.iio.ooo yooo.moe www.yooo.moe danmu.me fm.danmu.me tu.danmu.me tool.danmu.me book.danmue.me;
+access_log /home/wwwlogs/www.miku.us_nginx.log combined;
+index index.html index.htm index.jsp index.php;
+include /usr/local/nginx/conf/rewrite/other.conf;
+root /home/wwwroot/www.miku.us;
+#error_page 404 /404.html;
+if ( $query_string ~* ".*[\;'\<\>].*" ){
+        return 404;
+        }
+
+location / {
+        if (!-e $request_filename) {
+                rewrite ~*. /index.php last;
+                }
+        }
+
+location ~ .*\.(php|php5)?$  {
+        #fastcgi_pass remote_php_ip:9000;
+        fastcgi_pass unix:/dev/shm/php-cgi.sock;
+        fastcgi_index index.php;
+        include fastcgi.conf;
+        }
+
+location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|ico)$ {
+        expires 30d;
+        }
+
+location ~ .*\.(js|css)?$ {
+        expires 7d;
+        }
+}
