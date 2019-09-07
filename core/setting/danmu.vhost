@@ -88,7 +88,7 @@ server_name www.miku.us miku.us tu.miku.us fm.miku.us tool.miku.us book.miku.us 
 access_log /home/wwwlogs/www.miku.us_nginx.log combined;
 index index.html index.htm index.jsp index.php;
 include /usr/local/nginx/conf/rewrite/other.conf;
-root /home/wwwroot/www.miku.us;
+root /home/wwwroot/danmu;
 #error_page 404 /404.html;
 if ( $query_string ~* ".*[\;'\<\>].*" ){
         return 404;
