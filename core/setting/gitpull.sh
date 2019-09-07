@@ -46,7 +46,6 @@ chmod +x /home/wwwroot/danmu/core/setting/gitpull.sh;
 rm -f -r /home/wwwroot/danmu.trash;
 
 cd /home/wwwroot
-ll /home/wwwroot/danmu
 
 service nginx restart
 service php-fpm reload
