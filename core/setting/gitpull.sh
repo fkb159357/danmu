@@ -1,3 +1,12 @@
+if [ ! -d "/home/wwwroot" ]; then
+    mkdir /home/wwwroot;
+fi;
+if [ ! -d "/home/wwwbackup" ]; then
+    mkdir /home/wwwbackup;
+fi;
+zip -r /home/wwwbackup/danmu.zip /home/wwwroot/danmu/*
+
+
 if [ ! -d "/home/wwwsrc" ]; then
     mkdir /home/wwwsrc;
 fi;
@@ -33,7 +42,6 @@ if [ ! -d "/home/wwwroot/danmu/core/data/log" ]; then
 fi
 
 
-zip -r /home/wwwbackup/danmu.zip /home/wwwroot/danmu/*
 mv /home/wwwroot/danmu /home/wwwroot/danmu.trash;
 cp /home/wwwsrc/danmu -r /home/wwwroot/danmu;
 rm /home/wwwroot/danmu/.git -rf
