@@ -301,7 +301,7 @@ class ImgUploadClient extends ImgUpload {
             $this->_ret['code'] = -11;
         }
         $writeRs = file_put_contents($file, $c);
-        if (false === $c) {
+        if (false === $writeRs) {
             $this->_ret['msg'] = '图片缓存写入失败，导致无法上传';
             $this->_ret['code'] = -12;
         }
