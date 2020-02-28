@@ -543,14 +543,20 @@ class TestDo extends DIDo{
         if (! $sql) $sql = $mixed->get($hdl.'sql'.$username); else $mixed->set($hdl.'sql'.$username, $sql, "后台查询缓存->语句(执行人：{$username}，请勿删除)");
 
         $output =  '<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><div style="margin:50px auto; width: 600px;">';
-        $form = '<form method="post" action="/test/sql" style="position:fixed;left:25px;"><h1>查询</h1><textarea id="sqltxt" cols="50" name="sql" style="height:720px;">' . @$sql . '</textarea><input id="exec" type="button" value="exec"></form>';
+        $form = '<form method="post" action="/test/sql" style="position:fixed;left:25px;"><h1>查询</h1><textarea id="sqltxt" cols="50" name="sql" style="height:720px;">' . @$sql . '</textarea><input id="exec" type="button" value="query"><input id="excel" type="button" value="EXCEL"></form>';
         $output .= $form.'<br><br>';
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
+            $dataList = supermodel()->query($sql)?:array()
             $output .= "<div id='result' style='margin-top:145px;'>";
             if (preg_match('/\s*(update|delete|set)\s+/i', $sql) && ! $canModify) {
                 $output .= "HEHE";
-            } else {
-                $output .= '<pre>'.print_r(supermodel()->query($sql)?:array(), true).'</pre>';
+            } elseif (arg('excel') == 1 && !empty($dataList)) {//有数据，才能导出文件
+                array_unshift($dataList, array_keys($dataList[0]));
+                import('dw/dwExcel.php');
+                (new dwExcel)->export('testsql-'.date('YmdHis'), $dataList);
+                exit;
+            }  else {
+                $output .= '<pre>'.print_r($dataList, true).'</pre>';
             }
             $output .= "</div>";
         }
@@ -614,13 +620,27 @@ class TestDo extends DIDo{
             });
             
             //开始查询
+            var getSQL = function(){ return encodeURIComponent($('#sqltxt').val()).split('').reverse().join(''); };
             $('#exec').click(function(){ 
-                var sql = encodeURIComponent($('#sqltxt').val()).split('').reverse().join('');
+                var sql = getSQL();
                 $.post('/test/lqs', {sql: sql}, function(html){
                     var doc = document.open('text/html', 'replace');
                     doc.write(html);
                     doc.close();
                 }, 'html'); 
+                return false;
+            });
+            $('#excel').click(function(){
+                var sql = getSQL();
+                var form = $('<form id=\"download\" style=\"diplay:hidden;\" method=\"post\"></form>');
+                form.attr('url', '/test/sql?excel=1');
+                $('body').append(form);
+                var inputSql = $('<input name=\"sql\" type=\"text\">');
+                inputSql.attr('value', sql);
+                $('#download').append(inputSql);
+                $('#download').append('<input name=\"excel\" type=\"text\" value=\"1\">');
+                form.submit();
+                setTimeout(function(){form.remove()}, 3000);
                 return false;
             });
         </script>";

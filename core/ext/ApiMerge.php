@@ -193,7 +193,7 @@ class ApiMergeTest {
         $am->config(array(
             'base' => 'ApiDemo',
             'alias' => array(
-                'fooAlia' => 'ApiDemo/api3'
+                'fooAlia' => 'ApiDemo/api3',
             ),
         ));
         $results = $am->invoke(array(
