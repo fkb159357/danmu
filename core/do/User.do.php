@@ -63,6 +63,8 @@ class UserDo extends DIDo {
      * http://danmu.me/?user/reg&passport=abc&password=123&nickname=%E6%93%8D%E4%BD%A0%E5%A6%88&valicode=32791
      */
     function reg(){
+        superput(-1, null, '禁止注册！');
+        
         $passport = arg('passport');
         $password = sha1(arg('password'));
         $nickname = arg('nickname');
