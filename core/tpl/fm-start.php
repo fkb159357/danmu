@@ -82,7 +82,7 @@
     <!-- 脚本加载顺序：基础库=>公共业务库=>特定业务 -->
     <script src="res/lib/lib.js?v=20150513"></script>
     <script src="res/biz/common/common.js?v=20150513"></script>
-    <script src="res/biz/fm/fm.js?v=20150730"></script>
+    <script src="res/biz/fm/fm.js?v=20221010"></script>
     <!-- jinguanyu -->
     <!-- <script src="res/lib/anime.js?v=20150513"></script> -->
 
