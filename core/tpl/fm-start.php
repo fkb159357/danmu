@@ -68,7 +68,7 @@
         <button id="duang" style="display: none;">扫码加特技！</button>
         <button id="submit-new-song">提交5sing单曲地址收录</button>
     </div>
-    <div id="qrcode" style="position: fixed; z-index: 20; top: 50px; left: 0px; display: none;"></div>
+    <div id="qrcode" style="position: fixed; z-index: 20; top: 50px; left: 10px; display: none;"></div>
     
     <script src="res/lib/flat-ui/js/jquery.min.js"></script>
     <!--<script src="res/lib/bootstrap3/js/bootstrap.min.js"></script>-->
