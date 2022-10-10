@@ -87,7 +87,7 @@ FM.listenRemoteCmd = function(){
     });
     //特技开始实现
     var token = location.hash.replace('#','') || -(-new Date());//token也可手动用fragment生成
-    var u = 'http://io.yooo.moe:3000/';
+    var u = 'http://io.miku.us:3000/';
     var socket = io.connect(u);
     socket.emit('fm/regCmd', token);
     socket.on('fm/acceptCmd', function(rToken, type, value){
