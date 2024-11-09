@@ -45,7 +45,7 @@
         $('#syncText').css('width', commonWidth+'px');
         var token = location.hash.replace('#','') || + new Date;//token也可手动用fragment生成
         $('#qrcode').qrcode({width:commonWidth,height:commonWidth,text:location.protocol+'//'+location.host+'/?ctrl/qr#'+token});
-        var u = 'http://io.miku.us:3000/';
+        var u = 'https://io.miku.us:3000/';
         var socket = io.connect(u);
         socket.emit('ctrl/regCmd', token);
         socket.emit('ctrl/sendCmd', token, 0, '有个渣渣加入房间');
