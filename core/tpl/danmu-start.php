@@ -43,8 +43,8 @@
 
         <!-- Scripts -->
         <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> -->
-        <script>!window.jQuery && document.write(unescape('%3Cscript src="res/lib/jquery-1.8.3.min.js"%3E%3C/script%3E'));</script>
 
+        <script src="res/lib/jquery-1.8.3.min.js"></script>
         <script src="res/biz/danmu-start/js/plugins.js"></script>
         <script src="res/biz/danmu-start/js/main.js"></script>
         <script src="res/lib/lib.js"></script>
