@@ -50,7 +50,7 @@
         <script src="res/lib/lib.js"></script>
         <script src="res/biz/common/common.js"></script>
         <script type="text/javascript">
-        Common.report_ip('<?php print $client_ip?>');
+            Common.report_ip('<?php print $client_ip?>');
         </script>
     </body>
 </html>

@@ -12,6 +12,8 @@ Common = {};
  * @param string ip 不传值则默认使用新浪的IP识别
  */
 Common.report_ip = function(ip){
+    return; //@todo: 需要将ip接口改成https的
+    
     // 响应：var remote_ip_info = {"ret":1,"start":-1,"end":-1,"country":"\u4e2d\u56fd","province":"\u6e56\u5357","city":"\u90b5\u9633","district":"","isp":"","type":"","desc":""}
     var url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js' + ((undefined != ip) ? ('&ip=' + ip) : '');
     $.get(url, function(){
