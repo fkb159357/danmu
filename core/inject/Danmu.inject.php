@@ -17,7 +17,7 @@ class DanmuInject extends DIInject {
 	private function fixconf(){
 	    if (function_exists('file_get_contents')) {
 	        $now = time();
-	        $start = date('Y-m-d');
+	        $start = strtotime(date('Y-m-d'));
 	        $gap = 60;
 	        $inGap = ($now - $start) % (2*$gap) > $gap;
 	        if ($inGap) {

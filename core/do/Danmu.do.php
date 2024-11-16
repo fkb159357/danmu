@@ -25,16 +25,17 @@ class DanmuDo extends TemplateDo {
         }
         
         $M = supertable('Tourist');
-        $tourist = $M->find(compact('ip')) ?: array();
-        //防止本地测试时一直都是在启动页不跳转
-        if ($ip == '127.0.0.1') {
-            false === $tourist ? $M->insert(array('ip'=>$ip,'vtime'=>time())) : $M->update(compact('ip'), array('vtime'=>time()));
-        }
+        $tourist = $M->find(compact('ip'));
+        false === $tourist ? $M->insert(array('ip'=>$ip,'vtime'=>time())) : $M->update(compact('ip'), array('vtime'=>time()));
         
-        $vtime = empty($tourist) ? false : $tourist['vtime'];
-        if ($vtime >= strtotime(date('Y-m-d'))-1209600) {
+        import('cache/diRedis');
+        $redis = diRedis::inst();
+        $hdl = sha1($ip);
+        if ($redis->get($hdl)) {
             $this->gen();
         } else {
+            //最短15天内不访问，将重新展示欢迎页
+            $redis->setex($hdl, 86400*15, 1);
             $this->client_ip = $ip;//提供IP给danmu-start.php使用
             parent::tpl('danmu-start');//不使用danmu-tpl模板
         }
