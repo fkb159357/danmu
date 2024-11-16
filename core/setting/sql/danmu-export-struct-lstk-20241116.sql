@@ -6,14 +6,15 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+CREATE DATABASE IF NOT EXISTS `danmu` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `danmu`;
 
 CREATE TABLE `di_table` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `key` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `value` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `key` varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='示例表，没什么用。。';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='示例表，没什么用。。';
 
 
 CREATE TABLE `dm_audio5sing` (
@@ -26,7 +27,7 @@ CREATE TABLE `dm_audio5sing` (
   `singer` varchar(60) DEFAULT NULL COMMENT '昵称',
   `avatar` varchar(100) DEFAULT NULL COMMENT '头像',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_danmu` (
@@ -45,7 +46,7 @@ CREATE TABLE `dm_danmu` (
   `createip` varchar(16) DEFAULT NULL COMMENT '创建IP',
   `hide` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否隐藏',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_mixed` (
@@ -61,7 +62,7 @@ CREATE TABLE `dm_mixed` (
   `update_user` varchar(32) NOT NULL DEFAULT '' COMMENT '修改人',
   `valid` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`mid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='杂项配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='杂项配置';
 
 
 CREATE TABLE `dm_rooter` (
@@ -72,7 +73,7 @@ CREATE TABLE `dm_rooter` (
   `first_time` int(10) unsigned NOT NULL DEFAULT '0',
   `last_time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_rootist` (
@@ -91,7 +92,7 @@ CREATE TABLE `dm_rootist` (
   KEY `uid` (`uid`) USING BTREE,
   KEY `ip` (`ip`) USING BTREE,
   KEY `vtime` (`vtime`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_tag` (
@@ -102,7 +103,7 @@ CREATE TABLE `dm_tag` (
   UNIQUE KEY `uniqtag` (`tag`,`pure_tag`) USING BTREE,
   KEY `tag` (`tag`) USING BTREE,
   KEY `pure_tag` (`pure_tag`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通用标签表\r\ntag：未经去除特殊字符的标签，其本身可能也是个纯标签。\r\npure_tag：经过去除特殊字符后的纯标签。\r\ntag与纯标签呈多对多关系：tag本身可能会分解出多个pure_tag，pure_tag可能会找到所属的tag。\r\n由于没必要保存重复的组合，故tag与pure_tag组合唯一。\r\n';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用标签表\r\ntag：未经去除特殊字符的标签，其本身可能也是个纯标签。\r\npure_tag：经过去除特殊字符后的纯标签。\r\ntag与纯标签呈多对多关系：tag本身可能会分解出多个pure_tag，pure_tag可能会找到所属的tag。\r\n由于没必要保存重复的组合，故tag与pure_tag组合唯一。\r\n';
 
 
 CREATE TABLE `dm_tagged` (
@@ -116,7 +117,7 @@ CREATE TABLE `dm_tagged` (
   UNIQUE KEY `uniqtagged` (`tag_id`,`tab_id`,`tab_name`) USING BTREE,
   KEY `tag_id` (`tag_id`) USING BTREE,
   KEY `tab_id` (`tab_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通用标签标记表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用标签标记表';
 
 
 CREATE TABLE `dm_tag_relate` (
@@ -130,7 +131,7 @@ CREATE TABLE `dm_tag_relate` (
   UNIQUE KEY `uniqrel` (`tag_id`,`reltag_id`) USING BTREE,
   KEY `tag_id` (`tag_id`) USING BTREE,
   KEY `reltag_id` (`reltag_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='通用标签关系表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='通用标签关系表';
 
 
 CREATE TABLE `dm_topic` (
@@ -140,7 +141,7 @@ CREATE TABLE `dm_topic` (
   `uid` int(11) NOT NULL DEFAULT '0' COMMENT '创建人',
   `time` int(11) DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_tourist` (
@@ -155,7 +156,7 @@ CREATE TABLE `dm_tourist` (
   `ip_type` varchar(50) DEFAULT NULL COMMENT '新浪返回的IP类型',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ip` (`ip`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_tu` (
@@ -178,7 +179,7 @@ CREATE TABLE `dm_tu` (
   `uptime` int(11) NOT NULL DEFAULT '0' COMMENT '上传时间',
   `upuid` int(11) NOT NULL DEFAULT '0' COMMENT '上传者',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_tu_tag` (
@@ -189,7 +190,7 @@ CREATE TABLE `dm_tu_tag` (
   `setuid` bigint(20) NOT NULL DEFAULT '0' COMMENT '打标签者',
   PRIMARY KEY (`id`),
   UNIQUE KEY `tu_tag` (`tu_id`,`tag`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_tu_tag_relate` (
@@ -201,7 +202,7 @@ CREATE TABLE `dm_tu_tag_relate` (
   `setuid` bigint(20) NOT NULL DEFAULT '0' COMMENT '设置者：0为系统自动关联',
   PRIMARY KEY (`id`),
   UNIQUE KEY `relate` (`tag`,`relation`,`relate_tag`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `dm_user` (
@@ -219,7 +220,7 @@ CREATE TABLE `dm_user` (
   `weibo_url` varchar(25) DEFAULT NULL COMMENT '微博主页URL',
   `regtime` int(11) NOT NULL COMMENT '注册时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- 2024-11-16 10:27:39
